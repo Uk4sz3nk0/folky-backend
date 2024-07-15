@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.handler.impl
 
 import com.lukaszwodniak.folky.handler.HelloHandler
+import org.springframework.stereotype.Service
 
 /**
  * HelloHandlerImpl
@@ -9,6 +10,7 @@ import com.lukaszwodniak.folky.handler.HelloHandler
  * @author Łukasz Wodniak (lukasz.wodniak@student.up.krakow.pl)
  */
 
+@Service
 class HelloHandlerImpl : HelloHandler {
 
     override fun greetings(name: String?): String {

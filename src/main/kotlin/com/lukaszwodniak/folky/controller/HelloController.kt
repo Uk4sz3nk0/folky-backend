@@ -5,6 +5,7 @@ import com.lukaszwodniak.folky.rest.hello.specification.api.HelloApi
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * HelloController - example test controller
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity
  */
 
 @Slf4j
+@RestController
 @RequiredArgsConstructor
 class HelloController(private val helloHandler: HelloHandler) : HelloApi {
 
