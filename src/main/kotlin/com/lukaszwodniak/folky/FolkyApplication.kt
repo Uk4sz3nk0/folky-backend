@@ -12,7 +12,6 @@ fun main(args: Array<String>) {
 
 /*
 * TODO LIST:
-*  - Dodać system plików do zapisu plików
 *  - Dodać zespół i podstawową logikę
 *  - Dodać wszelkie operacje CURD dla stworzonych obiektów i cały flow (taki podstawowy chociaż)
 *  - Dodać tworzenie blogów i wgl

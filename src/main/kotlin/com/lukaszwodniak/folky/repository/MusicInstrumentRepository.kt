@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository
  * Created on: 2024-07-29
  * @author Łukasz Wodniak
  */
+// TODO: FIX THIS
 
-@Repository
-interface MusicInstrumentRepository : JpaRepository<MusicInstrumentRepository, Long> {
-}
+//@Repository
+//interface MusicInstrumentRepository : JpaRepository<MusicInstrumentRepository, Long> {
+//}
