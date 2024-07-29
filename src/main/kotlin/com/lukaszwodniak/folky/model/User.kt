@@ -1,7 +1,7 @@
 package com.lukaszwodniak.folky.model
 
 import jakarta.persistence.*
-import java.time.OffsetDateTime
+import java.time.LocalDate
 
 /**
  * User
@@ -19,7 +19,7 @@ data class User(
     val lastName: String,
     val email: String,
     val password: String,
-    val brithDate: OffsetDateTime,
+    val brithDate: LocalDate,
     val howLongDancing: Int,
     @ManyToMany
     @JoinTable(

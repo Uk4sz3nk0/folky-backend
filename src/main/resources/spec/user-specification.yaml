@@ -103,12 +103,20 @@ components:
         password:
           type: string
         brithDate:
-          type: integer
-          format: int64
+          type: string
+          format: date
         howLongDancing:
           type: integer
+        dances:
+          type: array
+          items:
+            $ref: "dance-specification.yaml#/components/schemas/Dance"
         howLongPlayingInstruments:
           type: integer
+        instruments:
+          type: array
+          items:
+            $ref: "music-instrument-specification.yaml#/components/schemas/MusicInstrument"
         role:
           $ref: "#/components/schemas/Role"
     Role:

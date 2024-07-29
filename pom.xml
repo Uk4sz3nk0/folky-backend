@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.lukaszwodniak</groupId>
     <artifactId>folky</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>Folky</name>
     <description>Thesis application project</description>
     <url/>
@@ -194,7 +194,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java17</dateLibrary>
                                 <apiPackage>${base.generated.path}.hello.specification.api</apiPackage>
-                                <modelPackage>${base.generated.path}.hello.specification.model</modelPackage>
+                                <modelPackage>${base.generated.path}.specification.models</modelPackage>
                                 <output>${project.build.directory}</output>
                                 <apis/>
                                 <models/>
@@ -217,7 +217,76 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <dateLibrary>java17</dateLibrary>
                                 <apiPackage>${base.generated.path}.user.specification.api</apiPackage>
-                                <modelPackage>${base.generated.path}.user.specification.model</modelPackage>
+                                <modelPackage>${base.generated.path}.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-dance-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/dance-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.dance.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-dancing-team-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/dancing-team-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.dancing-team.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-region-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/region-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.region.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.specification.models</modelPackage>
                                 <output>${project.build.directory}</output>
                                 <apis/>
                                 <models/>

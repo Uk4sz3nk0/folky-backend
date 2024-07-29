@@ -17,5 +17,5 @@ data class MusicInstrument(
     val name: String,
     @ManyToOne
     @JoinColumn(name = "type_id")
-    val type: MusicInstrumentType? = null
+    val type: MusicInstrumentType
 )
