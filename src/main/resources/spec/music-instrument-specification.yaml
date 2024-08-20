@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: Music instrument specification
+  description: Music instrument specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+
+components:
+  schemas:
+    MusicInstrument:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/MusicInstrumentType"
+    MusicInstrumentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
