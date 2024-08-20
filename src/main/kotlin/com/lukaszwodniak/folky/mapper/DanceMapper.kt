@@ -15,6 +15,7 @@ import org.mapstruct.factory.Mappers
 interface DanceMapper {
 
     fun map(dance: Dance): DanceDto
+    fun map(dance: DanceDto): Dance
 
     fun map(dances: List<Dance>): MutableList<DanceDto>
 

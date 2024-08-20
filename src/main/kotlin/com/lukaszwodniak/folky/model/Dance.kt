@@ -14,6 +14,6 @@ data class Dance(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    val locale: String,
-    val name: String
+    var locale: String,
+    var name: String
 )

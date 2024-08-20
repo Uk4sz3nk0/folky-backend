@@ -1,4 +1,4 @@
-package com.lukaszwodniak.folky.utils.endpointLogger
+package com.lukaszwodniak.folky.annotations.endpointLogger
 
 /**
  * EndpointLogger

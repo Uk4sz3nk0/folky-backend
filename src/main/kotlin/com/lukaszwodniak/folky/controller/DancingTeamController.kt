@@ -5,7 +5,7 @@ import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamAp
 import com.lukaszwodniak.folky.rest.specification.models.DanceDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.UserDto
-import com.lukaszwodniak.folky.utils.endpointLogger.EndpointLogger
+import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

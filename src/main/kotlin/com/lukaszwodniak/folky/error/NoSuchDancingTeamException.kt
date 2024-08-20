@@ -2,7 +2,7 @@ package com.lukaszwodniak.folky.error
 
 /**
  * NoSuchDancingTeamException
- * <br><br>
+ *
  * Created on: 2024-08-20
  * @author Łukasz Wodniak
  */

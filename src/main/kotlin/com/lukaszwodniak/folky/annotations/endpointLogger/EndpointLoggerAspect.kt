@@ -1,4 +1,4 @@
-package com.lukaszwodniak.folky.utils.endpointLogger
+package com.lukaszwodniak.folky.annotations.endpointLogger
 
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
@@ -19,7 +19,7 @@ class EndpointLoggerAspect {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    @Before("@annotation(EndpointLogger)")
+    @Before("@annotation(com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger)")
     fun logMethodExecution(joinPoint: JoinPoint) {
         val methodName = joinPoint.signature.name
         logEndpoint(methodName)

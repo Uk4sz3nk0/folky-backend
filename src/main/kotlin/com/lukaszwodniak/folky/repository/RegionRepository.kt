@@ -12,4 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RegionRepository : JpaRepository<Region, Long> {
+
+    fun findAllByLocale(locale: String): List<Region>
+    fun findAllByNameContainingIgnoreCase(name: String): List<Region>
 }
