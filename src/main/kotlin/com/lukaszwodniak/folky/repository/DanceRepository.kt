@@ -12,4 +12,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface DanceRepository : JpaRepository<Dance, Long> {
+
+    fun findAllByLocale(locale: String): List<Dance>
+
+    fun findAllByNameContainingIgnoreCase(phrase: String): List<Dance>
 }

@@ -14,8 +14,8 @@ data class MusicInstrument(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    val name: String,
+    var name: String,
     @ManyToOne
     @JoinColumn(name = "type_id")
-    val type: MusicInstrumentType
+    var type: MusicInstrumentType
 )

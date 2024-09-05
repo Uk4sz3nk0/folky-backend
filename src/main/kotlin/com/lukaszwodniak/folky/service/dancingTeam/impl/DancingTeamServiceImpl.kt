@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.service.dancingTeam.impl
 
+import com.lukaszwodniak.folky.error.DancingTeamWithGivenNameExistsException
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.model.Dance
 import com.lukaszwodniak.folky.model.DancingTeam
@@ -26,6 +27,9 @@ class DancingTeamServiceImpl(
 
     override fun addTeam(team: DancingTeam): DancingTeam {
         // TODO: Implement additional logic if needed
+        if (dancingTeamRepository.existsByNameIgnoreCase(team.name)) {
+            throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
+        }
         return dancingTeamRepository.save(team)
     }
 

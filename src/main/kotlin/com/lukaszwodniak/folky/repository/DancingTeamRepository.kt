@@ -16,4 +16,6 @@ interface DancingTeamRepository : JpaRepository<DancingTeam, Long> {
     fun findAllByRegion(region: Region): Optional<List<DancingTeam>>
 
     fun findAllByNameContainsIgnoreCase(phrase: String): Optional<List<DancingTeam>>
+
+    fun existsByNameIgnoreCase(name: String): Boolean
 }

@@ -14,7 +14,7 @@ data class MusicInstrumentType(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    val name: String,
+    var name: String,
     @OneToMany(mappedBy = "type")
     val instruments: List<MusicInstrument> = emptyList()
 )
