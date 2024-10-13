@@ -31,5 +31,4 @@ fun main(args: Array<String>) {
  *  Dodać reqrutacje/ nabór do zespołu (zespół zaprasza userów (dowolny czas), userzy wysyłają requesty(gdy rekrutacja otwarta) i zespoły mogą mieć wytyczne
  *  Dodać unikalności na tabelkach (email w userze, nazwy zespołów, regionów, instrumentów itd.)
  * Przygotować mockowe endpointy do logowania i rejestracji
- * Usprawnić tworzenie zespołu poprzez dodanie możliwość dodania loga i zdjęć
  */

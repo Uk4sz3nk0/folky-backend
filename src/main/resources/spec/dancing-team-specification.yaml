@@ -257,3 +257,9 @@ components:
           type: array
           items:
             $ref: "dance-specification.yaml#/components/schemas/Dance"
+        isRecruitmentOpened:
+          type: boolean
+        logoFilename:
+          type: string
+        bannerFilename:
+          type: string

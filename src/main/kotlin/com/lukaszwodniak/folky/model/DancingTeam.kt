@@ -17,7 +17,7 @@ data class DancingTeam(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     var name: String,
-    val filesUUID: UUID,
+    var filesUUID: UUID,
     var description: String,
     var creationDate: LocalDate,
     @OneToOne
@@ -50,5 +50,9 @@ data class DancingTeam(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "musician_id")]
     )
-    var musicians: List<User>
+    var musicians: List<User>,
+    var directoryUuid: UUID,
+    var logoFilename: String,
+    var bannerFilename: String,
+    var isRecruitmentOpened: Boolean,
 )
