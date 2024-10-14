@@ -1,6 +1,8 @@
 package com.lukaszwodniak.folky.model
 
 import jakarta.persistence.*
+import lombok.Getter
+import lombok.Setter
 import java.time.LocalDate
 import java.util.*
 
@@ -11,6 +13,8 @@ import java.util.*
  */
 
 @Entity
+@Getter
+@Setter
 @Table(name = "dancing_teams")
 data class DancingTeam(
     @Id
@@ -37,22 +41,24 @@ data class DancingTeam(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "dance_id")]
     )
-    var dances: List<Dance>,
+    var dances: MutableList<Dance>,
     @ManyToMany
     @JoinTable(
         name = "dancing_team_dancers",
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "dancer_id")]
     )
-    var dancers: List<User>,
+    var dancers: MutableList<User>,
     @ManyToMany
     @JoinTable(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "musician_id")]
     )
-    var musicians: List<User>,
+    var musicians: MutableList<User>,
     var directoryUuid: UUID,
     var logoFilename: String,
     var bannerFilename: String,
     var isRecruitmentOpened: Boolean,
+    @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
+    var recruitments: MutableList<Recruitment>
 )
