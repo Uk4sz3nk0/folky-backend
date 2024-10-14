@@ -11,6 +11,7 @@ import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
+import java.util.*
 
 /**
  * DancingTeamServiceImpl
@@ -27,6 +28,7 @@ class DancingTeamServiceImpl(
 
     override fun addTeam(team: DancingTeam): DancingTeam {
         // TODO: Implement additional logic if needed
+        team.filesUUID = UUID.randomUUID()
         if (dancingTeamRepository.existsByNameIgnoreCase(team.name)) {
             throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
         }
