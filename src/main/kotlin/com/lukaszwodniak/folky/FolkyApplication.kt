@@ -29,6 +29,5 @@ fun main(args: Array<String>) {
  * Poprawić role na (user_id, role_id, team_id) - jedna osoba może być w kilku zespołach i mieć różne role (nawet kilka w jednym)
  *  Dodać subskrypcje i powiadomienia
  *  Dodać reqrutacje/ nabór do zespołu (zespół zaprasza userów (dowolny czas), userzy wysyłają requesty(gdy rekrutacja otwarta) i zespoły mogą mieć wytyczne
- *  Dodać unikalności na tabelkach (email w userze, nazwy zespołów, regionów, instrumentów itd.)
  * Przygotować mockowe endpointy do logowania i rejestracji
  */
