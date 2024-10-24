@@ -221,6 +221,30 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DancingTeam"
+  /teams/get-subscribers:
+    description: |
+      Endpoint used for getting list of dancing team subscribers
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getSubscribers
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of subscribers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "user-specification.yaml#/components/schemas/User"
 components:
   schemas:
     DancingTeam:

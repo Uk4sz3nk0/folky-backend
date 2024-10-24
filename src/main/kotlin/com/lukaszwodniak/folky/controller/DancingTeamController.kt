@@ -71,4 +71,7 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
         return ResponseEntity.ok(dancingTeam?.let { dancingTeamHandler.handleUpdateTeam(it) })
     }
 
+    override fun getSubscribers(teamId: Long?): ResponseEntity<MutableList<UserDto>> {
+        TODO("Not yet implemented")
+    }
 }

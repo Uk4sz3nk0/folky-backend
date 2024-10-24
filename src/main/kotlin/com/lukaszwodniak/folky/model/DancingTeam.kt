@@ -60,5 +60,7 @@ data class DancingTeam(
     var bannerFilename: String,
     var isRecruitmentOpened: Boolean,
     @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
-    var recruitments: MutableList<Recruitment>
+    var recruitments: MutableList<Recruitment>,
+    @ManyToMany(mappedBy = "subscribedTeams", fetch = FetchType.LAZY)
+    val subscribers: MutableSet<User> = mutableSetOf(),
 )

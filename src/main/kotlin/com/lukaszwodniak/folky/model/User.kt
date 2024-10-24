@@ -41,4 +41,17 @@ data class User(
     var role: Role,
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     val recruitmentRequests: MutableList<RecruitmentRequest>,
+    var preferredLanguage: String,
+    var wantReceivePushNotifications: Boolean,
+    var wantReceiveEmailNotifications: Boolean,
+    @ManyToMany
+    @JoinTable(
+        name = "subscriptions",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "dancing_team_id")]
+    )
+    val subscribedTeams: MutableSet<DancingTeam>,
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    val tokens: MutableSet<DeviceToken>
 )
