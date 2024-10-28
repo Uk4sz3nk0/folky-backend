@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: Region Specification
+  description: Region Specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /region/add-region:
+    description: |
+      Endpoint used for adding new region
+    post:
+      tags:
+        - "Region"
+      operationId: addRegion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Region"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and created object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Region"
+  /region/update-region:
+    description: |
+      Endpoint used for updating region
+    patch:
+      tags:
+        - "Region"
+      operationId: updateRegion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Region"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and updated object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Region"
+  /region/delete-region:
+    description: |
+      Endpoint used for deleting regions
+    delete:
+      tags:
+        - "Region"
+      operationId: deleteRegion
+      parameters:
+        - name: id
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /region/get-by-id:
+    description: |
+      Endpoint used for getting region by id
+    get:
+      tags:
+        - "Region"
+      operationId: getRegionById
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and specified region object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Region"
+  /region/get-by-name:
+    description: |
+      Endpoint used for getting list of regions by matching name
+    get:
+      tags:
+        - "Region"
+      operationId: getByName
+      parameters:
+        - name: name
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return list of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Region"
+  /region/get-by-locale:
+    description: |
+      Endpoint used for getting list of regions by locale
+    get:
+      tags:
+        - "Region"
+      operationId: getByLocale
+      parameters:
+        - name: locale
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Region"
+components:
+  schemas:
+    Region:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        locale:
+          type: string
+        name:
+          type: string

@@ -1,0 +1,289 @@
+openapi: 3.0.3
+info:
+  title: Dancing team specification
+  description: Dancing team specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /teams/add-team:
+    description: |
+      Endpoint used for adding new dancing team
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: addDancingTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DancingTeam"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and added object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DancingTeam"
+  /teams/update-team:
+    description: |
+      Endpoint for updating dancing team
+    patch:
+      tags:
+        - "DancingTeam"
+      operationId: updateTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DancingTeam"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and return updated object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DancingTeam"
+  /teams/delete-team:
+    description: |
+      Endpoint used for deleting specified by id dancing team
+    delete:
+      tags:
+        - "DancingTeam"
+      operationId: deleteTeam
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /teams/get-by-id:
+    description: |
+      Endpoint used for getting dancing team by id
+    get:
+      tags:
+        - "DancingTeam"
+      operationId: getById
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and specified by id dancing team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DancingTeam"
+  /teams/get-by-region:
+    description: |
+      Endpoint used for getting list of dances by region
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getByRegion
+      parameters:
+        - name: regionId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dancing teams by region
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DancingTeam"
+  /teams/get-team-dances:
+    description: |
+      Endpoint used for getting dancing team dances
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getTeamDances
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of team dances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "dance-specification.yaml#/components/schemas/Dance"
+  /teams/get-team-dancers:
+    description: |
+      Endpoint used for getting dancing team dancers
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getTeamDancers
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of team dancers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "user-specification.yaml#/components/schemas/User"
+  /teams/get-team-musicians:
+    description: |
+      Endpoint used for getting dancing team musicians
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getTeamMusicians
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of team musicians
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "user-specification.yaml#/components/schemas/User"
+  /teams/get-teams:
+    description: |
+      Endpoint used for getting list of dancing teams
+    get:
+      tags:
+        - "DancingTeam"
+      operationId: getTeams
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dancing teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DancingTeam"
+  /teams/get-by-name:
+    description: |
+      End[point used for getting list of dancing teams by name
+    get:
+      tags:
+        - "DancingTeam"
+      operationId: getByName
+      parameters:
+        - name: phrase
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dancing teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DancingTeam"
+  /teams/get-subscribers:
+    description: |
+      Endpoint used for getting list of dancing team subscribers
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getSubscribers
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of subscribers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "user-specification.yaml#/components/schemas/User"
+components:
+  schemas:
+    DancingTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        filesUUID:
+          type: string
+          format: uuid
+        description:
+          type: string
+        creationDate:
+          type: string
+          format: date
+        director:
+          $ref: "user-specification.yaml#/components/schemas/User"
+        region:
+          $ref: "region-specification.yaml#/components/schemas/Region"
+        city:
+          type: string
+        street:
+          type: string
+        homeNumber:
+          type: integer
+        flatNumber:
+          type: integer
+        zipCode:
+          type: string
+        dances:
+          type: array
+          items:
+            $ref: "dance-specification.yaml#/components/schemas/Dance"
+        isRecruitmentOpened:
+          type: boolean
+        logoFilename:
+          type: string
+        bannerFilename:
+          type: string

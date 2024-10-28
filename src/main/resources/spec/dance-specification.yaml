@@ -1,0 +1,162 @@
+openapi: 3.0.3
+info:
+  title: Dance specification
+  description: Dance specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /dance/add-dance:
+    description: |
+      Endpoint used for adding new dance
+    post:
+      tags:
+        - "Dance"
+      operationId: addDance
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Dance"
+      responses:
+        "200":
+          description: Ok. Successful response will return added element and ok status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dance"
+  /dance/update-dance:
+    description: |
+      Endpoint used for updating existing dance
+    patch:
+      tags:
+        - "Dance"
+      operationId: updateDance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Dance"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and updated element
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dance"
+  /dance/delete-dance:
+    description: |
+      Endpoint used for deleting dance by id
+    delete:
+      tags:
+        - "Dance"
+      operationId: deleteDance
+      parameters:
+        - name: id
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /dance/get-dances:
+    description: |
+      Endpoint used for getting list of all dances
+    get:
+      tags:
+        - "Dance"
+      operationId: getDances
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dance"
+  /dance/get-dance-by-id:
+    description: |
+      Endpoint for getting dance by id
+    get:
+      tags:
+        - "Dance"
+      operationId: getDanceById
+      parameters:
+        - name: id
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and specified dance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dance"
+  /dance/get-dances-by-locale:
+    description: |
+      Endpoint used for getting dances by locale
+    get:
+      tags:
+        - "Dance"
+      operationId: getDancesByLocale
+      parameters:
+        - name: locale
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dance"
+  /dance/get-dances-by-name:
+    description: |
+      Endpoint used for getting dances by name which matches with given phrase
+    get:
+      tags:
+        - "Dance"
+      operationId: getDancesByName
+      parameters:
+        - name: phrase
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return list of dances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dance"
+components:
+  schemas:
+    Dance:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        locale:
+          type: string
+        name:
+          type: string

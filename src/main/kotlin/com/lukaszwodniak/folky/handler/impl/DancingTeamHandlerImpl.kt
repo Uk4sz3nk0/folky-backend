@@ -1,0 +1,70 @@
+package com.lukaszwodniak.folky.handler.impl
+
+import com.lukaszwodniak.folky.handler.DancingTeamHandler
+import com.lukaszwodniak.folky.mapper.DanceMapper
+import com.lukaszwodniak.folky.mapper.DancingTeamMapper
+import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.repository.RegionRepository
+import com.lukaszwodniak.folky.rest.specification.models.DanceDto
+import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
+import com.lukaszwodniak.folky.rest.specification.models.UserDto
+import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
+import lombok.RequiredArgsConstructor
+import org.springframework.stereotype.Service
+
+/**
+ * DancingTeamHandler
+ * Created on: 2024-08-09
+ * @author Łukasz Wodniak
+ */
+
+@Service
+@RequiredArgsConstructor
+class DancingTeamHandlerImpl(
+    private val dancingTeamService: DancingTeamService,
+    private val regionRepository: RegionRepository
+) : DancingTeamHandler {
+
+    override fun handleAddTeam(team: DancingTeamDto): DancingTeamDto {
+        val mappedDancingTeam = DancingTeamMapper.INSTANCE.map(team)
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.addTeam(mappedDancingTeam))
+    }
+
+    override fun handleUpdateTeam(team: DancingTeamDto): DancingTeamDto {
+        val mappedUpdated = DancingTeamMapper.INSTANCE.map(team)
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.updateTeam(mappedUpdated))
+    }
+
+    override fun handleDeleteTeam(teamId: Long) {
+        dancingTeamService.deleteTeam(teamId)
+    }
+
+    override fun handleGetById(teamId: Long): DancingTeamDto {
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getById(teamId))
+    }
+
+    override fun handleGetByRegion(regionId: Long): MutableList<DancingTeamDto> {
+        val region = regionRepository.findById(regionId).orElseThrow()
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getByRegion(region))
+    }
+
+    override fun handleGetTeamDances(teamId: Long): MutableList<DanceDto> {
+        return DanceMapper.INSTANCE.map(dancingTeamService.getTeamDances(teamId))
+    }
+
+    override fun handleGetTeamDancers(teamId: Long): MutableList<UserDto> {
+        return UserMapper.INSTANCE.map(dancingTeamService.getTeamDancers(teamId))
+    }
+
+    override fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto> {
+        return UserMapper.INSTANCE.map(dancingTeamService.getTeamMusicians(teamId))
+    }
+
+    override fun handleGetTeams(): MutableList<DancingTeamDto> {
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getTeams())
+    }
+
+    override fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto> {
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getTeamsByName(phrase))
+    }
+}
