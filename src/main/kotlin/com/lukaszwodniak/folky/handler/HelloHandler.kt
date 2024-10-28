@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service
  * @author Łukasz Wodniak (lukasz.wodniak@student.up.krakow.pl)
  */
 
-@Slf4j
-@RequiredArgsConstructor
 interface HelloHandler {
 
     fun greetings(name: String?): String

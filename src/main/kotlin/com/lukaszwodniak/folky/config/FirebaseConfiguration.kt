@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.config
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -44,6 +45,11 @@ class FirebaseConfiguration {
             throw IllegalStateException("FirebaseApp is null. Cannot initialize FirebaseMessaging.")
         }
         return FirebaseMessaging.getInstance(firebaseApp)
+    }
+
+    @Bean
+    fun firebaseAuth(firebaseApp: FirebaseApp?): FirebaseAuth {
+        return FirebaseAuth.getInstance(firebaseApp)
     }
 
     companion object {

@@ -19,7 +19,6 @@ import java.util.*
  * @author Łukasz Wodniak
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 class DancingTeamServiceImpl(

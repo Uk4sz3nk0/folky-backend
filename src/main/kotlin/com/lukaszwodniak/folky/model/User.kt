@@ -14,8 +14,8 @@ import java.time.LocalDate
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    var fistName: String,
+    val id: Long?,
+    var firstName: String,
     var lastName: String,
     var email: String,
     var password: String,
@@ -36,9 +36,8 @@ data class User(
         inverseJoinColumns = [JoinColumn(name = "music_instrument_id")]
     )
     var instruments: MutableList<MusicInstrument>,
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    var role: Role,
+    @OneToMany(mappedBy = "user")
+    val userRoles: List<UserRole> = emptyList(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     val recruitmentRequests: MutableList<RecruitmentRequest>,
     var preferredLanguage: String,
@@ -53,5 +52,6 @@ data class User(
     val subscribedTeams: MutableSet<DancingTeam>,
     @OneToMany
     @JoinColumn(name = "user_id")
-    val tokens: MutableSet<DeviceToken>
+    val deviceTokens: MutableSet<DeviceToken>,
+    val uid: String
 )

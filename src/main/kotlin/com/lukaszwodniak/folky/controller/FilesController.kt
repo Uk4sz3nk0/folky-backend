@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController
  * @author Łukasz Wodniak
  */
 
-@Slf4j
 @RestController
 class FilesController(
     val filesHandler: FilesHandler

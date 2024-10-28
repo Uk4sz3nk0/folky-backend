@@ -63,4 +63,6 @@ data class DancingTeam(
     var recruitments: MutableList<Recruitment>,
     @ManyToMany(mappedBy = "subscribedTeams", fetch = FetchType.LAZY)
     val subscribers: MutableSet<User> = mutableSetOf(),
+    @OneToMany(mappedBy = "dancingTeam")
+    val userRoles: List<UserRole> = emptyList()
 )

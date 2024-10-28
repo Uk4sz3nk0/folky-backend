@@ -19,7 +19,7 @@ import java.util.*
  * @author Łukasz Wodniak
  */
 
-@Slf4j
+
 @RequiredArgsConstructor
 @Service
 class StorageServiceImpl : StorageService {

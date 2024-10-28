@@ -2,21 +2,34 @@ package com.lukaszwodniak.folky.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @Configuration
-class SecurityConfig {
+class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenticationFilter) {
 
     @Bean
+    @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .authorizeRequests { authorizeRequests ->
-                authorizeRequests
-                    .anyRequest().permitAll() // pozwala na dostęp do wszystkich endpointów bez autoryzacji
+            .authorizeHttpRequests { authManager ->
+                authManager
+                    .requestMatchers(HttpMethod.POST, *WHITELISTED_API_ENDPOINTS)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
             }
-            .csrf { csrf -> csrf.disable() } // wyłącza CSRF
+            .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .csrf { csrf -> csrf.disable() }
+
         return http.build()
+    }
+
+    companion object {
+        private val WHITELISTED_API_ENDPOINTS =
+            arrayOf("/users", "/users/login-user", "/users/refresh-token", "/users/register-user", "/hello/not-auth/")
     }
 }

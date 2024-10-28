@@ -8,7 +8,7 @@ servers:
 paths:
   /hello/{name}:
     description: |
-      Endpoint for getting greetings
+      Endpoint for getting greetings (authentication required)
     get:
       tags:
         - "Hello"
@@ -28,4 +28,25 @@ paths:
             application/text:
               schema:
                 type: string
-
+  /hello/not-auth/{name}:
+    description: |
+      Endpoint for getting greetings (authentication not required)
+    get:
+      tags:
+        - "Hello"
+      operationId: helloWithoutAuth
+      parameters:
+        - name: name
+          in: path
+          required: false
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            Ok. Successful request returns greetings
+          content:
+            application/text:
+              schema:
+                type: string

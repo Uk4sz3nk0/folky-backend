@@ -102,8 +102,98 @@ paths:
                 type: array
                 items:
                   $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeam"
+  /users/register-user:
+    description: |
+      Endpoint used for registering user
+    post:
+      tags:
+        - "User"
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /users/login-user:
+    description: |
+      Endpoint used for logging-in users
+    post:
+      tags:
+        - "User"
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and tokens in response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /users/refresh-token:
+    description: |
+      Endpoint used for refreshing token
+    post:
+      tags:
+        - "User"
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefreshTokenResponse"
 components:
   schemas:
+    RegisterUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        idToken:
+          type: string
+        refreshToken:
+          type: string
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    RefreshTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
     User:
       type: object
       properties:
@@ -133,8 +223,8 @@ components:
           type: array
           items:
             $ref: "music-instrument-specification.yaml#/components/schemas/MusicInstrument"
-        role:
-          $ref: "#/components/schemas/Role"
+    #        role:
+    #          $ref: "#/components/schemas/Role"
     Role:
       type: object
       properties:
