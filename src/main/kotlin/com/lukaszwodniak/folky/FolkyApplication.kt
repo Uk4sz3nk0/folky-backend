@@ -19,8 +19,3 @@ fun main(args: Array<String>) {
    - Rozwiązać wszelkie TODO
    - Dodać testy
 * */
-
-/**
- * TODO V2 - IN PROGRESS
- * Przygotować mockowe endpointy do logowania i rejestracji
- */
