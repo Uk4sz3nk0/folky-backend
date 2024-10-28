@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.lukaszwodniak</groupId>
     <artifactId>folky</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
     <name>Folky</name>
     <description>Thesis application project</description>
     <url/>
@@ -102,6 +102,11 @@
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>2.2.22</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.4.1</version>
         </dependency>
     </dependencies>
 
@@ -356,6 +361,29 @@
                                 <dateLibrary>java17</dateLibrary>
                                 <apiPackage>${base.generated.path}.recruitment.specification.api</apiPackage>
                                 <modelPackage>${base.generated.path}.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-messaging-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/messaging-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.messaging.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.messaging.specification.models</modelPackage>
                                 <output>${project.build.directory}</output>
                                 <apis/>
                                 <models/>
