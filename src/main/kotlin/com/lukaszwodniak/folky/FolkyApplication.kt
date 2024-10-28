@@ -21,8 +21,6 @@ fun main(args: Array<String>) {
 * */
 
 /**
- * TODO V2
- * Poprawić role na (user_id, role_id, team_id) - jedna osoba może być w kilku zespołach i mieć różne role (nawet kilka w jednym)
- *  Dodać subskrypcje i powiadomienia
+ * TODO V2 - IN PROGRESS
  * Przygotować mockowe endpointy do logowania i rejestracji
  */

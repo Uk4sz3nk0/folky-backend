@@ -13,9 +13,7 @@ CREATE TABLE users
     password                     varchar(24) NOT NULL,
     brith_date                   timestamptz NOT NULL,
     how_long_dancing             integer     NOT NULL DEFAULT 0,
-    how_long_playing_instruments integer     NOT NULL DEFAULT 0,
-    role_id                      BIGINT      NOT NULL,
-    FOREIGN KEY (role_id) references roles (id)
+    how_long_playing_instruments integer     NOT NULL DEFAULT 0
 );
 
 INSERT INTO roles (name)

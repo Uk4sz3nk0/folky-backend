@@ -7,7 +7,7 @@ import org.mapstruct.factory.Mappers
 
 /**
  * RegionMapper
- * <br><br>
+ *
  * Created on: 2024-09-05
  * @author Łukasz Wodniak
  */

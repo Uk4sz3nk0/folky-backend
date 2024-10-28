@@ -14,5 +14,7 @@ data class Role(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
-    val name: String
+    val name: String,
+    @OneToMany(mappedBy = "role")
+    val userRoles: List<UserRole> = emptyList()
 )
