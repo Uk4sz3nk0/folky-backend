@@ -273,17 +273,24 @@ components:
           type: string
         homeNumber:
           type: integer
+          nullable: true
         flatNumber:
           type: integer
+          nullable: true
         zipCode:
           type: string
+          nullable: true
         dances:
           type: array
+          nullable: true
           items:
             $ref: "dance-specification.yaml#/components/schemas/Dance"
         isRecruitmentOpened:
           type: boolean
+          nullable: true
         logoFilename:
           type: string
+          nullable: true
         bannerFilename:
           type: string
+          nullable: true

@@ -14,9 +14,9 @@ data class RegisterUserRequest(
     val password: String?,
     val firstName: String?,
     val lastName: String?,
-    val brithDate: LocalDate?,
-    val howLongDancing: Int?,
-    val howLongPlayingInstruments: Int?,
+    val brithDate: LocalDate? = LocalDate.now(),
+    val howLongDancing: Int? = 0,
+    val howLongPlayingInstruments: Int? = 0,
     val preferredLanguage: String? = "pl_PL",
     val wantReceivePushNotifications: Boolean? = false,
     val wantReceiveEmailNotifications: Boolean? = false

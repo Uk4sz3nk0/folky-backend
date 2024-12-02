@@ -1,0 +1,1 @@
+ALTER TABLE dancing_teams ALTER COLUMN files_uuid TYPE UUID using files_uuid::uuid;

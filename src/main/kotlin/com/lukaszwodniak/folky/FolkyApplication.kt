@@ -16,4 +16,6 @@ fun main(args: Array<String>) {
    - Dodać tworzenie blogów i wgl ??? (może ver 2?)
    - Rozwiązać wszelkie TODO
    - Dodać testy
+   - Dodać wysyłanie powiadomień (dodać dodawanie tokenów po zalogowaniu)
+   - Dodać wywołania api (pobieranie danych)
 * */

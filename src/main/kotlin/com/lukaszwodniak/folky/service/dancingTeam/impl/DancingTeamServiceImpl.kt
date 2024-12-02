@@ -9,7 +9,6 @@ import com.lukaszwodniak.folky.model.User
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import lombok.RequiredArgsConstructor
-import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -27,16 +26,15 @@ class DancingTeamServiceImpl(
 
     override fun addTeam(team: DancingTeam): DancingTeam {
         // TODO: Implement additional logic if needed
-        team.filesUUID = UUID.randomUUID()
         if (dancingTeamRepository.existsByNameIgnoreCase(team.name)) {
             throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
         }
-        return dancingTeamRepository.save(team)
+        return dancingTeamRepository.saveAndFlush(team)
     }
 
     override fun updateTeam(team: DancingTeam): DancingTeam {
         val existingTeam =
-            dancingTeamRepository.findById(team.id).orElseThrow { NoSuchDancingTeamException(team.id) }
+            dancingTeamRepository.findById(team.id ?: -1).orElseThrow { NoSuchDancingTeamException(team.id ?: -1) }
         updateExistingDancingTeam(existingTeam, team)
         return dancingTeamRepository.save(existingTeam)
     }
@@ -56,19 +54,19 @@ class DancingTeamServiceImpl(
     override fun getTeamDances(teamId: Long): List<Dance> {
         val dancingTeam =
             dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return dancingTeam.dances
+        return dancingTeam.dances ?: emptyList()
     }
 
     override fun getTeamDancers(teamId: Long): List<User> {
         val dancingTeam =
             dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return dancingTeam.dancers
+        return dancingTeam.dancers ?: emptyList()
     }
 
     override fun getTeamMusicians(teamId: Long): List<User> {
         val dancingTeam =
             dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return dancingTeam.musicians
+        return dancingTeam.musicians ?: emptyList()
     }
 
     override fun getTeams(): List<DancingTeam> {

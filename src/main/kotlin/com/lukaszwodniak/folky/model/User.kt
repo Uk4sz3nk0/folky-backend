@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.model
 
+import com.lukaszwodniak.folky.enums.UserType
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -53,5 +54,9 @@ data class User(
     @OneToMany
     @JoinColumn(name = "user_id")
     val deviceTokens: MutableSet<DeviceToken>,
-    val uid: String
+    val uid: String,
+    @Enumerated(EnumType.STRING)
+    val userType: UserType,
+    @OneToOne(mappedBy = "accountUser")
+    val dancingTeam: DancingTeam? = null
 )

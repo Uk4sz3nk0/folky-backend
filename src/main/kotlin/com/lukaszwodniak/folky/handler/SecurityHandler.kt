@@ -12,6 +12,7 @@ import com.lukaszwodniak.folky.rest.specification.models.*
 interface SecurityHandler {
 
     fun handleRegisterUser(registerUserRequestDto: RegisterUserRequestDto)
+    fun handleRegisterDancingTeamUser(registerRequest: RegisterDancingTeamAccountRequestDto)
     fun handleLoginUser(loginRequest: LoginRequestDto): LoginResponseDto
     fun handleRefreshToken(refreshTokenRequestDto: RefreshTokenRequestDto): RefreshTokenResponseDto
 }

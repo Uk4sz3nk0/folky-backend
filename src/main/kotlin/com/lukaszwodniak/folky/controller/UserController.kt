@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.controller
 import com.lukaszwodniak.folky.handler.SecurityHandler
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.rest.user.specification.api.UserApi
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -55,5 +56,17 @@ class UserController(
             securityHandler.handleRegisterUser(it)
         }
         return ResponseEntity.ok().build()
+    }
+
+    override fun registerAsDancingTeam(dancingTeamBody: RegisterDancingTeamAccountRequestDto?): ResponseEntity<Void> {
+        logger.debug("Request \"registerAsDancingTeam\" has called")
+        dancingTeamBody?.let {
+            securityHandler.handleRegisterDancingTeamUser(it)
+        }
+        return ResponseEntity.ok().build()
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(UserController::class.java)
     }
 }

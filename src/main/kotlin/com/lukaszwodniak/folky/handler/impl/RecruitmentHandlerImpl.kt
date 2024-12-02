@@ -101,7 +101,7 @@ class RecruitmentHandlerImpl(
 
     override fun handleGetTeamRecruitments(teamId: Long): MutableList<RecruitmentDto> {
         val team = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return RecruitmentMapper.INSTANCE.mapRecruitments(team.recruitments)
+        return RecruitmentMapper.INSTANCE.mapRecruitments(team?.recruitments ?: mutableListOf())
     }
 
     override fun handleGetUserRequests(requestType: String): MutableList<RecruitmentRequestDto> {
