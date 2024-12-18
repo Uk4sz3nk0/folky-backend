@@ -10,6 +10,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 /**
  * FilesServiceImpl
@@ -65,6 +66,16 @@ class FilesServiceImpl : FilesService {
         } catch (exception: Exception) {
             logger.error("Error during uploading files. Reason ${exception.message}")
         }
+    }
+
+    override fun generateTeamDirectory(): UUID {
+        val dancingTeamDirUUID = UUID.randomUUID()
+        val path = UPLOADS_DIRECTORY + File.separator + dancingTeamDirUUID.toString()
+        val teamDirectory = File(path)
+        if (!teamDirectory.exists()) {
+            teamDirectory.mkdirs()
+        }
+        return dancingTeamDirUUID
     }
 
     companion object {

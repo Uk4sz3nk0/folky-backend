@@ -104,7 +104,7 @@ paths:
                   $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeam"
   /users/register-user:
     description: |
-      Endpoint used for registering user
+      Endpoint used for registering normal user
     post:
       tags:
         - "User"
@@ -118,7 +118,23 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /users/login-user:
+  /users/register-as-dancing-team:
+    description: |
+      Endpoint used for registering dancing team account
+    post:
+      tags:
+        - "User"
+      operationId: registerAsDancingTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDancingTeamAccountRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /users/login:
     description: |
       Endpoint used for logging-in users
     post:
@@ -170,6 +186,61 @@ components:
           type: string
         lastName:
           type: string
+    RegisterDancingTeamAccountRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        teamName:
+          type: string
+        teamDescription:
+          type: string
+        creationYear:
+          type: integer
+        regionId:
+          type: integer
+          format: int64
+        city:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+    UserData:
+      type: object
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userType:
+          type: string
+    DancingTeamData:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        teamName:
+          type: string
+        teamDescription:
+          type: string
+        creationYear:
+          type: integer
+        regionId:
+          type: integer
+          format: int64
+        city:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
     LoginRequest:
       type: object
       properties:
@@ -184,6 +255,10 @@ components:
           type: string
         refreshToken:
           type: string
+        userData:
+          $ref: "#/components/schemas/UserData"
+        dancingTeamData:
+          $ref: "#/components/schemas/DancingTeamData"
     RefreshTokenRequest:
       type: object
       properties:
@@ -225,6 +300,8 @@ components:
             $ref: "music-instrument-specification.yaml#/components/schemas/MusicInstrument"
     #        role:
     #          $ref: "#/components/schemas/Role"
+        userType:
+          type: string
     Role:
       type: object
       properties:
