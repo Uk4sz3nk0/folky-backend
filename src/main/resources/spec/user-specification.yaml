@@ -173,6 +173,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RefreshTokenResponse"
+  /users/add-device-token:
+    description: |
+      Endpoint used for assigning device token to account
+    post:
+      tags:
+        - "User"
+      operationId: addDeviceToken
+      parameters:
+        - name: token
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+        - name: deviceType
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and token has saved
+        "201":
+          description: Ok. Successful response will return ok status and token is already in database
 components:
   schemas:
     RegisterUserRequest:
@@ -298,8 +323,8 @@ components:
           type: array
           items:
             $ref: "music-instrument-specification.yaml#/components/schemas/MusicInstrument"
-    #        role:
-    #          $ref: "#/components/schemas/Role"
+        #        role:
+        #          $ref: "#/components/schemas/Role"
         userType:
           type: string
     Role:

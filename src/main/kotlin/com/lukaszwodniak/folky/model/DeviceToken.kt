@@ -16,7 +16,7 @@ import java.time.Instant
 data class DeviceToken(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
     val token: String,
     @Enumerated(EnumType.STRING)
     var deviceType: DeviceType,
