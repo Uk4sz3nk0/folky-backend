@@ -19,6 +19,8 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 authManager
                     .requestMatchers(HttpMethod.POST, *WHITELISTED_API_ENDPOINTS)
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, *WHITELISTED_API_ENDPOINTS)
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
             }
@@ -30,6 +32,19 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
 
     companion object {
         private val WHITELISTED_API_ENDPOINTS =
-            arrayOf("/users", "/users/login", "/users/refresh-token", "/users/register-user", "/hello/not-auth/", "/users/register-as-dancing-team")
+            arrayOf(
+                "/users",
+                "/users/login",
+                "/users/refresh-token",
+                "/users/register-user",
+                "/hello/not-auth/",
+                "/users/register-as-dancing-team",
+                "/teams/get-teams",
+                "/teams/get-by-id",
+                "/files/get-logo",
+                "/files/get-banner",
+                "/api/files/get-gallery-urls",
+                "/files/get-image",
+            )
     }
 }

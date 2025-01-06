@@ -6,6 +6,7 @@ import com.lukaszwodniak.folky.rest.specification.models.DanceDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.UserDto
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
+import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -61,13 +62,25 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
     }
 
     @EndpointLogger
-    override fun getTeams(): ResponseEntity<MutableList<DancingTeamDto>> {
+    override fun getTeams(): ResponseEntity<MutableList<DancingTeamListElementDto>> {
         return ResponseEntity.ok(dancingTeamHandler.handleGetTeams())
     }
 
     @EndpointLogger
     override fun updateTeam(dancingTeam: DancingTeamDto?): ResponseEntity<DancingTeamDto> {
         return ResponseEntity.ok(dancingTeam?.let { dancingTeamHandler.handleUpdateTeam(it) })
+    }
+
+    @EndpointLogger
+    override fun addSubscription(dancingTeamId: Long?): ResponseEntity<Void> {
+        dancingTeamId?.let { dancingTeamHandler.handleAddSubscription(it) }
+        return ResponseEntity.ok().build()
+    }
+
+    @EndpointLogger
+    override fun deleteSubscription(dancingTeamId: Long?): ResponseEntity<Void> {
+        dancingTeamId?.let { dancingTeamHandler.handleDeleteSubscription(it) }
+        return ResponseEntity.ok().build()
     }
 
     override fun getSubscribers(teamId: Long?): ResponseEntity<MutableList<UserDto>> {

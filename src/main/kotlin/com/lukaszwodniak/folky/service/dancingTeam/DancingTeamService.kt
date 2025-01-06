@@ -23,4 +23,7 @@ interface DancingTeamService {
     fun getTeamMusicians(teamId: Long): List<User>
     fun getTeams(): List<DancingTeam>
     fun getTeamsByName(phrase: String): List<DancingTeam>
+    fun getSubscribedTeams(user: User): List<DancingTeam>
+    fun addSubscription(team: DancingTeam, user: User)
+    fun deleteSubscription(team: DancingTeam, user: User)
 }

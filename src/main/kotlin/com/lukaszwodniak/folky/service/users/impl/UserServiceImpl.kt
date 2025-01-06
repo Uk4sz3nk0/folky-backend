@@ -111,7 +111,6 @@ class UserServiceImpl(
             request.wantReceivePushNotifications ?: false,
             request.wantReceiveEmailNotifications ?: false,
             mutableSetOf(),
-            mutableSetOf(),
             uid,
             type
         )

@@ -68,42 +68,6 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /fcm/add-subscription:
-    description: |
-      Endpoint used for subscribing dancing teams
-    post:
-      tags:
-        - "CloudMessages"
-      operationId: addSubscription
-      parameters:
-        - name: dancingTeamId
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
-  /fcm/delete-subscription:
-    description: |
-      Endpoint used for deleting subscription
-    post:
-      tags:
-        - "CloudMessages"
-      operationId: deleteSubscription
-      parameters:
-        - name: subscriptionId
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
 components:
   schemas:
     MessageRequest:

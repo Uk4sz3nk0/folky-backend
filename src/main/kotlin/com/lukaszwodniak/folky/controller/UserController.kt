@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.controller
 
+import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.handler.SecurityHandler
 import com.lukaszwodniak.folky.handler.UtilsHandler
 import com.lukaszwodniak.folky.rest.specification.models.*
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class UserController(
     private val securityHandler: SecurityHandler,
-    private val utilsHandler: UtilsHandler
+    private val utilsHandler: UtilsHandler,
+    private val dancingTeamHandler: DancingTeamHandler,
 ) : UserApi {
 
     override fun addUser(body: UserDto?): ResponseEntity<UserDto> {
@@ -37,8 +39,8 @@ class UserController(
         TODO("Not yet implemented")
     }
 
-    override fun getUserSubscriptions(): ResponseEntity<MutableList<DancingTeamDto>> {
-        TODO("Not yet implemented")
+    override fun getUserSubscriptions(): ResponseEntity<MutableList<DancingTeamListElementDto>> {
+        return ResponseEntity.ok(dancingTeamHandler.handleGetSubscribedTeams())
     }
 
     override fun loginUser(loginRequest: LoginRequestDto?): ResponseEntity<LoginResponseDto> {

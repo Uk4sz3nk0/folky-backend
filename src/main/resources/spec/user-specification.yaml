@@ -101,7 +101,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeam"
+                  $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeamListElement"
   /users/register-user:
     description: |
       Endpoint used for registering normal user
