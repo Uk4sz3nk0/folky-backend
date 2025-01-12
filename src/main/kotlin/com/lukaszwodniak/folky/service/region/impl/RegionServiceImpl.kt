@@ -4,6 +4,8 @@ import com.lukaszwodniak.folky.error.NoSuchRegionException
 import com.lukaszwodniak.folky.model.Region
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.service.region.RegionService
+import com.lukaszwodniak.folky.service.translation.TranslationService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Service
 
 /**
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class RegionServiceImpl(
-    val regionRepository: RegionRepository
+    val regionRepository: RegionRepository,
+    val httpRequest: HttpServletRequest,
+    val translationService: TranslationService
 ) : RegionService {
 
     override fun addRegion(region: Region): Region {
@@ -46,8 +50,19 @@ class RegionServiceImpl(
         return regionRepository.saveAndFlush(region)
     }
 
+    override fun getRegions(): MutableList<Region> {
+        val regions = regionRepository.findAll().toMutableList()
+        val language = httpRequest.getHeader("Accept-Language")
+        val translations = translationService.getTranslationsByLanguageAndPrefix(language, TRANSLATION_PREFIX)
+        return regions.map { it.copy(name = translations.get("${TRANSLATION_PREFIX}_${it.name}")!!) }.toMutableList()
+    }
+
     private fun updateRegion(existing: Region, newData: Region) {
         existing.name = newData.name
         existing.locale = newData.locale
+    }
+
+    companion object {
+        private const val TRANSLATION_PREFIX = "REGIONS"
     }
 }

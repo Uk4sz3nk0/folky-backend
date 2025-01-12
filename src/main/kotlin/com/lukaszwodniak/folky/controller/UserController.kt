@@ -6,6 +6,7 @@ import com.lukaszwodniak.folky.handler.UtilsHandler
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.rest.user.specification.api.UserApi
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -44,9 +45,10 @@ class UserController(
     }
 
     override fun loginUser(loginRequest: LoginRequestDto?): ResponseEntity<LoginResponseDto> {
-        return ResponseEntity.ok(loginRequest?.let {
+        val loginResponse = loginRequest?.let {
             securityHandler.handleLoginUser(it)
-        })
+        }
+        return ResponseEntity.ok(loginResponse)
     }
 
     override fun refreshToken(refreshTokenRequest: RefreshTokenRequestDto?): ResponseEntity<RefreshTokenResponseDto> {

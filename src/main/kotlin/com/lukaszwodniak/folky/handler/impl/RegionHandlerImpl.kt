@@ -44,4 +44,9 @@ class RegionHandlerImpl(
         val updatedRegion = regionService.updateRegion(RegionMapper.INSTANCE.map(region))
         return RegionMapper.INSTANCE.map(updatedRegion)
     }
+
+    override fun handleGetRegions(): MutableList<RegionDto> {
+        val regions = regionService.getRegions()
+        return RegionMapper.INSTANCE.map(regions)
+    }
 }

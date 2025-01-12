@@ -17,4 +17,5 @@ interface RegionHandler {
     fun handleGetByName(phrase: String): MutableList<RegionDto>
     fun handleGetById(id: Long): RegionDto
     fun updateRegion(region: RegionDto): RegionDto
+    fun handleGetRegions(): MutableList<RegionDto>
 }

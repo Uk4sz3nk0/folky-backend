@@ -244,6 +244,22 @@ components:
           type: string
         userType:
           type: string
+        userRoles:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRole"
+    UserRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        dancingTeamId:
+          type: integer
+          format: int64
+          nullable: true
     DancingTeamData:
       type: object
       properties:
