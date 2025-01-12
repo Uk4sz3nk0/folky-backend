@@ -1,5 +1,7 @@
 package com.lukaszwodniak.folky.model
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -62,8 +64,6 @@ data class DancingTeam(
     var isRecruitmentOpened: Boolean? = false,
     @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
     var recruitments: MutableList<Recruitment>? = mutableListOf(),
-    @ManyToMany(mappedBy = "subscribedTeams", fetch = FetchType.LAZY)
-    val subscribers: MutableSet<User>? = mutableSetOf(),
     @OneToMany(mappedBy = "dancingTeam")
     val userRoles: List<UserRole>? = emptyList(),
     @OneToOne

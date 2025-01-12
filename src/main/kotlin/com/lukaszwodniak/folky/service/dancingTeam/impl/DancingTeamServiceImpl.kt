@@ -2,15 +2,13 @@ package com.lukaszwodniak.folky.service.dancingTeam.impl
 
 import com.lukaszwodniak.folky.error.DancingTeamWithGivenNameExistsException
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
-import com.lukaszwodniak.folky.model.Dance
-import com.lukaszwodniak.folky.model.DancingTeam
-import com.lukaszwodniak.folky.model.Region
-import com.lukaszwodniak.folky.model.User
+import com.lukaszwodniak.folky.model.*
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
+import com.lukaszwodniak.folky.repository.SubscriptionRepository
+import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
-import java.util.*
 
 /**
  * DancingTeamServiceImpl
@@ -21,7 +19,9 @@ import java.util.*
 @Service
 @RequiredArgsConstructor
 class DancingTeamServiceImpl(
-    private val dancingTeamRepository: DancingTeamRepository
+    private val dancingTeamRepository: DancingTeamRepository,
+    private val userRepository: UserRepository,
+    private val subscriptionRepository: SubscriptionRepository
 ) : DancingTeamService {
 
     override fun addTeam(team: DancingTeam): DancingTeam {
@@ -75,6 +75,24 @@ class DancingTeamServiceImpl(
 
     override fun getTeamsByName(phrase: String): List<DancingTeam> {
         return dancingTeamRepository.findAllByNameContainsIgnoreCase(phrase).orElse(emptyList())
+    }
+
+    override fun getSubscribedTeams(user: User): List<DancingTeam> {
+        return subscriptionRepository.findAllByUser(user).map { sub -> sub.dancingTeam }
+    }
+
+    override fun addSubscription(team: DancingTeam, user: User) {
+        if (!subscriptionRepository.existsByUserAndDancingTeam(user, team)) {
+            val newSubscription = Subscription(user = user, dancingTeam = team)
+            subscriptionRepository.saveAndFlush(newSubscription)
+        }
+    }
+
+    override fun deleteSubscription(team: DancingTeam, user: User) {
+        if (subscriptionRepository.existsByUserAndDancingTeam(user, team)) {
+            val optionalSub = subscriptionRepository.findByUserAndDancingTeam(user, team)
+            optionalSub.ifPresent { subscriptionRepository.deleteById(it.id!!) }
+        }
     }
 
     private fun updateExistingDancingTeam(existingTeam: DancingTeam, newTeamData: DancingTeam) {

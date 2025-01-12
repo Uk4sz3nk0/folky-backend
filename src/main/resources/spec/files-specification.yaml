@@ -97,3 +97,27 @@ paths:
               schema:
                 type: string
                 format: binary
+  /api/files/get-gallery-urls:
+    description: |
+      Endpoint used for getting list of 10 last images names to gallery
+    get:
+      tags:
+        - "Files"
+      operationId: getGalleryUrls
+      parameters:
+        - name: teamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return list of image names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string

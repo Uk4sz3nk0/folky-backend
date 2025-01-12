@@ -1,5 +1,7 @@
 package com.lukaszwodniak.folky.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.lukaszwodniak.folky.enums.UserType
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -44,13 +46,6 @@ data class User(
     var preferredLanguage: String,
     var wantReceivePushNotifications: Boolean,
     var wantReceiveEmailNotifications: Boolean,
-    @ManyToMany
-    @JoinTable(
-        name = "subscriptions",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "dancing_team_id")]
-    )
-    val subscribedTeams: MutableSet<DancingTeam>,
     @OneToMany
     @JoinColumn(name = "user_id")
     val deviceTokens: MutableSet<DeviceToken>,

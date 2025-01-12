@@ -197,7 +197,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DancingTeam"
+                  $ref: "#/components/schemas/DancingTeamListElement"
   /teams/get-by-name:
     description: |
       End[point used for getting list of dancing teams by name
@@ -245,8 +245,57 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
+  /teams/add-subscription:
+    description: |
+      Endpoint used for subscribing dancing teams
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: addSubscription
+      parameters:
+        - name: dancingTeamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /teams/delete-subscription:
+    description: |
+      Endpoint used for deleting subscription
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: deleteSubscription
+      parameters:
+        - name: dancingTeamId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
 components:
   schemas:
+    DancingTeamListElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        logo:
+          type: string
+          nullable: true
     DancingTeam:
       type: object
       properties:
@@ -288,9 +337,29 @@ components:
         isRecruitmentOpened:
           type: boolean
           nullable: true
+          default: false
         logoFilename:
           type: string
           nullable: true
         bannerFilename:
           type: string
           nullable: true
+        dancersCount:
+          type: integer
+        musiciansCount:
+          type: integer
+        facebook:
+          type: string
+          nullable: true
+        instagram:
+          type: string
+          nullable: true
+        twitter:
+          type: string
+          nullable: true
+        youtube:
+          type: string
+          nullable: true
+        isSubscribed:
+          type: boolean
+          default: false
