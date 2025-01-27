@@ -45,6 +45,7 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 "/files/get-banner",
                 "/api/files/get-gallery-urls",
                 "/files/get-image",
+                "/region/get-regions"
             )
     }
 }

@@ -4,6 +4,7 @@ import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.RegionHandler
 import com.lukaszwodniak.folky.rest.region.specification.api.RegionApi
 import com.lukaszwodniak.folky.rest.specification.models.RegionDto
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class RegionController(
-    val regionHandler: RegionHandler
+    private val regionHandler: RegionHandler
 ) : RegionApi {
 
     @EndpointLogger
@@ -53,5 +54,11 @@ class RegionController(
     override fun updateRegion(region: RegionDto?): ResponseEntity<RegionDto> {
         val updatedRegion = region?.let { regionHandler.updateRegion(it) }
         return ResponseEntity.ok(updatedRegion)
+    }
+
+    @EndpointLogger
+    override fun getRegions(): ResponseEntity<MutableList<RegionDto>> {
+        val regions = regionHandler.handleGetRegions()
+        return ResponseEntity.ok(regions)
     }
 }

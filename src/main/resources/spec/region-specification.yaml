@@ -131,6 +131,22 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Region"
+  /region/get-regions:
+    description: |
+      Endpoint used for getting regions
+    get:
+      tags:
+        - "Region"
+      operationId: getRegions
+      responses:
+        "200":
+          description: Ok. Successful response will return list of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Region"
 components:
   schemas:
     Region:
@@ -143,3 +159,7 @@ components:
           type: string
         name:
           type: string
+    RegionWithTranslations:
+      type: object
+      properties:
+

@@ -18,4 +18,5 @@ interface RegionService {
     fun getByName(phrase: String): List<Region>
     fun getById(id: Long): Region
     fun updateRegion(region: Region): Region
+    fun getRegions(): MutableList<Region>
 }

@@ -1,0 +1,1 @@
+ALTER TABLE user_role ALTER COLUMN dancing_team_id DROP NOT NULL;
