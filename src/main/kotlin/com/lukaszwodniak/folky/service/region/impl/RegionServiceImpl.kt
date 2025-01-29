@@ -6,6 +6,7 @@ import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.service.region.RegionService
 import com.lukaszwodniak.folky.service.translation.TranslationService
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Service
 
 /**
@@ -52,7 +53,7 @@ class RegionServiceImpl(
 
     override fun getRegions(): MutableList<Region> {
         val regions = regionRepository.findAll().toMutableList()
-        val language = httpRequest.getHeader("Accept-Language")
+        val language = httpRequest.getHeader(HttpHeaders.ACCEPT_LANGUAGE) ?: DEFAULT_TRANSLATION_LANGUAGE
         val translations = translationService.getTranslationsByLanguageAndPrefix(language, TRANSLATION_PREFIX)
         return regions.map { it.copy(name = translations.get("${TRANSLATION_PREFIX}_${it.name}")!!) }.toMutableList()
     }
@@ -64,5 +65,6 @@ class RegionServiceImpl(
 
     companion object {
         private const val TRANSLATION_PREFIX = "REGIONS"
+        private const val DEFAULT_TRANSLATION_LANGUAGE = "pl_PL"
     }
 }

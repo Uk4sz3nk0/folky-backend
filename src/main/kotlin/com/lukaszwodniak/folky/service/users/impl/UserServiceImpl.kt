@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.enums.UserType
 import com.lukaszwodniak.folky.error.users.EmailInUseException
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.User
+import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
 import com.lukaszwodniak.folky.repository.RegionRepository
@@ -39,6 +40,7 @@ class UserServiceImpl(
 
     @Transactional
     override fun registerUser(registerRequest: RegisterUserRequest, type: UserType): User? {
+        // TODO: Add validation to check is email already used
         val userUID = registerRequest.email?.let {
             registerRequest.password?.let { password ->
                 createUserOnFirebase(
@@ -60,7 +62,7 @@ class UserServiceImpl(
         val user = registerUser(registerUserRequest, UserType.DANCING_TEAM)
         val dancingTeam = generateDancingTeam(registerRequest)
         val teamWithUser = dancingTeam.copy(accountUser = user, director = user)
-        dancingTeamService.addTeam(teamWithUser)
+        dancingTeamService.addTeam(teamWithUser, registerRequest.files ?: DancingTeamFiles())
     }
 
     override fun getUserFromContext(): User? {

@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /region/add-region:
+  /api/region/add-region:
     description: |
       Endpoint used for adding new region
     post:
@@ -26,7 +26,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /region/update-region:
+  /api/region/update-region:
     description: |
       Endpoint used for updating region
     patch:
@@ -46,7 +46,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /region/delete-region:
+  /api/region/delete-region:
     description: |
       Endpoint used for deleting regions
     delete:
@@ -64,7 +64,7 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /region/get-by-id:
+  /api/region/get-by-id:
     description: |
       Endpoint used for getting region by id
     get:
@@ -85,7 +85,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /region/get-by-name:
+  /api/region/get-by-name:
     description: |
       Endpoint used for getting list of regions by matching name
     get:
@@ -108,7 +108,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Region"
-  /region/get-by-locale:
+  /api/region/get-by-locale:
     description: |
       Endpoint used for getting list of regions by locale
     get:
@@ -131,7 +131,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Region"
-  /region/get-regions:
+  /api/region/get-regions:
     description: |
       Endpoint used for getting regions
     get:

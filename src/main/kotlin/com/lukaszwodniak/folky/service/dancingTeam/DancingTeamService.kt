@@ -4,6 +4,7 @@ import com.lukaszwodniak.folky.model.Dance
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.Region
 import com.lukaszwodniak.folky.model.User
+import com.lukaszwodniak.folky.records.DancingTeamFiles
 
 /**
  * DancingTeamService
@@ -14,6 +15,7 @@ import com.lukaszwodniak.folky.model.User
 interface DancingTeamService {
 
     fun addTeam(team: DancingTeam): DancingTeam
+    fun addTeam(team: DancingTeam, files: DancingTeamFiles): DancingTeam
     fun updateTeam(team: DancingTeam): DancingTeam
     fun deleteTeam(teamId: Long)
     fun getById(teamId: Long): DancingTeam

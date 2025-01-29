@@ -33,19 +33,19 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
     companion object {
         private val WHITELISTED_API_ENDPOINTS =
             arrayOf(
-                "/users",
-                "/users/login",
-                "/users/refresh-token",
-                "/users/register-user",
+                "/api/users",
+                "/api/users/login",
+                "/api/users/refresh-token",
+                "/api/users/register-user",
                 "/hello/not-auth/",
-                "/users/register-as-dancing-team",
+                "/api/users/register-as-dancing-team",
                 "/api/teams/get-teams",
                 "/api/teams/get-by-id",
                 "/files/get-logo",
                 "/files/get-banner",
                 "/api/files/get-gallery-urls",
                 "/files/get-image",
-                "/region/get-regions"
+                "/api/region/get-regions"
             )
     }
 }

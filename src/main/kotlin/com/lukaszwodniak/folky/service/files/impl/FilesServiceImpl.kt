@@ -79,7 +79,7 @@ class FilesServiceImpl : FilesService {
     }
 
     companion object {
-        const val UPLOADS_DIRECTORY: String = "upload-directory"
+        const val UPLOADS_DIRECTORY: String = "storage"
         const val IMAGES_DIRECTORY: String = "images"
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
