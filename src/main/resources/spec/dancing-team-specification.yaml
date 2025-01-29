@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /teams/add-team:
+  /api/teams/add-team:
     description: |
       Endpoint used for adding new dancing team
     post:
@@ -26,7 +26,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/update-team:
+  /api/teams/update-team:
     description: |
       Endpoint for updating dancing team
     patch:
@@ -46,7 +46,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/delete-team:
+  /api/teams/delete-team:
     description: |
       Endpoint used for deleting specified by id dancing team
     delete:
@@ -64,7 +64,7 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /teams/get-by-id:
+  /api/teams/get-by-id:
     description: |
       Endpoint used for getting dancing team by id
     get:
@@ -86,7 +86,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/get-by-region:
+  /api/teams/get-by-region:
     description: |
       Endpoint used for getting list of dances by region
     post:
@@ -110,7 +110,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DancingTeam"
-  /teams/get-team-dances:
+  /api/teams/get-team-dances:
     description: |
       Endpoint used for getting dancing team dances
     post:
@@ -134,7 +134,7 @@ paths:
                 type: array
                 items:
                   $ref: "dance-specification.yaml#/components/schemas/Dance"
-  /teams/get-team-dancers:
+  /api/teams/get-team-dancers:
     description: |
       Endpoint used for getting dancing team dancers
     post:
@@ -158,7 +158,7 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
-  /teams/get-team-musicians:
+  /api/teams/get-team-musicians:
     description: |
       Endpoint used for getting dancing team musicians
     post:
@@ -182,7 +182,7 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
-  /teams/get-teams:
+  /api/teams/get-teams:
     description: |
       Endpoint used for getting list of dancing teams
     get:
@@ -198,7 +198,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DancingTeamListElement"
-  /teams/get-by-name:
+  /api/teams/get-by-name:
     description: |
       End[point used for getting list of dancing teams by name
     get:
@@ -221,7 +221,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DancingTeam"
-  /teams/get-subscribers:
+  /api/teams/get-subscribers:
     description: |
       Endpoint used for getting list of dancing team subscribers
     post:
@@ -245,7 +245,7 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
-  /teams/add-subscription:
+  /api/teams/add-subscription:
     description: |
       Endpoint used for subscribing dancing teams
     post:
@@ -263,7 +263,7 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /teams/delete-subscription:
+  /api/teams/delete-subscription:
     description: |
       Endpoint used for deleting subscription
     post:
