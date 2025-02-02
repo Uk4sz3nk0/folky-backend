@@ -18,5 +18,8 @@ data class RegisterDancingTeamUserRequest(
     val region: Region? = null,
     val city: String? = "",
     val street: String? = "",
-    val homeNumber: String? = ""
+    val homeNumber: String? = "",
+    val wantReceiveEmailNotifications: Boolean? = false,
+    val wantReceivePushNotifications: Boolean? = false,
+    val files: DancingTeamFiles? = DancingTeamFiles()
 )

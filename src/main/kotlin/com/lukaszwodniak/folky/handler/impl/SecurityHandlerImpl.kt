@@ -5,6 +5,7 @@ import com.lukaszwodniak.folky.handler.SecurityHandler
 import com.lukaszwodniak.folky.mapper.DancingTeamMapper
 import com.lukaszwodniak.folky.mapper.SecurityMapper
 import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.security.SecurityService
@@ -36,6 +37,16 @@ class SecurityHandlerImpl(
                 registerRequest.regionId
             )
         val updatedRequest = regionOptional.map { region -> mappedRequest.copy(region = region) }.orElse(mappedRequest)
+        userService.registerDancingTeamUser(updatedRequest)
+    }
+
+    override fun handleRegisterDancingTeamAsUser(registerRequest: RegisterDancingTeamUserRequest, regionId: Long) {
+        val regionOptional =
+            if (regionId == NO_REGION_ID) regionRepository.findById(1) else regionRepository.findById(
+                regionId
+            )
+        val updatedRequest =
+            regionOptional.map { region -> registerRequest.copy(region = region) }.orElse(registerRequest)
         userService.registerDancingTeamUser(updatedRequest)
     }
 

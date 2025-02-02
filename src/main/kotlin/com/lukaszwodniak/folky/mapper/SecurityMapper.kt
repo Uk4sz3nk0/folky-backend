@@ -27,6 +27,7 @@ interface SecurityMapper {
     fun mapRefreshTokenResponse(response: RefreshTokenResponse): RefreshTokenResponseDto
 
     @Mapping(target = "region", ignore = true)
+    @Mapping(target = "files", ignore = true)
     fun mapRegisterDancingTeamRequest(request: RegisterDancingTeamAccountRequestDto): RegisterDancingTeamUserRequest
 
     companion object {

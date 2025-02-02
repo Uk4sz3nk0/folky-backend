@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /users/add-user:
+  /api/users/add-user:
     description: |
       Endpoint for adding new users
     post:
@@ -26,7 +26,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-  /users/edit-user:
+  /api/users/edit-user:
     description: |
       Endpoint for editing existing user
     patch:
@@ -46,7 +46,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-  /users/delete-user:
+  /api/users/delete-user:
     description: |
       Endpoint for deleting user
     delete:
@@ -64,7 +64,7 @@ paths:
       responses:
         "200":
           description: Ok. User successfully deleted.
-  /users/get-user-by-id:
+  /api/users/get-user-by-id:
     description: |
       Endpoint for getting user by id
     post:
@@ -86,7 +86,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-  /users/get-user-subscriptions:
+  /api/users/get-user-subscriptions:
     description: |
       Endpoint used for getting user subscriptions
     get:
@@ -102,7 +102,7 @@ paths:
                 type: array
                 items:
                   $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeamListElement"
-  /users/register-user:
+  /api/users/register-user:
     description: |
       Endpoint used for registering normal user
     post:
@@ -118,7 +118,7 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /users/register-as-dancing-team:
+  /api/users/register-as-dancing-team:
     description: |
       Endpoint used for registering dancing team account
     post:
@@ -128,13 +128,13 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/RegisterDancingTeamAccountRequest"
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /users/login:
+  /api/users/login:
     description: |
       Endpoint used for logging-in users
     post:
@@ -154,7 +154,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
-  /users/refresh-token:
+  /api/users/refresh-token:
     description: |
       Endpoint used for refreshing token
     post:
@@ -173,7 +173,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RefreshTokenResponse"
-  /users/add-device-token:
+  /api/users/add-device-token:
     description: |
       Endpoint used for assigning device token to account
     post:
@@ -211,6 +211,12 @@ components:
           type: string
         lastName:
           type: string
+        wantReceiveEmailNotifications:
+          type: boolean
+          default: false
+        wantReceivePushNotifications:
+          type: boolean
+          default: false
     RegisterDancingTeamAccountRequest:
       type: object
       properties:
@@ -222,6 +228,7 @@ components:
           type: string
         teamDescription:
           type: string
+          nullable: true
         creationYear:
           type: integer
         regionId:
@@ -233,9 +240,26 @@ components:
           type: string
         houseNumber:
           type: string
+        logo:
+          type: string
+          format: binary
+          nullable: true
+        banner:
+          type: string
+          format: binary
+          nullable: true
+        wantReceiveEmailNotifications:
+          type: boolean
+          nullable: false
+        wantReceivePushNotifications:
+          type: boolean
+          default: false
     UserData:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         email:
           type: string
         firstName:

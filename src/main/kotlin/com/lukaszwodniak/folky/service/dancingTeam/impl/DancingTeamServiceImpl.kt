@@ -3,12 +3,21 @@ package com.lukaszwodniak.folky.service.dancingTeam.impl
 import com.lukaszwodniak.folky.error.DancingTeamWithGivenNameExistsException
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.model.*
+import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
+import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import lombok.RequiredArgsConstructor
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.util.*
+import kotlin.io.path.Path
 
 /**
  * DancingTeamServiceImpl
@@ -30,6 +39,22 @@ class DancingTeamServiceImpl(
             throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
         }
         return dancingTeamRepository.saveAndFlush(team)
+    }
+
+    override fun addTeam(team: DancingTeam, files: DancingTeamFiles): DancingTeam {
+        if (dancingTeamRepository.existsByNameIgnoreCase(team.name)) {
+            throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
+        }
+        var dancingTeam = team
+        files.logo?.let {
+            storeDancingTeamFile(team.filesUUID, it)
+            dancingTeam = dancingTeam.copy(logoFilename = it.originalFilename)
+        }
+        files.banner?.let {
+            storeDancingTeamFile(team.filesUUID, it)
+            dancingTeam = dancingTeam.copy(bannerFilename = it.originalFilename)
+        }
+        return dancingTeamRepository.saveAndFlush(dancingTeam)
     }
 
     override fun updateTeam(team: DancingTeam): DancingTeam {
@@ -109,5 +134,21 @@ class DancingTeamServiceImpl(
         existingTeam.dances = newTeamData.dances
         existingTeam.dancers = newTeamData.dancers
         existingTeam.musicians = newTeamData.musicians
+    }
+
+    private fun storeDancingTeamFile(directoryUUID: UUID, file: MultipartFile) {
+        val basePath =
+            Path("${UPLOADS_DIRECTORY}${File.separator}${directoryUUID}${File.separator}${file.originalFilename}")
+        try {
+            Files.copy(file.inputStream, basePath, StandardCopyOption.REPLACE_EXISTING)
+        } catch (exception: Exception) {
+            logger.error("Error during storing file. Reason: ${exception.localizedMessage}")
+        }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(DancingTeamServiceImpl::class.java)
+        const val UPLOADS_DIRECTORY: String = "storage"
+        const val IMAGES_DIRECTORY: String = "images"
     }
 }
