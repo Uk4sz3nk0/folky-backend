@@ -138,7 +138,8 @@ class UserServiceImpl(
             region = registerDancingTeamUserRequest.region ?: regionRepository.findById(1)
                 .orElseThrow { RuntimeException("No such region") },
             city = registerDancingTeamUserRequest.city ?: "",
-            street = registerDancingTeamUserRequest.street ?: ""
+            street = registerDancingTeamUserRequest.street ?: "",
+            socialMedia = null
         )
     }
 

@@ -8,13 +8,11 @@ import com.lukaszwodniak.folky.mapper.UserMapper
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
-import com.lukaszwodniak.folky.rest.specification.models.DanceDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
-import com.lukaszwodniak.folky.rest.specification.models.UserDto
+import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.users.UserService
 import lombok.RequiredArgsConstructor
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 /**
@@ -74,8 +72,10 @@ class DancingTeamHandlerImpl(
         return UserMapper.INSTANCE.map(dancingTeamService.getTeamMusicians(teamId))
     }
 
-    override fun handleGetTeams(): MutableList<DancingTeamListElementDto> {
-        return DancingTeamMapper.INSTANCE.mapToListElements(dancingTeamService.getTeams())
+    override fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto {
+        val pageRequest = PageRequest.of(page, size)
+        val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase)
+        return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams)
     }
 
     override fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto> {
@@ -87,6 +87,19 @@ class DancingTeamHandlerImpl(
         user?.let {
             return DancingTeamMapper.INSTANCE.mapToListElements(dancingTeamService.getSubscribedTeams(user))
         } ?: return mutableListOf()
+    }
+
+    override fun handleGetSubscribedTeams(page: Int, size: Int): PageDancingTeamListElementDto {
+        val user = userService.getUserFromContext()
+        val pageRequest = PageRequest.of(page, size)
+        user?.let {
+            return DancingTeamMapper.INSTANCE.mapListElementsToPage(
+                dancingTeamService.getSubscribedTeams(
+                    user,
+                    pageRequest
+                )
+            )
+        } ?: return PageDancingTeamListElementDto()
     }
 
     override fun handleAddSubscription(teamId: Long) {

@@ -41,11 +41,12 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 "/api/users/register-as-dancing-team",
                 "/api/teams/get-teams",
                 "/api/teams/get-by-id",
-                "/files/get-logo",
-                "/files/get-banner",
+                "/api/files/get-logo",
+                "/api/files/get-banner",
                 "/api/files/get-gallery-urls",
-                "/files/get-image",
-                "/api/region/get-regions"
+                "/api/files/get-image",
+                "/api/region/get-regions",
+                "/api/region/get-by-id"
             )
     }
 }

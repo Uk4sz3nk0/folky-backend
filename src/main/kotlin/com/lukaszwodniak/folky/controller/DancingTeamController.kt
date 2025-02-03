@@ -2,11 +2,8 @@ package com.lukaszwodniak.folky.controller
 
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamApi
-import com.lukaszwodniak.folky.rest.specification.models.DanceDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
-import com.lukaszwodniak.folky.rest.specification.models.UserDto
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.*
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -61,9 +58,8 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
         return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamMusicians(it) })
     }
 
-    @EndpointLogger
-    override fun getTeams(): ResponseEntity<MutableList<DancingTeamListElementDto>> {
-        return ResponseEntity.ok(dancingTeamHandler.handleGetTeams())
+    override fun getTeams(page: Int?, size: Int?, searchPhrase: String?): ResponseEntity<PageDancingTeamListElementDto> {
+        return ResponseEntity.ok(dancingTeamHandler.handleGetTeams(page ?: 0, size?: 10, searchPhrase))
     }
 
     @EndpointLogger

@@ -43,8 +43,8 @@ class UserController(
         TODO("Not yet implemented")
     }
 
-    override fun getUserSubscriptions(): ResponseEntity<MutableList<DancingTeamListElementDto>> {
-        return ResponseEntity.ok(dancingTeamHandler.handleGetSubscribedTeams())
+    override fun getUserSubscriptions(page: Int?, size: Int?): ResponseEntity<PageDancingTeamListElementDto> {
+        return ResponseEntity.ok(dancingTeamHandler.handleGetSubscribedTeams(page ?: 0, size ?: 10))
     }
 
     override fun loginUser(loginRequest: LoginRequestDto?): ResponseEntity<LoginResponseDto> {

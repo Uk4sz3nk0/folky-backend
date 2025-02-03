@@ -48,7 +48,7 @@ class FilesController(
     }
 
     @EndpointLogger
-    @GetMapping("/files/get-logo")
+    @GetMapping("/api/files/get-logo")
     fun getLogo(@RequestParam teamId: Long?): ResponseEntity<InputStreamResource?> {
         val resource = teamId?.let {
             filesHandler.handleGetLogo(it)
@@ -66,7 +66,7 @@ class FilesController(
     }
 
     @EndpointLogger
-    @GetMapping("/files/get-banner")
+    @GetMapping("/api/files/get-banner")
     fun getBanner(@RequestParam teamId: Long?): ResponseEntity<InputStreamResource?> {
         val resource = teamId?.let {
             filesHandler.handleGetBanner(it)
@@ -84,7 +84,7 @@ class FilesController(
     }
 
     @EndpointLogger
-    @GetMapping("/files/get-image")
+    @GetMapping("/api/files/get-image")
     fun getImage(@RequestParam teamId: Long?, @RequestParam filename: String): ResponseEntity<InputStreamResource?> {
         val resource = teamId?.let {
             filesHandler.handleGetImage(it, filename)

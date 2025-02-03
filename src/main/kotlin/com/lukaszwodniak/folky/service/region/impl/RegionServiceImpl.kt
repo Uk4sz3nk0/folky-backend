@@ -42,7 +42,13 @@ class RegionServiceImpl(
     }
 
     override fun getById(id: Long): Region {
-        return regionRepository.findById(id).orElseThrow { NoSuchRegionException(id) }
+        val region = regionRepository.findById(id).orElseThrow { NoSuchRegionException(id) }
+        val language = httpRequest.getHeader(HttpHeaders.ACCEPT_LANGUAGE) ?: DEFAULT_TRANSLATION_LANGUAGE
+        val translations = translationService.getTranslationsByLanguageAndPrefix(language, TRANSLATION_PREFIX)
+        val translation = translations["${TRANSLATION_PREFIX}_${region.name}"]
+        return translation?.let {
+            region.copy(name = it)
+        } ?: region
     }
 
     override fun updateRegion(region: Region): Region {

@@ -93,15 +93,28 @@ paths:
       tags:
         - "User"
       operationId: getUserSubscriptions
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Ok. Successful response will return ok status and list of subscribed dancing teams
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeamListElement"
+                $ref: "dancing-team-specification.yaml#/components/schemas/PageDancingTeamListElement"
   /api/users/register-user:
     description: |
       Endpoint used for registering normal user
