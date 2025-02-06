@@ -4,10 +4,12 @@ import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDataDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Named
 import org.mapstruct.factory.Mappers
+import org.springframework.data.domain.Page
 import java.io.File
 import java.nio.file.Files
 import java.util.*
@@ -27,6 +29,8 @@ interface DancingTeamMapper {
     fun map(dancingTeamDto: DancingTeamDto): DancingTeam
     fun map(dancingTeams: List<DancingTeam>): MutableList<DancingTeamDto>
     fun mapToListElements(dancingTeams: List<DancingTeam>): MutableList<DancingTeamListElementDto>
+
+    fun mapListElementsToPage(pagedTeams: Page<DancingTeam>): PageDancingTeamListElementDto
 
     @Mapping(source = "dancingTeam", target = "logo", qualifiedByName = ["mapLogo"])
     fun mapToListElement(dancingTeam: DancingTeam): DancingTeamListElementDto

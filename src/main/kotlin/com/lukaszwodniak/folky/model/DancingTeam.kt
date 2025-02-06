@@ -1,7 +1,5 @@
 package com.lukaszwodniak.folky.model
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -68,5 +66,7 @@ data class DancingTeam(
     val userRoles: List<UserRole>? = emptyList(),
     @OneToOne
     @JoinColumn(name = "account_user_id")
-    val accountUser: User? = null
+    val accountUser: User? = null,
+    @OneToOne(mappedBy = "dancingTeam")
+    val socialMedia: SocialMedia?
 )

@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.handler
 import com.lukaszwodniak.folky.rest.specification.models.DanceDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
 import com.lukaszwodniak.folky.rest.specification.models.UserDto
 
 /**
@@ -21,9 +22,10 @@ interface DancingTeamHandler {
     fun handleGetTeamDances(teamId: Long): MutableList<DanceDto>
     fun handleGetTeamDancers(teamId: Long): MutableList<UserDto>
     fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto>
-    fun handleGetTeams(): MutableList<DancingTeamListElementDto>
+    fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto
     fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto>
     fun handleGetSubscribedTeams(): MutableList<DancingTeamListElementDto>
+    fun handleGetSubscribedTeams(page: Int, size: Int): PageDancingTeamListElementDto
     fun handleAddSubscription(teamId: Long)
     fun handleDeleteSubscription(teamId: Long)
 }

@@ -8,9 +8,10 @@ import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import lombok.RequiredArgsConstructor
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -98,12 +99,24 @@ class DancingTeamServiceImpl(
         return dancingTeamRepository.findAll()
     }
 
+    override fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam> {
+        return if (!searchPhrase.isNullOrBlank()) {
+            dancingTeamRepository.findAllByNameContainsIgnoreCase(searchPhrase, pageRequest)
+        } else {
+            dancingTeamRepository.findAll(pageRequest)
+        }
+    }
+
     override fun getTeamsByName(phrase: String): List<DancingTeam> {
         return dancingTeamRepository.findAllByNameContainsIgnoreCase(phrase).orElse(emptyList())
     }
 
     override fun getSubscribedTeams(user: User): List<DancingTeam> {
         return subscriptionRepository.findAllByUser(user).map { sub -> sub.dancingTeam }
+    }
+
+    override fun getSubscribedTeams(user: User, pageRequest: PageRequest): Page<DancingTeam> {
+        return subscriptionRepository.findAllDancingTeamsByUser(user, pageRequest)
     }
 
     override fun addSubscription(team: DancingTeam, user: User) {

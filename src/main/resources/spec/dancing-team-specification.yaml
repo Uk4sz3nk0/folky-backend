@@ -189,15 +189,35 @@ paths:
       tags:
         - "DancingTeam"
       operationId: getTeams
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
+        - name: searchPhrase
+          in: query
+          required: false
+          allowEmptyValue: false
+          schema:
+            type: string
+            nullable: true
       responses:
         "200":
           description: Ok. Successful response will return ok status and list of dancing teams
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DancingTeamListElement"
+                $ref: "#/components/schemas/PageDancingTeamListElement"
   /api/teams/get-by-name:
     description: |
       End[point used for getting list of dancing teams by name
@@ -296,6 +316,32 @@ components:
         logo:
           type: string
           nullable: true
+    PageDancingTeamListElement:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DancingTeamListElement"
+        pageable:
+          type: object
+          properties:
+            pageNumber:
+              type: integer
+            pageSize:
+              type: integer
+            offset:
+              type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
     DancingTeam:
       type: object
       properties:
@@ -360,6 +406,32 @@ components:
         youtube:
           type: string
           nullable: true
+        tiktok:
+          type: string
+          nullable: true
+        subscribersAmount:
+          type: integer
+          format: int64
         isSubscribed:
           type: boolean
           default: false
+        socialMedia:
+          $ref: "#/components/schemas/SocialMedia"
+    SocialMedia:
+      type: object
+      properties:
+        facebookUrl:
+          type: string
+          nullable: true
+        instagramUrl:
+          type: string
+          nullable: true
+        youtubeUrl:
+          type: string
+          nullable: true
+        twitterUrl:
+          type: string
+          nullable: true
+        tiktokUrl:
+          type: string
+          nullable: true
