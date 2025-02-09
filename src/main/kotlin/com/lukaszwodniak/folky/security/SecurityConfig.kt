@@ -21,6 +21,8 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, *WHITELISTED_API_ENDPOINTS)
                     .permitAll()
+                    .requestMatchers(HttpMethod.PATCH, *WHITELISTED_API_ENDPOINTS)
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
             }

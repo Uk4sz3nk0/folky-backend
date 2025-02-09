@@ -38,14 +38,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/UserData"
       responses:
         "200":
           description: Ok. Successful response will return edited user
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserData"
   /api/users/delete-user:
     description: |
       Endpoint for deleting user
@@ -85,7 +85,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserData"
   /api/users/get-user-subscriptions:
     description: |
       Endpoint used for getting user subscriptions
@@ -285,6 +285,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UserRole"
+        wantReceiveEmailNotifications:
+          type: boolean
+          default: false
+        wantReceivePushNotifications:
+          type: boolean
+          default: false
     UserRole:
       type: object
       properties:
