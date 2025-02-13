@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.handler
 
 import com.lukaszwodniak.folky.rest.specification.models.RegionDto
+import com.lukaszwodniak.folky.rest.specification.models.TranslationDto
 
 /**
  * RegionHandler
@@ -15,7 +16,8 @@ interface RegionHandler {
     fun handleDeleteRegion(id: Long)
     fun handleGetByLocale(locale: String): MutableList<RegionDto>
     fun handleGetByName(phrase: String): MutableList<RegionDto>
-    fun handleGetById(id: Long): RegionDto
+    fun handleGetById(id: Long, withTranslations: Boolean?): RegionDto
     fun updateRegion(region: RegionDto): RegionDto
     fun handleGetRegions(): MutableList<RegionDto>
+    fun handleGetTranslations(id: Long): MutableList<TranslationDto>
 }
