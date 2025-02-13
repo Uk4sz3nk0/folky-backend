@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.controller
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.handler.SecurityHandler
+import com.lukaszwodniak.folky.handler.UsersHandler
 import com.lukaszwodniak.folky.handler.UtilsHandler
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
@@ -25,6 +26,7 @@ class UserController(
     private val securityHandler: SecurityHandler,
     private val utilsHandler: UtilsHandler,
     private val dancingTeamHandler: DancingTeamHandler,
+    private val usersHandler: UsersHandler,
 ) : UserApi {
 
     override fun addUser(body: UserDto?): ResponseEntity<UserDto> {
@@ -35,12 +37,17 @@ class UserController(
         TODO("Not yet implemented")
     }
 
-    override fun editUser(body: UserDto?): ResponseEntity<UserDto> {
-        TODO("Not yet implemented")
+    override fun editUser(userData: UserDataDto?): ResponseEntity<UserDataDto> {
+        val user = userData?.let {
+            usersHandler.editUser(it)
+        }
+        return ResponseEntity.ok().body(user)
     }
 
-    override fun getUserById(id: Long?): ResponseEntity<UserDto> {
-        TODO("Not yet implemented")
+    @EndpointLogger
+    override fun getUserById(id: Long?): ResponseEntity<UserDataDto> {
+        val user = id?.let { usersHandler.getUserById(it) }
+        return ResponseEntity.ok().body(user)
     }
 
     override fun getUserSubscriptions(page: Int?, size: Int?): ResponseEntity<PageDancingTeamListElementDto> {

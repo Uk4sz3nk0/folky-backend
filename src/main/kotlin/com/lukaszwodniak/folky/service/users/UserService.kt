@@ -5,6 +5,7 @@ import com.lukaszwodniak.folky.enums.UserType
 import com.lukaszwodniak.folky.model.User
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
+import com.lukaszwodniak.folky.records.UserData
 
 /**
  * UserService
@@ -20,4 +21,6 @@ interface UserService {
     fun getUserFromContext(): User?
     fun getFirebaseUserFromContext(): UserRecord
     fun getUserByEmail(email: String): User?
+    fun getUserById(id: Long): User?
+    fun editUser(user: UserData): User?
 }

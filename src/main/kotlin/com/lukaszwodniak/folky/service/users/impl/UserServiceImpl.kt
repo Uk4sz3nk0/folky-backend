@@ -11,6 +11,7 @@ import com.lukaszwodniak.folky.model.User
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
+import com.lukaszwodniak.folky.records.UserData
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.security.AuthenticatedUserIdProvider
@@ -77,6 +78,21 @@ class UserServiceImpl(
 
     override fun getUserByEmail(email: String): User? =
         userRepository.findByEmail(email).orElseThrow { NoSuchElementException("No such user with email $email") }
+
+    override fun getUserById(id: Long): User? {
+        return userRepository.findById(id).orElseThrow { NoSuchElementException("No such user with id $id") }
+    }
+
+    override fun editUser(user: UserData): User? {
+        val existingUser = userRepository.findById(user.id!!).orElseThrow { NoSuchElementException("No such user with id ${user.id}") }
+        val editedUser = existingUser.copy(
+            firstName = user.firstName ?: existingUser.firstName,
+            lastName = user.lastName ?: existingUser.lastName,
+            wantReceivePushNotifications = user.wantReceivePushNotifications,
+            wantReceiveEmailNotifications = user.wantReceiveEmailNotifications,
+        )
+        return userRepository.saveAndFlush(editedUser)
+    }
 
     private fun createUserOnFirebase(email: String, password: String): String {
         val userCreateRequest = CreateRequest()
