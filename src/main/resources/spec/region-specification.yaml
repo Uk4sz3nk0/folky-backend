@@ -6,9 +6,29 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /api/region/add-region:
+  /api/regions:
     description: |
-      Endpoint used for adding new region
+      Endpoint used for adding, updating, deleting and getting regions
+    get:
+      tags:
+        - "Region"
+      operationId: getRegions
+      parameters:
+        - name: name
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return list of regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Region"
     post:
       tags:
         - "Region"
@@ -26,9 +46,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /api/region/update-region:
-    description: |
-      Endpoint used for updating region
     patch:
       tags:
         - "Region"
@@ -46,25 +63,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /api/region/delete-region:
-    description: |
-      Endpoint used for deleting regions
-    delete:
-      tags:
-        - "Region"
-      operationId: deleteRegion
-      parameters:
-        - name: id
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
-  /api/region/get-by-id:
+  /api/regions/{id}:
     description: |
       Endpoint used for getting region by id
     get:
@@ -73,11 +72,17 @@ paths:
       operationId: getRegionById
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
             format: int64
+        - name: withTranslations
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: boolean
       responses:
         "200":
           description: Ok. Successful response will return ok status and specified region object
@@ -85,30 +90,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Region"
-  /api/region/get-by-name:
-    description: |
-      Endpoint used for getting list of regions by matching name
-    get:
+    delete:
       tags:
         - "Region"
-      operationId: getByName
+      operationId: deleteRegion
       parameters:
-        - name: name
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
-          description: Ok. Successful response will return list of regions
+          description: Ok. Successful response will return ok status
+  /api/regions/translations/{id}:
+    description: |
+      Endpoint used for getting region translations
+    get:
+      tags:
+        - "Region"
+      operationId: getRegionTranslations
+      parameters:
+        - name: regionId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successfully get list of specified region translations
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Region"
-  /api/region/get-by-locale:
+                  $ref: "#/components/schemas/Translation"
+  /api/regions/get-by-locale:
     description: |
       Endpoint used for getting list of regions by locale
     get:
@@ -131,22 +152,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Region"
-  /api/region/get-regions:
-    description: |
-      Endpoint used for getting regions
-    get:
-      tags:
-        - "Region"
-      operationId: getRegions
-      responses:
-        "200":
-          description: Ok. Successful response will return list of regions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Region"
 components:
   schemas:
     Region:
@@ -159,7 +164,18 @@ components:
           type: string
         name:
           type: string
-    RegionWithTranslations:
+        translations:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/Translation"
+    Translation:
       type: object
       properties:
+        locale:
+          type: string
+        specifier:
+          type: string
+        value:
+          type: string
 

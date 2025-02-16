@@ -16,6 +16,6 @@ data class Translation(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
     val language: String,
-    val specifier: String,
-    val value: String
+    var specifier: String,
+    var value: String
 )

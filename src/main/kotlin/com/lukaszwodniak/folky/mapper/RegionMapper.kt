@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers
  * @author Łukasz Wodniak
  */
 
-@Mapper
+@Mapper(uses = [TranslationMapper::class])
 interface RegionMapper {
 
     fun map(region: RegionDto): Region
