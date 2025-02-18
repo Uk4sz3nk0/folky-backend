@@ -1,16 +1,15 @@
 package com.lukaszwodniak.folky.handler.impl
 
+import com.lukaszwodniak.folky.enums.FileType
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.handler.FilesHandler
 import com.lukaszwodniak.folky.mapper.UtilMapper
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.service.files.FilesService
 import com.lukaszwodniak.folky.utils.FileUtils
-import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
-import java.io.File
-import java.io.FileInputStream
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * FilesHandler
@@ -38,28 +37,35 @@ class FilesHandlerImpl(
         return UtilMapper.INSTANCE.mapStrings(filesService.getTeamFilesList(dancingTeam))
     }
 
-    override fun handleUploadFiles(teamId: Long, files: MutableList<Resource>) {
-        val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        filesService.uploadFiles(dancingTeam, files)
+    override fun handleSaveImage(teamId: Long, file: MultipartFile, fileType: String) {
+        val team = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
+        val typeOfFile = FileType.fromValue(fileType)
+        filesService.saveImage(team, file, typeOfFile)
     }
 
-    override fun handleGetLogo(teamId: Long): InputStreamResource? {
-        val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return FileUtils.getLogo(dancingTeam)
+    override fun handleUpdateImage(teamId: Long, file: MultipartFile, fileType: String) {
+        val team = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
+        val typeOfFile = FileType.fromValue(fileType)
+        filesService.updateImage(team, file, typeOfFile)
     }
 
-    override fun handleGetBanner(teamId: Long): InputStreamResource? {
+    override fun handleGetImage(teamId: Long, fileType: String, filename: String?): Resource? {
+        val typeOfFile = FileType.fromValue(fileType)
         val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return FileUtils.getBanner(dancingTeam)
+        return when (typeOfFile) {
+            FileType.LOGO -> FileUtils.getLogo(dancingTeam)
+            FileType.BANNER -> FileUtils.getBanner(dancingTeam)
+            FileType.IMAGE -> filename?.let { FileUtils.getImage(dancingTeam, it) }
+        }
     }
 
-    override fun handleGetGalleryImages(teamId: Long): MutableList<String> {
+    override fun handleDeleteImage(teamId: Long, filename: String) {
         val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return FileUtils.getGalleryUrls(dancingTeam)
+        FileUtils.deleteFile(dancingTeam, filename)
     }
 
-    override fun handleGetImage(teamId: Long, filename: String): InputStreamResource? {
+    override fun handleUploadGalleryImages(teamId: Long, files: MutableList<MultipartFile>) {
         val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return FileUtils.getImage(dancingTeam, filename)
+        FileUtils.saveFiles(dancingTeam, files)
     }
 }

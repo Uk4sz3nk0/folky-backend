@@ -6,12 +6,13 @@ import com.lukaszwodniak.folky.model.*
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
-import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
+import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import lombok.RequiredArgsConstructor
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -30,16 +31,21 @@ import kotlin.io.path.Path
 @RequiredArgsConstructor
 class DancingTeamServiceImpl(
     private val dancingTeamRepository: DancingTeamRepository,
-    private val userRepository: UserRepository,
     private val subscriptionRepository: SubscriptionRepository
 ) : DancingTeamService {
 
-    override fun addTeam(team: DancingTeam): DancingTeam {
+    override fun addTeam(team: DancingTeam, user: User?): DancingTeam {
         // TODO: Implement additional logic if needed
         if (dancingTeamRepository.existsByNameIgnoreCase(team.name)) {
             throw DancingTeamWithGivenNameExistsException("Dancing team with name \"${team.name}\" already exists")
         }
-        return dancingTeamRepository.saveAndFlush(team)
+        val mappedTeam = team.copy(
+            director = user,
+            accountUser = user,
+            filesUUID = FilesServiceImpl.generateTeamDirectory()
+        )
+        mappedTeam.socialMedia?.dancingTeam = mappedTeam
+        return dancingTeamRepository.saveAndFlush(mappedTeam)
     }
 
     override fun addTeam(team: DancingTeam, files: DancingTeamFiles): DancingTeam {
@@ -95,10 +101,6 @@ class DancingTeamServiceImpl(
         return dancingTeam.musicians ?: emptyList()
     }
 
-    override fun getTeams(): List<DancingTeam> {
-        return dancingTeamRepository.findAll()
-    }
-
     override fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam> {
         return if (!searchPhrase.isNullOrBlank()) {
             dancingTeamRepository.findAllByNameContainsIgnoreCase(searchPhrase, pageRequest)
@@ -137,7 +139,6 @@ class DancingTeamServiceImpl(
         existingTeam.name = newTeamData.name
         existingTeam.description = newTeamData.description
         existingTeam.creationDate = newTeamData.creationDate
-        existingTeam.director = newTeamData.director
         existingTeam.region = newTeamData.region
         existingTeam.city = newTeamData.city
         existingTeam.street = newTeamData.street
@@ -147,6 +148,11 @@ class DancingTeamServiceImpl(
         existingTeam.dances = newTeamData.dances
         existingTeam.dancers = newTeamData.dancers
         existingTeam.musicians = newTeamData.musicians
+        val socialMedia = newTeamData.socialMedia
+        socialMedia?.dancingTeam = existingTeam
+        existingTeam.socialMedia = socialMedia
+        existingTeam.accountUser = newTeamData.accountUser
+        existingTeam.director = newTeamData.director
     }
 
     private fun storeDancingTeamFile(directoryUUID: UUID, file: MultipartFile) {

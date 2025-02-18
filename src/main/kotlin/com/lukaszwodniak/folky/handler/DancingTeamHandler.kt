@@ -25,7 +25,8 @@ interface DancingTeamHandler {
     fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto
     fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto>
     fun handleGetSubscribedTeams(): MutableList<DancingTeamListElementDto>
-    fun handleGetSubscribedTeams(page: Int, size: Int): PageDancingTeamListElementDto
+    fun handleGetSubscribedTeams(id: Long, page: Int, size: Int): PageDancingTeamListElementDto
     fun handleAddSubscription(teamId: Long)
     fun handleDeleteSubscription(teamId: Long)
+    fun handleGetGalleryImages(id: Long): MutableList<String>
 }

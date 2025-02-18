@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.model
 
+import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -33,7 +34,7 @@ data class DancingTeam(
     var region: Region? = null,
     var city: String? = "",
     var street: String? = "",
-    var homeNumber: Int? = 0,
+    var homeNumber: String? = "",
     var flatNumber: Int? = 0,
     var zipCode: String? = null,
     @ManyToMany
@@ -56,7 +57,6 @@ data class DancingTeam(
         inverseJoinColumns = [JoinColumn(name = "musician_id")]
     )
     var musicians: MutableList<User>? = mutableListOf(),
-    var directoryUuid: UUID? = null,
     var logoFilename: String? = null,
     var bannerFilename: String? = null,
     var isRecruitmentOpened: Boolean? = false,
@@ -64,9 +64,11 @@ data class DancingTeam(
     var recruitments: MutableList<Recruitment>? = mutableListOf(),
     @OneToMany(mappedBy = "dancingTeam")
     val userRoles: List<UserRole>? = emptyList(),
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "account_user_id")
-    val accountUser: User? = null,
-    @OneToOne(mappedBy = "dancingTeam")
-    val socialMedia: SocialMedia?
+    var accountUser: User? = null,
+    @OneToOne(mappedBy = "dancingTeam", cascade = [CascadeType.PERSIST, CascadeType.MERGE], orphanRemoval = true)
+    var socialMedia: SocialMedia?,
+    val dancersAmount: Int = 0,
+    val musiciansAmount: Int = 0,
 )

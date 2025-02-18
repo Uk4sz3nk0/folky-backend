@@ -1,16 +1,20 @@
 package com.lukaszwodniak.folky.service.files.impl
 
+import com.lukaszwodniak.folky.enums.FileType
 import com.lukaszwodniak.folky.model.DancingTeam
+import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.service.files.FilesService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.deleteExisting
 
 /**
  * FilesServiceImpl
@@ -20,7 +24,9 @@ import java.util.*
  */
 
 @Service
-class FilesServiceImpl : FilesService {
+class FilesServiceImpl(
+    private val dancingTeamRepository: DancingTeamRepository,
+) : FilesService {
 
     private val filesUploadDirectory: Path =
         Paths.get(UPLOADS_DIRECTORY + File.separator)
@@ -54,33 +60,71 @@ class FilesServiceImpl : FilesService {
         }
     }
 
-    override fun uploadFiles(team: DancingTeam, files: List<Resource>) {
+    override fun saveImage(dancingTeam: DancingTeam, file: MultipartFile, fileType: FileType) {
+        val fileName = file.originalFilename
+        val path = Paths.get("${UPLOADS_DIRECTORY}${File.separator}${dancingTeam.filesUUID}${File.separator}$fileName")
         try {
-            // TODO: Maybe in future, set enum based getting directory in Images directory place
-            files.forEach { file ->
-                val path = "${team.filesUUID}${File.separator}${IMAGES_DIRECTORY}${File.separator}${file.filename}"
-                val targetPath =
-                    filesUploadDirectory.resolve(path)
-                Files.copy(file.inputStream, targetPath)
-            }
+            Files.createDirectories(path.parent)
+            file.transferTo(path)
+            assignFilesDataInTeam(fileType, dancingTeam, fileName)
         } catch (exception: Exception) {
-            logger.error("Error during uploading files. Reason ${exception.message}")
+            logger.error("Error during saving image. Reason: ${exception.localizedMessage}")
         }
     }
 
-    override fun generateTeamDirectory(): UUID {
-        val dancingTeamDirUUID = UUID.randomUUID()
-        val path = UPLOADS_DIRECTORY + File.separator + dancingTeamDirUUID.toString()
-        val teamDirectory = File(path)
-        if (!teamDirectory.exists()) {
-            teamDirectory.mkdirs()
+    override fun updateImage(dancingTeam: DancingTeam, file: MultipartFile, fileType: FileType) {
+        val fileName = file.originalFilename
+        val existingFileName: String? = when (fileType) {
+            FileType.LOGO -> dancingTeam.logoFilename
+            FileType.BANNER -> dancingTeam.bannerFilename
+            else -> null
         }
-        return dancingTeamDirUUID
+        try {
+            existingFileName?.let {
+                val existingPath =
+                    Paths.get("${UPLOADS_DIRECTORY}${File.separator}${dancingTeam.filesUUID}${File.separator}$existingFileName")
+                deleteExistingFile(existingPath)
+            }
+            val path =
+                Paths.get("${UPLOADS_DIRECTORY}${File.separator}${dancingTeam.filesUUID}${File.separator}$fileName")
+            Files.createDirectories(path.parent)
+            file.transferTo(path)
+            assignFilesDataInTeam(fileType, dancingTeam, fileName)
+        } catch (exception: Exception) {
+            logger.error("Error during updating image. Reason: ${exception.localizedMessage}")
+        }
+    }
+
+    private fun assignFilesDataInTeam(
+        fileType: FileType,
+        dancingTeam: DancingTeam,
+        fileName: String?
+    ) {
+        when (fileType) {
+            FileType.LOGO -> dancingTeam.logoFilename = fileName
+            FileType.BANNER -> dancingTeam.bannerFilename = fileName
+            else -> {}
+        }
+        dancingTeamRepository.saveAndFlush(dancingTeam)
+    }
+
+    private fun deleteExistingFile(path: Path) {
+        path.deleteExisting()
     }
 
     companion object {
         const val UPLOADS_DIRECTORY: String = "storage"
         const val IMAGES_DIRECTORY: String = "images"
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
+        fun generateTeamDirectory(): UUID {
+            val dancingTeamDirUUID = UUID.randomUUID()
+            val path = UPLOADS_DIRECTORY + File.separator + dancingTeamDirUUID.toString()
+            val teamDirectory = File(path)
+            if (!teamDirectory.exists()) {
+                teamDirectory.mkdirs()
+            }
+            return dancingTeamDirUUID
+        }
     }
 }

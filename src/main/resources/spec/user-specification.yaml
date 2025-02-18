@@ -6,10 +6,44 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /api/users/add-user:
-    description: |
-      Endpoint for adding new users
+  /api/users:
+    get:
+      description: |
+        Endpoint used for getting users
+      tags:
+        - "User"
+      operationId: getUsers
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return list of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageUser"
     post:
+      description: |
+        Endpoint for adding new users
       tags:
         - "User"
       operationId: addUser
@@ -26,13 +60,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-  /api/users/edit-user:
-    description: |
-      Endpoint for editing existing user
+  /api/users/{id}:
+    get:
+      description: |
+        Endpoint for getting user by id
+      tags:
+        - "User"
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return requested user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserData"
     patch:
+      description: |
+        Endpoint for editing existing user
       tags:
         - "User"
       operationId: editUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -46,16 +109,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserData"
-  /api/users/delete-user:
-    description: |
-      Endpoint for deleting user
     delete:
+      description: |
+        Endpoint for deleting user
       tags:
         - "User"
       operationId: deleteUser
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -63,30 +125,8 @@ paths:
             format: int64
       responses:
         "200":
-          description: Ok. User successfully deleted.
-  /api/users/get-user-by-id:
-    description: |
-      Endpoint for getting user by id
-    post:
-      tags:
-        - "User"
-      operationId: getUserById
-      parameters:
-        - name: id
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return requested user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserData"
-  /api/users/get-user-subscriptions:
+          description: Ok. User successfully deleted
+  /api/users/{id}/subscriptions:
     description: |
       Endpoint used for getting user subscriptions
     get:
@@ -94,6 +134,13 @@ paths:
         - "User"
       operationId: getUserSubscriptions
       parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
         - name: page
           in: query
           required: false
@@ -186,22 +233,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RefreshTokenResponse"
-  /api/users/add-device-token:
-    description: |
-      Endpoint used for assigning device token to account
+  /api/users/{id}/device-token/{token}/{deviceType}:
     post:
+      description: |
+        Endpoint used for assigning device token to account
       tags:
         - "User"
       operationId: addDeviceToken
       parameters:
         - name: token
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
             type: string
         - name: deviceType
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -211,6 +258,28 @@ paths:
           description: Ok. Successful response will return ok status and token has saved
         "201":
           description: Ok. Successful response will return ok status and token is already in database
+    delete:
+      description: |
+        Endpoint used for deleting user token
+      tags:
+        - "User"
+      operationId: deleteDeviceToken
+      parameters:
+        - name: token
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+        - name: deviceType
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and token has deleted
 components:
   schemas:
     RegisterUserRequest:
@@ -342,7 +411,10 @@ components:
         userData:
           $ref: "#/components/schemas/UserData"
         dancingTeamData:
-          $ref: "#/components/schemas/DancingTeamData"
+          type: array
+          nullable: true
+          items:
+            $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeamListElement"
     RefreshTokenRequest:
       type: object
       properties:
@@ -394,5 +466,31 @@ components:
           format: int64
         name:
           type: string
+    PageUser:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        pageable:
+          type: object
+          properties:
+            pageNumber:
+              type: integer
+            pageSize:
+              type: integer
+            offset:
+              type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
 
   

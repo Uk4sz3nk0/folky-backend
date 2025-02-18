@@ -1,8 +1,9 @@
 package com.lukaszwodniak.folky.service.files
 
+import com.lukaszwodniak.folky.enums.FileType
 import com.lukaszwodniak.folky.model.DancingTeam
 import org.springframework.core.io.Resource
-import java.util.UUID
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * FilesService
@@ -16,6 +17,6 @@ interface FilesService {
     fun getFile(filename: String): Resource
     fun getFilesList(): List<String>
     fun getTeamFilesList(dancingTeam: DancingTeam): List<String>
-    fun uploadFiles(team: DancingTeam, files: List<Resource>)
-    fun generateTeamDirectory(): UUID
+    fun saveImage(dancingTeam: DancingTeam, file: MultipartFile, fileType: FileType)
+    fun updateImage(dancingTeam: DancingTeam, file: MultipartFile, fileType: FileType)
 }

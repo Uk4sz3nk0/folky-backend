@@ -1,10 +1,9 @@
 package com.lukaszwodniak.folky.controller
 
+import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamApi
-import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.rest.specification.models.*
-import lombok.extern.slf4j.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController
  */
 
 @RestController
-class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) : DancingTeamApi {
+class DancingTeamController(
+    private val dancingTeamHandler: DancingTeamHandler
+) : DancingTeamApi {
 
     @EndpointLogger
     override fun addDancingTeam(dancingTeam: DancingTeamDto?): ResponseEntity<DancingTeamDto> {
@@ -31,11 +32,6 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
     @EndpointLogger
     override fun getById(teamId: Long?): ResponseEntity<DancingTeamDto> {
         return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetById(it) })
-    }
-
-    @EndpointLogger
-    override fun getByName(phrase: String?): ResponseEntity<MutableList<DancingTeamDto>> {
-        return ResponseEntity.ok(phrase?.let { dancingTeamHandler.handleGetTeamsByName(it) })
     }
 
     @EndpointLogger
@@ -58,8 +54,14 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
         return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamMusicians(it) })
     }
 
-    override fun getTeams(page: Int?, size: Int?, searchPhrase: String?): ResponseEntity<PageDancingTeamListElementDto> {
-        return ResponseEntity.ok(dancingTeamHandler.handleGetTeams(page ?: 0, size?: 10, searchPhrase))
+    @EndpointLogger
+    override fun getTeams(
+        phrase: String?,
+        page: Int?,
+        size: Int?,
+    ): ResponseEntity<PageDancingTeamListElementDto> {
+        val teams = dancingTeamHandler.handleGetTeams(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE, phrase)
+        return ResponseEntity.ok(teams)
     }
 
     @EndpointLogger
@@ -79,7 +81,19 @@ class DancingTeamController(private val dancingTeamHandler: DancingTeamHandler) 
         return ResponseEntity.ok().build()
     }
 
+    @EndpointLogger
     override fun getSubscribers(teamId: Long?): ResponseEntity<MutableList<UserDto>> {
         TODO("Not yet implemented")
+    }
+
+    @EndpointLogger
+    override fun getGalleryImages(id: Long?): ResponseEntity<MutableList<String>> {
+        val images = id?.let { dancingTeamHandler.handleGetGalleryImages(it) }
+        return ResponseEntity.ok(images)
+    }
+
+    companion object {
+        private const val DEFAULT_PAGE_NUMBER: Int = 0
+        private const val DEFAULT_PAGE_SIZE: Int = 10
     }
 }

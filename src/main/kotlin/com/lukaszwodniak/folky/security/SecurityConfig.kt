@@ -23,6 +23,8 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                     .permitAll()
                     .requestMatchers(HttpMethod.PATCH, *WHITELISTED_API_ENDPOINTS)
                     .permitAll()
+                    .requestMatchers(HttpMethod.DELETE, *WHITELISTED_API_ENDPOINTS)
+                    .permitAll()
                     .anyRequest()
                     .authenticated()
             }
@@ -41,14 +43,10 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 "/api/users/register-user",
                 "/hello/not-auth/",
                 "/api/users/register-as-dancing-team",
-                "/api/teams/get-teams",
-                "/api/teams/get-by-id",
-                "/api/files/get-logo",
-                "/api/files/get-banner",
                 "/api/files/get-gallery-urls",
-                "/api/files/get-image",
-                "/api/region/get-regions",
-                "/api/region/get-by-id"
+                "/api/regions/**",
+                "/api/teams/**",
+                "/api/files/**"
             )
     }
 }
