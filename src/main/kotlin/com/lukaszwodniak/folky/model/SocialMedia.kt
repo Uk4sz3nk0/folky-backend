@@ -14,10 +14,10 @@ import jakarta.persistence.*
 data class SocialMedia(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
     @JoinColumn(name = "dancing_team_id")
     @OneToOne(fetch = FetchType.LAZY)
-    val dancingTeam: DancingTeam,
+    var dancingTeam: DancingTeam?,
     val facebookUrl: String?,
     val instagramUrl: String?,
     val youtubeUrl: String?,

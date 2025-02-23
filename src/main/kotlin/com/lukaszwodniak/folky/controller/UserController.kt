@@ -37,23 +37,32 @@ class UserController(
         TODO("Not yet implemented")
     }
 
-    override fun editUser(userData: UserDataDto?): ResponseEntity<UserDataDto> {
+    @EndpointLogger
+    override fun editUser(id: Long?, userData: UserDataDto?): ResponseEntity<UserDataDto> {
         val user = userData?.let {
-            usersHandler.editUser(it)
+            usersHandler.editUser(id!!, it)
         }
-        return ResponseEntity.ok().body(user)
+        return ResponseEntity.ok(user)
     }
 
     @EndpointLogger
-    override fun getUserById(id: Long?): ResponseEntity<UserDataDto> {
+    override fun getUser(id: Long?): ResponseEntity<UserDataDto> {
         val user = id?.let { usersHandler.getUserById(it) }
         return ResponseEntity.ok().body(user)
     }
 
-    override fun getUserSubscriptions(page: Int?, size: Int?): ResponseEntity<PageDancingTeamListElementDto> {
-        return ResponseEntity.ok(dancingTeamHandler.handleGetSubscribedTeams(page ?: 0, size ?: 10))
+    @EndpointLogger
+    override fun getUserSubscriptions(
+        id: Long?,
+        page: Int?,
+        size: Int?
+    ): ResponseEntity<PageDancingTeamListElementDto> {
+        val subscriptions =
+            dancingTeamHandler.handleGetSubscribedTeams(id!!, page ?: DEFAULT_PAGE, size ?: DEFAULT_SIZE)
+        return ResponseEntity.ok(subscriptions)
     }
 
+    @EndpointLogger
     override fun loginUser(loginRequest: LoginRequestDto?): ResponseEntity<LoginResponseDto> {
         val loginResponse = loginRequest?.let {
             securityHandler.handleLoginUser(it)
@@ -61,26 +70,20 @@ class UserController(
         return ResponseEntity.ok(loginResponse)
     }
 
+    @EndpointLogger
     override fun refreshToken(refreshTokenRequest: RefreshTokenRequestDto?): ResponseEntity<RefreshTokenResponseDto> {
         return ResponseEntity.ok(refreshTokenRequest?.let {
             securityHandler.handleRefreshToken(it)
         })
     }
 
+    @EndpointLogger
     override fun registerUser(registerUserRequest: RegisterUserRequestDto?): ResponseEntity<Void> {
         registerUserRequest?.let {
             securityHandler.handleRegisterUser(it)
         }
         return ResponseEntity.ok().build()
     }
-
-//    override fun registerAsDancingTeam(dancingTeamBody: RegisterDancingTeamAccountRequestDto?): ResponseEntity<Void> {
-//        logger.debug("Request \"registerAsDancingTeam\" has called")
-//        dancingTeamBody?.let {
-//            securityHandler.handleRegisterDancingTeamUser(it)
-//        }
-//        return ResponseEntity.ok().build()
-//    }
 
     @EndpointLogger
     override fun registerAsDancingTeam(
@@ -126,4 +129,18 @@ class UserController(
         }
     }
 
+    override fun deleteDeviceToken(token: String?, deviceType: String?): ResponseEntity<Void> {
+        TODO("Not yet implemented")
+    }
+
+    @EndpointLogger
+    override fun getUsers(page: Int?, size: Int?, phrase: String?): ResponseEntity<PageUserDto> {
+        val users = usersHandler.handleGetUsers(page ?: DEFAULT_PAGE, size ?: DEFAULT_SIZE, phrase)
+        return ResponseEntity.ok(users)
+    }
+
+    companion object {
+        private const val DEFAULT_PAGE: Int = 0
+        private const val DEFAULT_SIZE: Int = 10
+    }
 }

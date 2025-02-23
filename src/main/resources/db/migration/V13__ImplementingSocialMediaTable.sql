@@ -1,7 +1,7 @@
 CREATE TABLE social_media
 (
     id              BIGSERIAL NOT NULL PRIMARY KEY,
-    dancing_team_id BIGINT    NOT NULL,
+    dancing_team_id BIGINT,
     facebook_url    text,
     instagram_url   text,
     youtube_url     text,

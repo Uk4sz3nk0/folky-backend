@@ -17,8 +17,11 @@ import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.security.AuthenticatedUserIdProvider
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.files.FilesService
+import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import com.lukaszwodniak.folky.service.users.UserService
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -83,15 +86,27 @@ class UserServiceImpl(
         return userRepository.findById(id).orElseThrow { NoSuchElementException("No such user with id $id") }
     }
 
-    override fun editUser(user: UserData): User? {
-        val existingUser = userRepository.findById(user.id!!).orElseThrow { NoSuchElementException("No such user with id ${user.id}") }
+    override fun editUser(existingUser: User, updateData: UserData): User? {
         val editedUser = existingUser.copy(
-            firstName = user.firstName ?: existingUser.firstName,
-            lastName = user.lastName ?: existingUser.lastName,
-            wantReceivePushNotifications = user.wantReceivePushNotifications,
-            wantReceiveEmailNotifications = user.wantReceiveEmailNotifications,
+            firstName = updateData.firstName ?: existingUser.firstName,
+            lastName = updateData.lastName ?: existingUser.lastName,
+            wantReceivePushNotifications = updateData.wantReceivePushNotifications,
+            wantReceiveEmailNotifications = updateData.wantReceiveEmailNotifications,
         )
         return userRepository.saveAndFlush(editedUser)
+    }
+
+    override fun getUsers(pageRequest: PageRequest, phrase: String?): Page<User> {
+        return if (phrase.isNullOrBlank()) {
+            userRepository.findAll(pageRequest)
+        } else {
+            userRepository.findAllByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrEmailContainsIgnoreCase(
+                phrase,
+                phrase,
+                phrase,
+                pageRequest
+            )
+        }
     }
 
     private fun createUserOnFirebase(email: String, password: String): String {
@@ -144,11 +159,10 @@ class UserServiceImpl(
     }
 
     private fun generateDancingTeam(registerDancingTeamUserRequest: RegisterDancingTeamUserRequest): DancingTeam {
-        val dirUUID = filesService.generateTeamDirectory()
+        val dirUUID = FilesServiceImpl.generateTeamDirectory()
         return DancingTeam(
             name = registerDancingTeamUserRequest.teamName,
             filesUUID = dirUUID,
-            directoryUuid = dirUUID,
             description = registerDancingTeamUserRequest.teamDescription ?: "",
             creationDate = LocalDate.of(registerDancingTeamUserRequest.creationYear ?: 1900, 1, 1),
             region = registerDancingTeamUserRequest.region ?: regionRepository.findById(1)

@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest
 
 interface DancingTeamService {
 
-    fun addTeam(team: DancingTeam): DancingTeam
+    fun addTeam(team: DancingTeam, user: User?): DancingTeam
     fun addTeam(team: DancingTeam, files: DancingTeamFiles): DancingTeam
     fun updateTeam(team: DancingTeam): DancingTeam
     fun deleteTeam(teamId: Long)
@@ -25,7 +25,6 @@ interface DancingTeamService {
     fun getTeamDances(teamId: Long): List<Dance>
     fun getTeamDancers(teamId: Long): List<User>
     fun getTeamMusicians(teamId: Long): List<User>
-    fun getTeams(): List<DancingTeam>
     fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam>
     fun getTeamsByName(phrase: String): List<DancingTeam>
     fun getSubscribedTeams(user: User): List<DancingTeam>

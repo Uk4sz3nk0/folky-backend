@@ -6,6 +6,8 @@ import com.lukaszwodniak.folky.model.User
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
 import com.lukaszwodniak.folky.records.UserData
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 
 /**
  * UserService
@@ -22,5 +24,6 @@ interface UserService {
     fun getFirebaseUserFromContext(): UserRecord
     fun getUserByEmail(email: String): User?
     fun getUserById(id: Long): User?
-    fun editUser(user: UserData): User?
+    fun editUser(existingUser: User, updateData: UserData): User?
+    fun getUsers(pageRequest: PageRequest, phrase: String?): Page<User>
 }

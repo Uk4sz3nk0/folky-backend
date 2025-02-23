@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.mapper
 
 import com.lukaszwodniak.folky.model.DancingTeam
+import com.lukaszwodniak.folky.model.SocialMedia
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDataDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
@@ -20,12 +21,15 @@ import java.util.*
  * @author Łukasz Wodniak
  */
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+//    uses = [SocialMedia::class]
+)
 interface DancingTeamMapper {
 
-    @Mapping(source = "dancingTeam", target = "dancersCount", qualifiedByName = ["dancersCount"])
-    @Mapping(source = "dancingTeam", target = "musiciansCount", qualifiedByName = ["musiciansCount"])
     fun map(dancingTeam: DancingTeam): DancingTeamDto
+    @Mapping(target = "director", ignore = true)
+    @Mapping(target = "accountUser", ignore = true)
     fun map(dancingTeamDto: DancingTeamDto): DancingTeam
     fun map(dancingTeams: List<DancingTeam>): MutableList<DancingTeamDto>
     fun mapToListElements(dancingTeams: List<DancingTeam>): MutableList<DancingTeamListElementDto>

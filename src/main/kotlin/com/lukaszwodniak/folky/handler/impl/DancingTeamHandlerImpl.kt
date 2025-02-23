@@ -11,9 +11,13 @@ import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.users.UserService
+import com.lukaszwodniak.folky.utils.FileUtils
 import lombok.RequiredArgsConstructor
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 /**
  * DancingTeamHandler
@@ -31,13 +35,20 @@ class DancingTeamHandlerImpl(
     private val subscriptionRepository: SubscriptionRepository
 ) : DancingTeamHandler {
 
+    @Transactional
     override fun handleAddTeam(team: DancingTeamDto): DancingTeamDto {
+        team.filesUUID(UUID.randomUUID())
         val mappedDancingTeam = DancingTeamMapper.INSTANCE.map(team)
-        return DancingTeamMapper.INSTANCE.map(dancingTeamService.addTeam(mappedDancingTeam))
+        val user = userService.getUserFromContext()
+        return DancingTeamMapper.INSTANCE.map(dancingTeamService.addTeam(mappedDancingTeam, user))
     }
 
     override fun handleUpdateTeam(team: DancingTeamDto): DancingTeamDto {
+        val existingTeam = dancingTeamRepository.findById(team.id).orElseThrow { NoSuchDancingTeamException(team.id) }
+        team.filesUUID(existingTeam.filesUUID)
         val mappedUpdated = DancingTeamMapper.INSTANCE.map(team)
+        mappedUpdated.director = userService.getUserById(team.directorId)
+        mappedUpdated.accountUser = userService.getUserById(team.accountUserId)
         return DancingTeamMapper.INSTANCE.map(dancingTeamService.updateTeam(mappedUpdated))
     }
 
@@ -73,7 +84,7 @@ class DancingTeamHandlerImpl(
     }
 
     override fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto {
-        val pageRequest = PageRequest.of(page, size)
+        val pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
         val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase)
         return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams)
     }
@@ -89,8 +100,8 @@ class DancingTeamHandlerImpl(
         } ?: return mutableListOf()
     }
 
-    override fun handleGetSubscribedTeams(page: Int, size: Int): PageDancingTeamListElementDto {
-        val user = userService.getUserFromContext()
+    override fun handleGetSubscribedTeams(id: Long, page: Int, size: Int): PageDancingTeamListElementDto {
+        val user = userService.getUserById(id)
         val pageRequest = PageRequest.of(page, size)
         user?.let {
             return DancingTeamMapper.INSTANCE.mapListElementsToPage(
@@ -116,5 +127,10 @@ class DancingTeamHandlerImpl(
         user?.let {
             dancingTeamService.deleteSubscription(dancingTeam, it)
         }
+    }
+
+    override fun handleGetGalleryImages(id: Long): MutableList<String> {
+        val dancingTeam = dancingTeamRepository.findById(id).orElseThrow { NoSuchDancingTeamException(id) }
+        return FileUtils.getGalleryUrls(dancingTeam)
     }
 }

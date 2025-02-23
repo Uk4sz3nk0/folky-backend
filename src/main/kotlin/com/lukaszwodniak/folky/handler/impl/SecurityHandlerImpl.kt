@@ -57,7 +57,7 @@ class SecurityHandlerImpl(
         mappedResponse.userData = user?.let { UserMapper.INSTANCE.mapUserData(it) }
         mappedResponse.dancingTeamData = user?.let {
             if (it.userType == UserType.DANCING_TEAM) {
-                it.dancingTeam?.let { dancingTeam -> DancingTeamMapper.INSTANCE.mapDancingTeamData(dancingTeam) }
+                it.dancingTeams.map { dancingTeam -> DancingTeamMapper.INSTANCE.mapToListElement(dancingTeam) }
             } else {
                 null
             }

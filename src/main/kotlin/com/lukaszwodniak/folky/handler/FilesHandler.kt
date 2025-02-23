@@ -1,7 +1,7 @@
 package com.lukaszwodniak.folky.handler
 
-import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * FilesHandler
@@ -15,9 +15,9 @@ interface FilesHandler {
     fun handleGetFile(filename: String): Resource
     fun handleGetFilesList(): MutableList<String>
     fun handleGetTeamFiles(teamId: Long): MutableList<String>
-    fun handleUploadFiles(teamId: Long, files: MutableList<Resource>)
-    fun handleGetLogo(teamId: Long): InputStreamResource?
-    fun handleGetBanner(teamId: Long): InputStreamResource?
-    fun handleGetGalleryImages(teamId: Long): MutableList<String>
-    fun handleGetImage(teamId: Long, filename: String): InputStreamResource?
+    fun handleSaveImage(teamId: Long, file: MultipartFile, fileType: String)
+    fun handleUpdateImage(teamId: Long, file: MultipartFile, fileType: String)
+    fun handleGetImage(teamId: Long, fileType: String, filename: String?): Resource?
+    fun handleDeleteImage(teamId: Long, filename: String)
+    fun handleUploadGalleryImages(teamId: Long, files: MutableList<MultipartFile>)
 }

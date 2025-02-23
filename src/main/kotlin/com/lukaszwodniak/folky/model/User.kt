@@ -40,7 +40,7 @@ data class User(
     )
     var instruments: MutableList<MusicInstrument>,
     @OneToMany(mappedBy = "user")
-    val userRoles: List<UserRole> = emptyList(),
+    val userRoles: List<UserRole>? = emptyList(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     val recruitmentRequests: MutableList<RecruitmentRequest>,
     var preferredLanguage: String,
@@ -52,6 +52,6 @@ data class User(
     val uid: String,
     @Enumerated(EnumType.STRING)
     val userType: UserType,
-    @OneToOne(mappedBy = "accountUser")
-    val dancingTeam: DancingTeam? = null
+    @OneToMany(mappedBy = "accountUser")
+    val dancingTeams: MutableList<DancingTeam> = mutableListOf()
 )
