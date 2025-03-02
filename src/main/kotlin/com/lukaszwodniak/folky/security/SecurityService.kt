@@ -1,11 +1,12 @@
 package com.lukaszwodniak.folky.security
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserRecord
 import com.lukaszwodniak.folky.error.users.InvalidLoginCredentialsException
+import com.lukaszwodniak.folky.error.users.InvalidOldPasswordException
 import com.lukaszwodniak.folky.error.users.InvalidRefreshTokenException
-import com.lukaszwodniak.folky.records.LoginRequest
-import com.lukaszwodniak.folky.records.LoginResponse
-import com.lukaszwodniak.folky.records.RefreshTokenRequest
-import com.lukaszwodniak.folky.records.RefreshTokenResponse
+import com.lukaszwodniak.folky.records.*
+import com.lukaszwodniak.folky.service.users.UserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -22,7 +23,10 @@ import org.springframework.web.util.UriBuilder
  */
 
 @Service
-class SecurityService {
+class SecurityService(
+    private val userService: UserService,
+    private val firebaseAuth: FirebaseAuth,
+) {
 
     @Value("\${com.lukaszwodniak.folky.firebase.web-api-key}")
     private lateinit var webApiKey: String
@@ -35,6 +39,22 @@ class SecurityService {
     fun exchangeRefreshToken(refreshToken: String?): RefreshTokenResponse? {
         val requestBody: RefreshTokenRequest? = refreshToken?.let { RefreshTokenRequest(it, REFRESH_TOKEN_GRANT_TYPE) }
         return requestBody?.let { sendRefreshTokenRequest(it) }
+    }
+
+    fun changePassword(passwordChangeRequest: PasswordChangeRequest) {
+        val contextUser = userService.getUserFromContext()
+
+        val userRecord = firebaseAuth.getUser(contextUser?.uid)
+        val userEmail = userRecord?.email
+
+        validateUserOldPassword(userEmail!!, passwordChangeRequest.oldPassword)
+
+        firebaseAuth.getUserByEmail(userEmail)
+
+        val updateUserRequest: UserRecord.UpdateRequest = UserRecord.UpdateRequest(contextUser?.uid)
+            .setPassword(passwordChangeRequest.newPassword)
+
+        firebaseAuth.updateUser(updateUserRequest)
     }
 
     private fun sendSignInRequest(firebaseSignInRequest: LoginRequest): LoginResponse? {
@@ -77,6 +97,15 @@ class SecurityService {
             }
             throw exception
         }
+    }
+
+    private fun validateUserOldPassword(email: String, oldPassword: String) {
+       try {
+            val loginRequest = LoginRequest(email, oldPassword)
+           sendSignInRequest(loginRequest)
+       } catch (exception: Exception) {
+           throw InvalidOldPasswordException("Given old password is invalid")
+       }
     }
 
     companion object {

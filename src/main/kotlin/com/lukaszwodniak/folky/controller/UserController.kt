@@ -129,6 +129,7 @@ class UserController(
         }
     }
 
+    @EndpointLogger
     override fun deleteDeviceToken(token: String?, deviceType: String?): ResponseEntity<Void> {
         TODO("Not yet implemented")
     }
@@ -137,6 +138,14 @@ class UserController(
     override fun getUsers(page: Int?, size: Int?, phrase: String?): ResponseEntity<PageUserDto> {
         val users = usersHandler.handleGetUsers(page ?: DEFAULT_PAGE, size ?: DEFAULT_SIZE, phrase)
         return ResponseEntity.ok(users)
+    }
+
+    @EndpointLogger
+    override fun changePassword(changePasswordRequest: ChangePasswordRequestDto?): ResponseEntity<Void> {
+        changePasswordRequest?.let {
+            usersHandler.handleChangePassword(changePasswordRequest)
+        }
+        return ResponseEntity.ok().build()
     }
 
     companion object {
