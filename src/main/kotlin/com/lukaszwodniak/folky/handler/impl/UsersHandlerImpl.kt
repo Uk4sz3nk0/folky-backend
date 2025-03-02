@@ -1,9 +1,13 @@
 package com.lukaszwodniak.folky.handler.impl
 
 import com.lukaszwodniak.folky.handler.UsersHandler
+import com.lukaszwodniak.folky.mapper.SecurityMapper
 import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.records.PasswordChangeRequest
+import com.lukaszwodniak.folky.rest.specification.models.ChangePasswordRequestDto
 import com.lukaszwodniak.folky.rest.specification.models.PageUserDto
 import com.lukaszwodniak.folky.rest.specification.models.UserDataDto
+import com.lukaszwodniak.folky.security.SecurityService
 import com.lukaszwodniak.folky.service.users.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service
 @Service
 class UsersHandlerImpl(
     private val userService: UserService,
+    private val securityService: SecurityService,
 ) : UsersHandler {
 
     override fun getUserById(id: Long): UserDataDto? {
@@ -37,5 +42,10 @@ class UsersHandlerImpl(
     override fun handleGetUsers(page: Int, size: Int, phrase: String?): PageUserDto {
         val users = userService.getUsers(PageRequest.of(page, size), phrase)
         return UserMapper.INSTANCE.mapToPage(users)
+    }
+
+    override fun handleChangePassword(changePasswordRequest: ChangePasswordRequestDto) {
+        val mappedRequest = SecurityMapper.INSTANCE.mapPasswordChangeRequestToDomain(changePasswordRequest)
+        securityService.changePassword(mappedRequest)
     }
 }

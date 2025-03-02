@@ -162,6 +162,22 @@ paths:
             application/json:
               schema:
                 $ref: "dancing-team-specification.yaml#/components/schemas/PageDancingTeamListElement"
+  /api/users/password:
+    patch:
+      description: |
+        Endpoint used for updating password
+      tags:
+        - "User"
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
   /api/users/register-user:
     description: |
       Endpoint used for registering normal user
@@ -492,5 +508,11 @@ components:
           type: boolean
         numberOfElements:
           type: integer
-
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
   
