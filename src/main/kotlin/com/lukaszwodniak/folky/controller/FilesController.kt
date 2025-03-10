@@ -26,22 +26,6 @@ class FilesController(
 ) : FilesApi {
 
     @EndpointLogger
-    override fun getFile(filename: String?): ResponseEntity<Resource> {
-        return ResponseEntity.ok(filename?.let { filesHandler.handleGetFile(it) })
-    }
-
-    @EndpointLogger
-    override fun getFilesList(): ResponseEntity<MutableList<String>> {
-        return ResponseEntity.ok(filesHandler.handleGetFilesList())
-    }
-
-    @EndpointLogger
-    override fun getTeamFiles(teamId: Long?): ResponseEntity<MutableList<String>> {
-        return ResponseEntity.ok(teamId?.let { filesHandler.handleGetTeamFiles(it) })
-    }
-
-
-    @EndpointLogger
     override fun getImage(teamId: Long?, fileType: String?, filename: String?): ResponseEntity<Resource> {
         val resource = teamId?.let { filesHandler.handleGetImage(it, fileType!!, filename) }
         return if (resource != null) {
