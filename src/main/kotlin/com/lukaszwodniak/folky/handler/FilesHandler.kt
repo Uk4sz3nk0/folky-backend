@@ -12,9 +12,6 @@ import org.springframework.web.multipart.MultipartFile
 
 interface FilesHandler {
 
-    fun handleGetFile(filename: String): Resource
-    fun handleGetFilesList(): MutableList<String>
-    fun handleGetTeamFiles(teamId: Long): MutableList<String>
     fun handleSaveImage(teamId: Long, file: MultipartFile, fileType: String)
     fun handleUpdateImage(teamId: Long, file: MultipartFile, fileType: String)
     fun handleGetImage(teamId: Long, fileType: String, filename: String?): Resource?

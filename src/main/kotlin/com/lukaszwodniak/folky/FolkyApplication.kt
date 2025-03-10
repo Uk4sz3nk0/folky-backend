@@ -10,12 +10,11 @@ fun main(args: Array<String>) {
     runApplication<FolkyApplication>(*args)
 }
 
-/*
-* TODO LIST (nie do końca się już tym sugerować ale wciąż mieć na uwadze):
-   - Dodać cloud messaging dla mobilek i ew. emaile (ver 2)
-   - Dodać tworzenie blogów i wgl ??? (może ver 2?)
-   - Rozwiązać wszelkie TODO
-   - Dodać testy
-   - Dodać wysyłanie powiadomień (dodać dodawanie tokenów po zalogowaniu)
-   - Dodać wywołania api (pobieranie danych)
-* */
+/**
+ * TODO
+ * - Add tests
+ * - Rewrite dance-specification
+ * - Rewrite messaging-specification
+ * - Rewrite music instrument specification
+ * - Rewrite recruitment specification
+ */
