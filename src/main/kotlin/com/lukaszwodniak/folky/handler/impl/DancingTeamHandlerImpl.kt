@@ -4,7 +4,10 @@ import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.mapper.DanceMapper
 import com.lukaszwodniak.folky.mapper.DancingTeamMapper
+import com.lukaszwodniak.folky.mapper.FilterMapper
 import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.records.Pagination
+import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
@@ -83,9 +86,26 @@ class DancingTeamHandlerImpl(
         return UserMapper.INSTANCE.map(dancingTeamService.getTeamMusicians(teamId))
     }
 
-    override fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto {
-        val pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
+    override fun handleGetTeams(
+        pagination: Pagination,
+        sortObject: SortObject,
+        searchPhrase: String?
+    ): PageDancingTeamListElementDto {
+        val pageRequest = PageRequest.of(pagination.page, pagination.size, Sort.by(sortObject.direction, sortObject.orderBy))
         val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase)
+        return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams)
+    }
+
+    override fun handleGetTeams(
+        pagination: Pagination,
+        sortObject: SortObject,
+        searchPhrase: String?,
+        filterObject: FilterObjectDto?
+    ): PageDancingTeamListElementDto {
+        val pageRequest =
+            PageRequest.of(pagination.page, pagination.size, Sort.by(sortObject.direction, sortObject.orderBy))
+        val mappedFilterObject = filterObject?.let { FilterMapper.mapFilterObject(it) }
+        val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase, mappedFilterObject)
         return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams)
     }
 

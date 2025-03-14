@@ -1,10 +1,8 @@
 package com.lukaszwodniak.folky.handler
 
-import com.lukaszwodniak.folky.rest.specification.models.DanceDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
-import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
-import com.lukaszwodniak.folky.rest.specification.models.UserDto
+import com.lukaszwodniak.folky.records.Pagination
+import com.lukaszwodniak.folky.records.SortObject
+import com.lukaszwodniak.folky.rest.specification.models.*
 
 /**
  * DancingTeamHandler
@@ -22,7 +20,19 @@ interface DancingTeamHandler {
     fun handleGetTeamDances(teamId: Long): MutableList<DanceDto>
     fun handleGetTeamDancers(teamId: Long): MutableList<UserDto>
     fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto>
-    fun handleGetTeams(page: Int, size: Int, searchPhrase: String?): PageDancingTeamListElementDto
+    fun handleGetTeams(
+        pagination: Pagination,
+        sortObject: SortObject,
+        searchPhrase: String?
+    ): PageDancingTeamListElementDto
+
+    fun handleGetTeams(
+        pagination: Pagination,
+        sortObject: SortObject,
+        searchPhrase: String?,
+        filterObject: FilterObjectDto?
+    ): PageDancingTeamListElementDto
+
     fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto>
     fun handleGetSubscribedTeams(): MutableList<DancingTeamListElementDto>
     fun handleGetSubscribedTeams(id: Long, page: Int, size: Int): PageDancingTeamListElementDto

@@ -42,6 +42,17 @@ class FileUtils {
             }
         }
 
+        fun deleteTeamDirectory(dancingTeam: DancingTeam) {
+            val targetPath = Paths.get("${UPLOADS_DIRECTORY}${File.separator}${dancingTeam.filesUUID}${File.separator}")
+            if (Files.exists(targetPath)) {
+                try {
+                    File(targetPath.toUri()).deleteRecursively()
+                } catch (e: Exception) {
+                    logger.error("Error during deleting team directory. Reason: ${e.localizedMessage}")
+                }
+            }
+        }
+
         fun saveFiles(dancingTeam: DancingTeam, files: MutableList<MultipartFile>) {
             val basePath = "${UPLOADS_DIRECTORY}${File.separator}${dancingTeam.filesUUID}"
             try {

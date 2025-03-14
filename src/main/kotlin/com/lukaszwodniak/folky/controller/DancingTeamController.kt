@@ -2,8 +2,11 @@ package com.lukaszwodniak.folky.controller
 
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
+import com.lukaszwodniak.folky.records.Pagination
+import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamApi
 import com.lukaszwodniak.folky.rest.specification.models.*
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -59,8 +62,34 @@ class DancingTeamController(
         phrase: String?,
         page: Int?,
         size: Int?,
+        orderBy: String?,
+        direction: String?,
     ): ResponseEntity<PageDancingTeamListElementDto> {
-        val teams = dancingTeamHandler.handleGetTeams(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE, phrase)
+        val pagination = Pagination(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE)
+        val sort = SortObject(
+            orderBy ?: DEFAULT_SORT_COLUMN,
+            direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION)
+        val teams = dancingTeamHandler.handleGetTeams(pagination, sort, phrase)
+        return ResponseEntity.ok(teams)
+    }
+
+    @EndpointLogger
+    override fun getFilteredTeams(
+        phrase: String?,
+        page: Int?,
+        size: Int?,
+        orderBy: String?,
+        direction: String?,
+        filterObject: FilterObjectDto?
+    ): ResponseEntity<PageDancingTeamListElementDto> {
+        val teams = dancingTeamHandler.handleGetTeams(
+            Pagination(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE),
+            SortObject(
+                orderBy ?: DEFAULT_SORT_COLUMN,
+                direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION),
+            phrase,
+            filterObject
+        )
         return ResponseEntity.ok(teams)
     }
 
@@ -95,5 +124,7 @@ class DancingTeamController(
     companion object {
         private const val DEFAULT_PAGE_NUMBER: Int = 0
         private const val DEFAULT_PAGE_SIZE: Int = 10
+        private const val DEFAULT_SORT_COLUMN: String = "id"
+        private val DEFAULT_SORT_DIRECTION: Sort.Direction = Sort.Direction.DESC
     }
 }
