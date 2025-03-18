@@ -2,10 +2,14 @@ package com.lukaszwodniak.folky.mapper
 
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.SocialMedia
+import com.lukaszwodniak.folky.records.FilterTeamsObject
+import com.lukaszwodniak.folky.records.Range
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDataDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.FilterObjectDto
 import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.RangeDto
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Named
@@ -39,6 +43,7 @@ interface DancingTeamMapper {
     @Mapping(source = "dancingTeam", target = "logo", qualifiedByName = ["mapLogo"])
     fun mapToListElement(dancingTeam: DancingTeam): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
+
 
     companion object {
         val INSTANCE: DancingTeamMapper = Mappers.getMapper(DancingTeamMapper::class.java)

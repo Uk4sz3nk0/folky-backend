@@ -4,20 +4,26 @@ import com.lukaszwodniak.folky.error.DancingTeamWithGivenNameExistsException
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.model.*
 import com.lukaszwodniak.folky.records.DancingTeamFiles
+import com.lukaszwodniak.folky.records.FilterTeamsObject
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
+import com.lukaszwodniak.folky.utils.FileUtils
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Root
 import lombok.RequiredArgsConstructor
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.time.LocalDate
 import java.util.*
 import kotlin.io.path.Path
 
@@ -72,6 +78,8 @@ class DancingTeamServiceImpl(
     }
 
     override fun deleteTeam(teamId: Long) {
+        val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
+        FileUtils.deleteTeamDirectory(dancingTeam)
         dancingTeamRepository.deleteById(teamId)
     }
 
@@ -106,6 +114,90 @@ class DancingTeamServiceImpl(
             dancingTeamRepository.findAllByNameContainsIgnoreCase(searchPhrase, pageRequest)
         } else {
             dancingTeamRepository.findAll(pageRequest)
+        }
+    }
+
+    override fun getTeams(
+        pageRequest: PageRequest,
+        searchPhrase: String?,
+        filterTeamsObject: FilterTeamsObject?
+    ): Page<DancingTeam> {
+        if (filterTeamsObject != null) {
+            var filterSpecification: Specification<DancingTeam> = Specification.where(null)
+
+
+            val searchPhrasePredicate = searchPhrase?.let {
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                    cb.like(root.get("name"), "%$searchPhrase%")
+                }
+            }
+            if (searchPhrasePredicate != null) {
+                filterSpecification = filterSpecification.and(searchPhrasePredicate)
+            }
+
+            val creationYearPredicate = filterTeamsObject.creationDate?.let {
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                    val startDate = LocalDate.of(it.start, java.time.Month.JANUARY, 1)
+                    val endDate = LocalDate.of(it.end, java.time.Month.DECEMBER, 31)
+
+                    cb.between(root.get("creationDate"), startDate, endDate)
+                }
+            }
+            if (creationYearPredicate != null) {
+                filterSpecification = filterSpecification.and(creationYearPredicate)
+            }
+
+            val dancersAmountPredicate = filterTeamsObject.dancersAmount?.let {
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+                    criteriaBuilder.between(root.get("dancersAmount"), it.start, it.end)
+                }
+            }
+            if (dancersAmountPredicate != null) {
+                filterSpecification = filterSpecification.and(dancersAmountPredicate)
+            }
+
+            val musicianAmountPredicate = filterTeamsObject.musiciansAmount?.let {
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+                    criteriaBuilder.between(root.get("musiciansAmount"), it.start, it.end)
+                }
+            }
+            if (musicianAmountPredicate != null) {
+                filterSpecification = filterSpecification.and(musicianAmountPredicate)
+            }
+
+            val regionsPredicate = filterTeamsObject.selectedRegions.takeIf { it.isNotEmpty() }?.let {
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, _: CriteriaBuilder ->
+                    root.get<Any>("region").get<Long>("id").`in`(it)
+                }
+            }
+            if (regionsPredicate != null) {
+                filterSpecification = filterSpecification.and(regionsPredicate)
+            }
+
+            val socialMediaPredicate = filterTeamsObject.ownedSocialMedia
+                .map {
+                    if (it == TIKTOK_FILTER_NAME) CORRECT_TIKTOK_FILTER_NAME else it
+                }
+                .takeIf { it.isNotEmpty() }
+                ?.let { socialPlatforms ->
+                    Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+
+                        val predicates = socialPlatforms.map { platform ->
+                            criteriaBuilder.isNotNull(
+                                root.get<SocialMedia>("socialMedia").get<String>("${platform}Url")
+                            )
+                        }
+
+                        criteriaBuilder.or(*predicates.toTypedArray())
+                    }
+                }
+            if (socialMediaPredicate != null) {
+                filterSpecification = filterSpecification.and(socialMediaPredicate)
+            }
+
+            return dancingTeamRepository.findAll(filterSpecification, pageRequest)
+        } else {
+            return getTeams(pageRequest, searchPhrase)
         }
     }
 
@@ -167,6 +259,8 @@ class DancingTeamServiceImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(DancingTeamServiceImpl::class.java)
+        private const val TIKTOK_FILTER_NAME: String = "tik-tok"
+        private const val CORRECT_TIKTOK_FILTER_NAME: String = "tikTok"
         const val UPLOADS_DIRECTORY: String = "storage"
         const val IMAGES_DIRECTORY: String = "images"
     }

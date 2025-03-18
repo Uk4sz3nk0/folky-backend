@@ -32,6 +32,18 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: orderBy
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: direction
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
       responses:
         "200":
           description: Ok. Successful response will return ok status and list of dancing teams
@@ -73,6 +85,57 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
+  /api/teams/filtered:
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: getFilteredTeams
+      parameters:
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
+        - name: orderBy
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: direction
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterObject"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dancing teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageDancingTeamListElement"
   /api/teams/{id}:
     get:
       tags:
@@ -98,8 +161,8 @@ paths:
         - "DancingTeam"
       operationId: deleteTeam
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -409,3 +472,30 @@ components:
         tiktokUrl:
           type: string
           nullable: true
+    Range:
+      type: object
+      properties:
+        start:
+          type: integer
+        end:
+          type: integer
+    FilterObject:
+      type: object
+      properties:
+        creationDate:
+          $ref: "#/components/schemas/Range"
+        dancersAmount:
+          $ref: "#/components/schemas/Range"
+        musiciansAmount:
+          $ref: "#/components/schemas/Range"
+        selectedRegions:
+          type: array
+          items:
+            type: integer
+            format: int64
+          nullable: true
+        ownedSocialMedia:
+          type: array
+          items:
+            type: string
+          nullable: false
