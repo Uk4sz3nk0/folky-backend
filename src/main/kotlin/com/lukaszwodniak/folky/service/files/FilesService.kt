@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.service.files
 import com.lukaszwodniak.folky.enums.FileType
 import com.lukaszwodniak.folky.model.DancingTeam
 import org.springframework.core.io.Resource
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile
  * @author Łukasz Wodniak
  */
 
+@Service
 interface FilesService {
 
     fun getFile(filename: String): Resource

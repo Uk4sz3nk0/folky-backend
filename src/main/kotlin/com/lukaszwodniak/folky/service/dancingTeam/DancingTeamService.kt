@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.FilterTeamsObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.stereotype.Service
 
 /**
  * DancingTeamService
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest
  * @author Łukasz Wodniak
  */
 
+@Service
 interface DancingTeamService {
 
     fun addTeam(team: DancingTeam, user: User?): DancingTeam

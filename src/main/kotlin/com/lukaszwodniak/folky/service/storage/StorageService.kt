@@ -2,6 +2,7 @@ package com.lukaszwodniak.folky.service.storage
 
 import com.lukaszwodniak.folky.enums.StoredFileType
 import org.springframework.core.io.Resource
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
@@ -11,6 +12,7 @@ import java.util.*
  * @author Łukasz Wodniak
  */
 
+@Service
 interface StorageService {
 
     fun storeFile(fileType: StoredFileType, teamUUID: UUID, file: MultipartFile)

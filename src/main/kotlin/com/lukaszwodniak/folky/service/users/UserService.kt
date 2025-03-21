@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.records.RegisterUserRequest
 import com.lukaszwodniak.folky.records.UserData
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.stereotype.Service
 
 /**
  * UserService
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest
  * @author Łukasz Wodniak
  */
 
+@Service
 interface UserService {
 
     fun registerUser(registerRequest: RegisterUserRequest, type: UserType = UserType.NORMAL): User?

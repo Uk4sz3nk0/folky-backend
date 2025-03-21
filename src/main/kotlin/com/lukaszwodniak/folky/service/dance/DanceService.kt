@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.service.dance
 
 import com.lukaszwodniak.folky.model.Dance
+import org.springframework.stereotype.Service
 
 /**
  * DanceService
@@ -9,6 +10,7 @@ import com.lukaszwodniak.folky.model.Dance
  * @author Łukasz Wodniak
  */
 
+@Service
 interface DanceService {
 
     fun addDance(dance: Dance): Dance

@@ -4,6 +4,7 @@ import com.lukaszwodniak.folky.enums.RecruitmentRequestType
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.Recruitment
 import com.lukaszwodniak.folky.model.RecruitmentRequest
+import org.springframework.stereotype.Service
 
 /**
  * RecruitmentService
@@ -12,6 +13,7 @@ import com.lukaszwodniak.folky.model.RecruitmentRequest
  * @author Łukasz Wodniak
  */
 
+@Service
 interface RecruitmentService {
 
     fun createRecruitment(recruitment: Recruitment, dancingTeam: DancingTeam)

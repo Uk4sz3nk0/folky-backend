@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.service.translation
 
 import com.lukaszwodniak.folky.model.Translation
+import org.springframework.stereotype.Service
 import java.util.*
 
 /**
@@ -10,6 +11,7 @@ import java.util.*
  * @author Łukasz Wodniak
  */
 
+@Service
 interface TranslationService {
 
     fun getValue(language: String, specifier: String): String?

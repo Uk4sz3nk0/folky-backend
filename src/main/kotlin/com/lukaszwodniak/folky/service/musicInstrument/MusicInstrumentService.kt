@@ -2,6 +2,7 @@ package com.lukaszwodniak.folky.service.musicInstrument
 
 import com.lukaszwodniak.folky.model.MusicInstrument
 import com.lukaszwodniak.folky.model.MusicInstrumentType
+import org.springframework.stereotype.Service
 
 /**
  * MusicInstrument
@@ -10,6 +11,7 @@ import com.lukaszwodniak.folky.model.MusicInstrumentType
  * @author Łukasz Wodniak
  */
 
+@Service
 interface MusicInstrumentService {
 
     fun addInstrumentType(instrumentType: MusicInstrumentType): MusicInstrumentType

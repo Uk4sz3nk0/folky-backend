@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.service.utils
 
 import com.lukaszwodniak.folky.enums.DeviceType
+import org.springframework.stereotype.Service
 
 /**
  * UtilsService
@@ -9,6 +10,7 @@ import com.lukaszwodniak.folky.enums.DeviceType
  * @author Łukasz Wodniak
  */
 
+@Service
 interface UtilsService {
 
     fun addDeviceToken(token: String, deviceType: DeviceType): Boolean

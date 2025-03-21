@@ -1,6 +1,7 @@
 package com.lukaszwodniak.folky.service.messagingService
 
 import com.lukaszwodniak.folky.records.MessageRequest
+import org.springframework.stereotype.Service
 
 /**
  * MessagingService
@@ -9,6 +10,7 @@ import com.lukaszwodniak.folky.records.MessageRequest
  * @author Łukasz Wodniak
  */
 
+@Service
 interface MessagingService {
 
     /**

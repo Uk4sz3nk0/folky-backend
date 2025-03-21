@@ -2,6 +2,7 @@ package com.lukaszwodniak.folky.service.region
 
 import com.lukaszwodniak.folky.model.Region
 import com.lukaszwodniak.folky.model.Translation
+import org.springframework.stereotype.Service
 
 
 /**
@@ -11,6 +12,7 @@ import com.lukaszwodniak.folky.model.Translation
  * @author Łukasz Wodniak
  */
 
+@Service
 interface RegionService {
 
     fun addRegion(region: Region, translations: MutableList<Translation>): Region
