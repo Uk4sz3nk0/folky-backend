@@ -32,9 +32,9 @@ class FilesServiceImpl(
         Paths.get(UPLOADS_DIRECTORY + File.separator)
 
     init {
-        if (!Files.exists(filesUploadDirectory)) {
-            Files.createDirectories(filesUploadDirectory)
-        }
+//        if (!Files.exists(filesUploadDirectory)) {
+//            Files.createDirectories(filesUploadDirectory)
+//        }
     }
 
     override fun getFile(filename: String): Resource {
