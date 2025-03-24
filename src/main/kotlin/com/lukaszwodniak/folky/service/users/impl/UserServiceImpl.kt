@@ -24,6 +24,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * UserServiceImpl
@@ -159,10 +161,9 @@ class UserServiceImpl(
     }
 
     private fun generateDancingTeam(registerDancingTeamUserRequest: RegisterDancingTeamUserRequest): DancingTeam {
-        val dirUUID = FilesServiceImpl.generateTeamDirectory()
         return DancingTeam(
             name = registerDancingTeamUserRequest.teamName,
-            filesUUID = dirUUID,
+            filesUUID = UUID.randomUUID(),
             description = registerDancingTeamUserRequest.teamDescription ?: "",
             creationDate = LocalDate.of(registerDancingTeamUserRequest.creationYear ?: 1900, 1, 1),
             region = registerDancingTeamUserRequest.region ?: regionRepository.findById(1)

@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.records.FilterTeamsObject
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
+import com.lukaszwodniak.folky.service.files.FilesService
 import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import com.lukaszwodniak.folky.utils.FileUtils
 import jakarta.persistence.criteria.CriteriaBuilder
@@ -37,7 +38,8 @@ import kotlin.io.path.Path
 @RequiredArgsConstructor
 class DancingTeamServiceImpl(
     private val dancingTeamRepository: DancingTeamRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val filesService: FilesService
 ) : DancingTeamService {
 
     override fun addTeam(team: DancingTeam, user: User?): DancingTeam {
@@ -48,7 +50,7 @@ class DancingTeamServiceImpl(
         val mappedTeam = team.copy(
             director = user,
             accountUser = user,
-            filesUUID = FilesServiceImpl.generateTeamDirectory()
+            filesUUID = UUID.randomUUID()
         )
         mappedTeam.socialMedia?.dancingTeam = mappedTeam
         return dancingTeamRepository.saveAndFlush(mappedTeam)
@@ -79,7 +81,7 @@ class DancingTeamServiceImpl(
 
     override fun deleteTeam(teamId: Long) {
         val dancingTeam = dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        FileUtils.deleteTeamDirectory(dancingTeam)
+        filesService.deleteTeamDirectory(dancingTeam.filesUUID)
         dancingTeamRepository.deleteById(teamId)
     }
 
@@ -106,7 +108,7 @@ class DancingTeamServiceImpl(
     override fun getTeamMusicians(teamId: Long): List<User> {
         val dancingTeam =
             dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return dancingTeam.musicians ?: emptyList()
+        return emptyList()
     }
 
     override fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam> {
@@ -239,7 +241,7 @@ class DancingTeamServiceImpl(
         existingTeam.zipCode = newTeamData.zipCode
         existingTeam.dances = newTeamData.dances
         existingTeam.dancers = newTeamData.dancers
-        existingTeam.musicians = newTeamData.musicians
+//        existingTeam.musicians = newTeamData.musicians
         val socialMedia = newTeamData.socialMedia
         socialMedia?.dancingTeam = existingTeam
         existingTeam.socialMedia = socialMedia

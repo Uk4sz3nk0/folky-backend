@@ -10,11 +10,14 @@ import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementD
 import com.lukaszwodniak.folky.rest.specification.models.FilterObjectDto
 import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
 import com.lukaszwodniak.folky.rest.specification.models.RangeDto
+import com.lukaszwodniak.folky.service.files.FilesService
+import org.mapstruct.Context
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Named
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.file.Files
 import java.util.*
@@ -36,14 +39,13 @@ interface DancingTeamMapper {
     @Mapping(target = "accountUser", ignore = true)
     fun map(dancingTeamDto: DancingTeamDto): DancingTeam
     fun map(dancingTeams: List<DancingTeam>): MutableList<DancingTeamDto>
-    fun mapToListElements(dancingTeams: List<DancingTeam>): MutableList<DancingTeamListElementDto>
+    fun mapToListElements(dancingTeams: List<DancingTeam>, @Context filesService: FilesService): MutableList<DancingTeamListElementDto>
 
-    fun mapListElementsToPage(pagedTeams: Page<DancingTeam>): PageDancingTeamListElementDto
+    fun mapListElementsToPage(pagedTeams: Page<DancingTeam>, @Context filesService: FilesService): PageDancingTeamListElementDto
 
     @Mapping(source = "dancingTeam", target = "logo", qualifiedByName = ["mapLogo"])
-    fun mapToListElement(dancingTeam: DancingTeam): DancingTeamListElementDto
+    fun mapToListElement(dancingTeam: DancingTeam, @Context filesService: FilesService): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
-
 
     companion object {
         val INSTANCE: DancingTeamMapper = Mappers.getMapper(DancingTeamMapper::class.java)
@@ -54,20 +56,13 @@ interface DancingTeamMapper {
 
         @Named("musiciansCount")
         @JvmStatic
-        fun musiciansCount(dancingTeam: DancingTeam): Int = dancingTeam.musicians?.size ?: 0
+        fun musiciansCount(dancingTeam: DancingTeam): Int = 0
 
         @Named("mapLogo")
         @JvmStatic
-        fun mapLogo(dancingTeam: DancingTeam): String {
-            val filesDir = File("storage/${dancingTeam.filesUUID}")
-            if (filesDir.exists()) {
-                if (dancingTeam.logoFilename?.isNotEmpty() == true) {
-                    val logoFile = File("storage/${dancingTeam.filesUUID}/${dancingTeam.logoFilename}")
-                    val imageBytes = Files.readAllBytes(logoFile.toPath())
-                    return Base64.getEncoder().encodeToString(imageBytes)
-                }
-            }
-            return ""
+        fun mapLogo(dancingTeam: DancingTeam, @Context filesService: FilesService): String {
+            val file = dancingTeam.logoFilename?.let { filesService.getImageFile(dancingTeam.filesUUID, it) }
+            return file?.inputStream?.use { Base64.getEncoder().encodeToString(it.readBytes()) } ?: ""
         }
     }
 }

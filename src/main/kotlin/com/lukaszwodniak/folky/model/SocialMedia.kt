@@ -22,5 +22,6 @@ data class SocialMedia(
     val instagramUrl: String?,
     val youtubeUrl: String?,
     val twitterUrl: String?,
+    @Column(name = "tiktok_url")
     val tikTokUrl: String?,
 )
