@@ -2,7 +2,9 @@ package com.lukaszwodniak.folky.handler.impl
 
 import com.lukaszwodniak.folky.handler.RegionHandler
 import com.lukaszwodniak.folky.mapper.RegionMapper
+import com.lukaszwodniak.folky.mapper.TranslationMapper
 import com.lukaszwodniak.folky.rest.specification.models.RegionDto
+import com.lukaszwodniak.folky.rest.specification.models.TranslationDto
 import com.lukaszwodniak.folky.service.region.RegionService
 import org.springframework.stereotype.Service
 
@@ -19,7 +21,8 @@ class RegionHandlerImpl(
 ) : RegionHandler {
 
     override fun handleAddRegion(region: RegionDto): RegionDto {
-        val addedRegion = regionService.addRegion(RegionMapper.INSTANCE.map(region))
+        val mappedTranslations = TranslationMapper.INSTANCE.mapFromDto(region.translations)
+        val addedRegion = regionService.addRegion(RegionMapper.INSTANCE.map(region), mappedTranslations)
         return RegionMapper.INSTANCE.map(addedRegion)
     }
 
@@ -35,13 +38,30 @@ class RegionHandlerImpl(
         return RegionMapper.INSTANCE.map(regionService.getByName(phrase))
     }
 
-    override fun handleGetById(id: Long): RegionDto {
-        val region = regionService.getById(id)
-        return RegionMapper.INSTANCE.map(region)
+    override fun handleGetById(id: Long, withTranslations: Boolean?): RegionDto {
+        val region = regionService.getById(id, withTranslations ?: false)
+        val mappedRegion = RegionMapper.INSTANCE.map(region)
+        if (withTranslations!!) {
+            val translations = regionService.getTranslations(id)
+            val mapped = TranslationMapper.INSTANCE.mapToDto(translations)
+            mappedRegion.translations = mapped
+        }
+        return mappedRegion
     }
 
     override fun updateRegion(region: RegionDto): RegionDto {
-        val updatedRegion = regionService.updateRegion(RegionMapper.INSTANCE.map(region))
+        val translations = TranslationMapper.INSTANCE.mapFromDto(region.translations)
+        val updatedRegion = regionService.updateRegion(RegionMapper.INSTANCE.map(region), translations)
         return RegionMapper.INSTANCE.map(updatedRegion)
+    }
+
+    override fun handleGetRegions(): MutableList<RegionDto> {
+        val regions = regionService.getRegions()
+        return RegionMapper.INSTANCE.map(regions)
+    }
+
+    override fun handleGetTranslations(id: Long): MutableList<TranslationDto> {
+        val translations = regionService.getTranslations(id)
+        return TranslationMapper.INSTANCE.mapToDto(translations)
     }
 }

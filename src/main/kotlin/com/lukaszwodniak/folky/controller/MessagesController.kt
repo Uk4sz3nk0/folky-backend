@@ -31,15 +31,8 @@ class MessagesController(
         TODO("Not yet implemented")
     }
 
-    override fun addSubscription(dancingTeamId: Long?): ResponseEntity<Void> {
-        TODO("Not yet implemented")
-    }
-
     override fun deleteDeviceToken(tokenId: Long?): ResponseEntity<Void> {
         TODO("Not yet implemented")
     }
 
-    override fun deleteSubscription(subscriptionId: Long?): ResponseEntity<Void> {
-        TODO("Not yet implemented")
-    }
 }

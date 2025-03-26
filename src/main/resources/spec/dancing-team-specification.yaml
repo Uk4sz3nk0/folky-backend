@@ -6,9 +6,51 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /teams/add-team:
-    description: |
-      Endpoint used for adding new dancing team
+  /api/teams:
+    get:
+      tags:
+        - "DancingTeam"
+      operationId: getTeams
+      parameters:
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
+        - name: orderBy
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: direction
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of dancing teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageDancingTeamListElement"
     post:
       tags:
         - "DancingTeam"
@@ -26,9 +68,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/update-team:
-    description: |
-      Endpoint for updating dancing team
     patch:
       tags:
         - "DancingTeam"
@@ -46,34 +85,65 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/delete-team:
-    description: |
-      Endpoint used for deleting specified by id dancing team
-    delete:
+  /api/teams/filtered:
+    post:
       tags:
         - "DancingTeam"
-      operationId: deleteTeam
+      operationId: getFilteredTeams
       parameters:
-        - name: teamId
+        - name: phrase
           in: query
-          required: true
-          allowEmptyValue: false
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
           schema:
             type: integer
-            format: int64
+            default: 0
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 10
+        - name: orderBy
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: direction
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FilterObject"
       responses:
         "200":
-          description: Ok. Successful response will return ok status
-  /teams/get-by-id:
-    description: |
-      Endpoint used for getting dancing team by id
+          description: Ok. Successful response will return ok status and list of dancing teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageDancingTeamListElement"
+  /api/teams/{id}:
     get:
       tags:
         - "DancingTeam"
       operationId: getById
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -86,16 +156,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DancingTeam"
-  /teams/get-by-region:
+    delete:
+      tags:
+        - "DancingTeam"
+      operationId: deleteTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/teams/regions/{id}:
     description: |
       Endpoint used for getting list of dances by region
-    post:
+    get:
       tags:
         - "DancingTeam"
       operationId: getByRegion
       parameters:
-        - name: regionId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -110,16 +195,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DancingTeam"
-  /teams/get-team-dances:
+  /api/teams/{id}/dances:
     description: |
       Endpoint used for getting dancing team dances
-    post:
+    get:
       tags:
         - "DancingTeam"
       operationId: getTeamDances
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -134,16 +219,16 @@ paths:
                 type: array
                 items:
                   $ref: "dance-specification.yaml#/components/schemas/Dance"
-  /teams/get-team-dancers:
+  /api/teams/{id}/dancers:
     description: |
       Endpoint used for getting dancing team dancers
-    post:
+    get:
       tags:
         - "DancingTeam"
       operationId: getTeamDancers
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -158,7 +243,7 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
-  /teams/get-team-musicians:
+  /api/teams/{id}/musicians:
     description: |
       Endpoint used for getting dancing team musicians
     post:
@@ -166,8 +251,8 @@ paths:
         - "DancingTeam"
       operationId: getTeamMusicians
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -182,55 +267,16 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
-  /teams/get-teams:
-    description: |
-      Endpoint used for getting list of dancing teams
-    get:
-      tags:
-        - "DancingTeam"
-      operationId: getTeams
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status and list of dancing teams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DancingTeam"
-  /teams/get-by-name:
-    description: |
-      End[point used for getting list of dancing teams by name
-    get:
-      tags:
-        - "DancingTeam"
-      operationId: getByName
-      parameters:
-        - name: phrase
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status and list of dancing teams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DancingTeam"
-  /teams/get-subscribers:
+  /api/teams/{id}/subscriptions:
     description: |
       Endpoint used for getting list of dancing team subscribers
-    post:
+    get:
       tags:
         - "DancingTeam"
       operationId: getSubscribers
       parameters:
-        - name: teamId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -245,8 +291,101 @@ paths:
                 type: array
                 items:
                   $ref: "user-specification.yaml#/components/schemas/User"
+    post:
+      tags:
+        - "DancingTeam"
+      operationId: addSubscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+    delete:
+      tags:
+        - "DancingTeam"
+      operationId: deleteSubscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/teams/{id}/gallery:
+    description: |
+      Endpoint used for getting gallery images
+    get:
+      tags:
+        - "DancingTeam"
+      operationId: getGalleryImages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return list of images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 components:
   schemas:
+    DancingTeamListElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        logo:
+          type: string
+          nullable: true
+    PageDancingTeamListElement:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DancingTeamListElement"
+        pageable:
+          type: object
+          properties:
+            pageNumber:
+              type: integer
+            pageSize:
+              type: integer
+            offset:
+              type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
     DancingTeam:
       type: object
       properties:
@@ -265,6 +404,14 @@ components:
           format: date
         director:
           $ref: "user-specification.yaml#/components/schemas/User"
+        directorId:
+          type: integer
+          format: int64
+        accountUser:
+          $ref: "user-specification.yaml#/components/schemas/User"
+        accountUserId:
+          type: integer
+          format: int64
         region:
           $ref: "region-specification.yaml#/components/schemas/Region"
         city:
@@ -272,18 +419,83 @@ components:
         street:
           type: string
         homeNumber:
-          type: integer
+          type: string
+          nullable: true
         flatNumber:
           type: integer
+          nullable: true
         zipCode:
           type: string
+          nullable: true
         dances:
           type: array
+          nullable: true
           items:
             $ref: "dance-specification.yaml#/components/schemas/Dance"
         isRecruitmentOpened:
           type: boolean
+          nullable: true
+          default: false
         logoFilename:
           type: string
+          nullable: true
         bannerFilename:
           type: string
+          nullable: true
+        dancersAmount:
+          type: integer
+        musiciansAmount:
+          type: integer
+        subscribersAmount:
+          type: integer
+          format: int64
+        isSubscribed:
+          type: boolean
+          default: false
+        socialMedia:
+          $ref: "#/components/schemas/SocialMedia"
+    SocialMedia:
+      type: object
+      properties:
+        facebookUrl:
+          type: string
+          nullable: true
+        instagramUrl:
+          type: string
+          nullable: true
+        youtubeUrl:
+          type: string
+          nullable: true
+        twitterUrl:
+          type: string
+          nullable: true
+        tiktokUrl:
+          type: string
+          nullable: true
+    Range:
+      type: object
+      properties:
+        start:
+          type: integer
+        end:
+          type: integer
+    FilterObject:
+      type: object
+      properties:
+        creationDate:
+          $ref: "#/components/schemas/Range"
+        dancersAmount:
+          $ref: "#/components/schemas/Range"
+        musiciansAmount:
+          $ref: "#/components/schemas/Range"
+        selectedRegions:
+          type: array
+          items:
+            type: integer
+            format: int64
+          nullable: true
+        ownedSocialMedia:
+          type: array
+          items:
+            type: string
+          nullable: false

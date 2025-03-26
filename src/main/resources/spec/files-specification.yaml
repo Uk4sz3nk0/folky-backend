@@ -6,94 +6,123 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /api/files/upload-files:
+  /api/files/{teamId}/{fileType}:
     description: |
-      Endpoint used for uploading files
-    post:
-      tags:
-        - "Files"
-      operationId: uploadFiles
-      parameters:
-        - name: teamId
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status after file upload
-  /api/files/get-files-list:
-    description: |
-      Endpoint used for getting list of files (admin), for specific will use different endpoints
+      Endpoint used to sending new images on server,
+      or getting existing images
     get:
       tags:
         - "Files"
-      operationId: getFilesList
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status and list of files.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /api/files/get-team-files:
-    description: |
-      Endpoint used for getting dancing team files list
-    get:
-      tags:
-        - "Files"
-      operationId: getTeamFiles
+      operationId: getImage
       parameters:
         - name: teamId
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
             type: integer
             format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status and list of team files
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /api/files/get-file:
-    description: |
-      Endpoint used for getting requested file
-    get:
-      tags:
-        - "Files"
-      operationId: getFile
-      parameters:
-        - name: filename
-          in: query
+        - name: fileType
+          in: path
           required: true
           allowEmptyValue: false
           schema:
             type: string
+        - name: filename
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+            nullable: true
       responses:
         "200":
-          description: Ok. Successful response will return ok status and file
+          description: Ok. Successful response will return specified file
           content:
             application/octet-stream:
               schema:
                 type: string
                 format: binary
+    post:
+      tags:
+        - "Files"
+      operationId: saveNewImage
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: fileType
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Ok. Image has been successfully saved
+    put:
+      tags:
+        - "Files"
+      operationId: updateImage
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: fileType
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Ok. Image has been successfully changed
+  /api/files/{teamId}:
+    delete:
+      tags:
+        - "Files"
+      operationId: deleteImage
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: filename
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+            nullable: true
+      responses:
+        "200":
+          description: Ok. Image has been successfully deleted

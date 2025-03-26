@@ -65,7 +65,7 @@ class RecruitmentServiceImpl(
         type: RecruitmentRequestType
     ): MutableList<RecruitmentRequest> {
         val dancingTeamRecruitments = dancingTeam.recruitments
-        val dancingTeamRecruitmentRequests = dancingTeamRecruitments.filter { recruitment -> recruitment.isOpened }
+        val dancingTeamRecruitmentRequests = dancingTeamRecruitments!!.filter { recruitment -> recruitment.isOpened }
             .flatMap { recruitment -> recruitment.recruitmentRequests }.toMutableList()
         val filteredRequests =
             dancingTeamRecruitmentRequests.filter { recruitmentRequest -> recruitmentRequest.type == type }

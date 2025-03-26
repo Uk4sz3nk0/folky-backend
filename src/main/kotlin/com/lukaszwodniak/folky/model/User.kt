@@ -1,5 +1,8 @@
 package com.lukaszwodniak.folky.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.lukaszwodniak.folky.enums.UserType
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -37,21 +40,18 @@ data class User(
     )
     var instruments: MutableList<MusicInstrument>,
     @OneToMany(mappedBy = "user")
-    val userRoles: List<UserRole> = emptyList(),
+    val userRoles: List<UserRole>? = emptyList(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     val recruitmentRequests: MutableList<RecruitmentRequest>,
     var preferredLanguage: String,
     var wantReceivePushNotifications: Boolean,
     var wantReceiveEmailNotifications: Boolean,
-    @ManyToMany
-    @JoinTable(
-        name = "subscriptions",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "dancing_team_id")]
-    )
-    val subscribedTeams: MutableSet<DancingTeam>,
     @OneToMany
     @JoinColumn(name = "user_id")
     val deviceTokens: MutableSet<DeviceToken>,
-    val uid: String
+    val uid: String,
+    @Enumerated(EnumType.STRING)
+    val userType: UserType,
+    @OneToMany(mappedBy = "accountUser")
+    val dancingTeams: MutableList<DancingTeam> = mutableListOf()
 )
