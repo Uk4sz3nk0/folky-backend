@@ -51,12 +51,12 @@ data class DancingTeam(
         inverseJoinColumns = [JoinColumn(name = "dancer_id")]
     )
     var dancers: MutableList<User>? = mutableListOf(),
-    @ManyToMany
-    @JoinTable(
-        joinColumns = [JoinColumn(name = "team_id")],
-        inverseJoinColumns = [JoinColumn(name = "musician_id")]
-    )
-    var musicians: MutableList<User>? = mutableListOf(),
+//    @ManyToMany
+//    @JoinTable(
+//        joinColumns = [JoinColumn(name = "team_id")],
+//        inverseJoinColumns = [JoinColumn(name = "musician_id")]
+//    )
+//    var musicians: MutableList<User>? = mutableListOf(),
     var logoFilename: String? = null,
     var bannerFilename: String? = null,
     var isRecruitmentOpened: Boolean? = false,

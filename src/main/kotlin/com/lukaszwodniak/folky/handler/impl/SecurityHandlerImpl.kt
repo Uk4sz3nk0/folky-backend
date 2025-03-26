@@ -9,6 +9,7 @@ import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.security.SecurityService
+import com.lukaszwodniak.folky.service.files.FilesService
 import com.lukaszwodniak.folky.service.users.UserService
 import org.springframework.stereotype.Service
 
@@ -24,6 +25,7 @@ class SecurityHandlerImpl(
     private val securityService: SecurityService,
     private val userService: UserService,
     private val regionRepository: RegionRepository,
+    private val filesService: FilesService
 ) : SecurityHandler {
 
     override fun handleRegisterUser(registerUserRequestDto: RegisterUserRequestDto) {
@@ -57,7 +59,7 @@ class SecurityHandlerImpl(
         mappedResponse.userData = user?.let { UserMapper.INSTANCE.mapUserData(it) }
         mappedResponse.dancingTeamData = user?.let {
             if (it.userType == UserType.DANCING_TEAM) {
-                it.dancingTeams.map { dancingTeam -> DancingTeamMapper.INSTANCE.mapToListElement(dancingTeam) }
+                it.dancingTeams.map { dancingTeam -> DancingTeamMapper.INSTANCE.mapToListElement(dancingTeam, filesService) }
             } else {
                 null
             }
