@@ -43,7 +43,6 @@ interface DancingTeamMapper {
 
     fun mapListElementsToPage(pagedTeams: Page<DancingTeam>, @Context filesService: FilesService): PageDancingTeamListElementDto
 
-    @Mapping(source = "dancingTeam", target = "logo", qualifiedByName = ["mapLogo"])
     fun mapToListElement(dancingTeam: DancingTeam, @Context filesService: FilesService): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
 
