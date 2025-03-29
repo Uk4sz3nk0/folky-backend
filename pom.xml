@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.lukaszwodniak</groupId>
     <artifactId>folky</artifactId>
-    <version>1.4.15-SNAPSHOT</version>
+    <version>1.4.16-SNAPSHOT</version>
     <name>Folky</name>
     <description>Thesis application project</description>
     <url/>
