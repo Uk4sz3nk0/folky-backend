@@ -360,6 +360,9 @@ components:
         logo:
           type: string
           nullable: true
+        logoFilename:
+          type: string
+          nullable: true
     PageDancingTeamListElement:
       type: object
       properties:
