@@ -1,6 +1,5 @@
 package com.lukaszwodniak.folky.model
 
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -71,4 +70,7 @@ data class DancingTeam(
     var socialMedia: SocialMedia?,
     val dancersAmount: Int = 0,
     val musiciansAmount: Int = 0,
+    @OneToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact? = null,
 )

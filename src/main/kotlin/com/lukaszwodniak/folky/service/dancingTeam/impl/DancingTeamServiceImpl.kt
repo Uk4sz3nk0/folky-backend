@@ -9,8 +9,6 @@ import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.files.FilesService
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
-import com.lukaszwodniak.folky.utils.FileUtils
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
@@ -113,7 +111,11 @@ class DancingTeamServiceImpl(
 
     override fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam> {
         return if (!searchPhrase.isNullOrBlank()) {
-            dancingTeamRepository.findAllByNameContainsIgnoreCase(searchPhrase, pageRequest)
+            dancingTeamRepository.findAllByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(
+                searchPhrase,
+                searchPhrase,
+                pageRequest
+            )
         } else {
             dancingTeamRepository.findAll(pageRequest)
         }
@@ -131,6 +133,8 @@ class DancingTeamServiceImpl(
             val searchPhrasePredicate = searchPhrase?.let {
                 Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
                     cb.like(root.get("name"), "%$searchPhrase%")
+                }.or { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                    cb.like(root.get("description"), "%$searchPhrase%")
                 }
             }
             if (searchPhrasePredicate != null) {
@@ -151,7 +155,11 @@ class DancingTeamServiceImpl(
 
             val dancersAmountPredicate = filterTeamsObject.dancersAmount?.let {
                 Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
-                    criteriaBuilder.between(root.get("dancersAmount"), it.start, it.end)
+                    if (it.end <= MORE_PLUS_RANGE) {
+                        criteriaBuilder.between(root.get("dancersAmount"), it.start, it.end)
+                    } else {
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("dancersAmount"), it.start)
+                    }
                 }
             }
             if (dancersAmountPredicate != null) {
@@ -160,7 +168,11 @@ class DancingTeamServiceImpl(
 
             val musicianAmountPredicate = filterTeamsObject.musiciansAmount?.let {
                 Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
-                    criteriaBuilder.between(root.get("musiciansAmount"), it.start, it.end)
+                    if (it.end <= MORE_PLUS_RANGE) {
+                        criteriaBuilder.between(root.get("musiciansAmount"), it.start, it.end)
+                    } else {
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("musiciansAmount"), it.start)
+                    }
                 }
             }
             if (musicianAmountPredicate != null) {
@@ -263,6 +275,7 @@ class DancingTeamServiceImpl(
         private val logger = LoggerFactory.getLogger(DancingTeamServiceImpl::class.java)
         private const val TIKTOK_FILTER_NAME: String = "tik-tok"
         private const val CORRECT_TIKTOK_FILTER_NAME: String = "tikTok"
+        private const val MORE_PLUS_RANGE: Int = 50
         const val UPLOADS_DIRECTORY: String = "storage"
         const val IMAGES_DIRECTORY: String = "images"
     }
