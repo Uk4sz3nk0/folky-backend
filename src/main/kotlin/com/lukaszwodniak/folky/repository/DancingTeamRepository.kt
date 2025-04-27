@@ -20,6 +20,7 @@ interface DancingTeamRepository : JpaRepository<DancingTeam, Long>, JpaSpecifica
 
     fun findAllByNameContainsIgnoreCase(phrase: String): Optional<List<DancingTeam>>
     fun findAllByNameContainsIgnoreCase(phrase: String, pageable: Pageable): Page<DancingTeam>
+    fun findAllByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(phrase: String, phrase1: String, pageable: Pageable): Page<DancingTeam>
 
     fun existsByNameIgnoreCase(name: String): Boolean
 }
