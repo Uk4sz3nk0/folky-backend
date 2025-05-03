@@ -47,6 +47,7 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 "/api/regions/**",
                 "/api/teams/**",
                 "/api/files/**",
+                "/api/address/**",
                 "/_ah/health"
             )
     }
