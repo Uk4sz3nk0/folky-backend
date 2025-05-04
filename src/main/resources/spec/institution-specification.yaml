@@ -111,6 +111,42 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
+  /api/institution/{id}/events:
+    get:
+      description: |
+        Endpoint used for getting institution events
+      tags:
+        - "Institution"
+      operationId: getEvents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and institution evetns
+          content:
+            application/json:
+              schema:
+                $ref: "events-specification.yaml#/components/schemas/PagedEvents"
 components:
   schemas:
     PagedInstitutions:

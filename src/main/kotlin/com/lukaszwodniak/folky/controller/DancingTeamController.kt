@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.controller
 
+import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
@@ -104,6 +105,26 @@ class DancingTeamController(
     override fun getGalleryImages(id: Long?): ResponseEntity<MutableList<String>> {
         val images = id?.let { dancingTeamHandler.handleGetGalleryImages(it) }
         return ResponseEntity.ok(images)
+    }
+
+    @EndpointLogger
+    override fun getTeamEvents(
+        id: Long?,
+        page: Long?,
+        size: Int?,
+        connectionTypes: MutableList<String>?,
+        eventTime: MutableList<String>?
+    ): ResponseEntity<PagedEventsDto> {
+        val events = id?.let {
+            dancingTeamHandler.handleGetEvents(
+                it,
+                connectionTypes ?: emptyList(),
+                page?.toInt() ?: DEFAULT_PAGE_NUMBER,
+                size ?: DEFAULT_PAGE_SIZE,
+                eventTime
+            )
+        }
+        return ResponseEntity.ok(events)
     }
 
     companion object {

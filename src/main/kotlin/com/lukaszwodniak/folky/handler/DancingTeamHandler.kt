@@ -39,4 +39,5 @@ interface DancingTeamHandler {
     fun handleAddSubscription(teamId: Long)
     fun handleDeleteSubscription(teamId: Long)
     fun handleGetGalleryImages(id: Long): MutableList<String>
+    fun handleGetEvents(id: Long, connectionTypes: List<String>, page: Int, size: Int, eventTime: List<String>?): PagedEventsDto
 }

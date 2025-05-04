@@ -4,6 +4,7 @@ import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.InstitutionHandler
 import com.lukaszwodniak.folky.rest.institution.specification.api.InstitutionApi
 import com.lukaszwodniak.folky.rest.institution.specification.models.InstitutionDto
+import com.lukaszwodniak.folky.rest.institution.specification.models.PagedEventsDto
 import com.lukaszwodniak.folky.rest.institution.specification.models.PagedInstitutionsDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -51,6 +52,10 @@ class InstitutionController(
             institution?.let { institutionHandler.handleUpdateInstitution(institutionId, it) }
         }
         return ResponseEntity.ok().build()
+    }
+
+    override fun getEvents(id: Long?, page: Long?, size: Long?): ResponseEntity<PagedEventsDto> {
+        TODO("Not yet implemented")
     }
 
     companion object {

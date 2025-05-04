@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.enums.UserType
 import com.lukaszwodniak.folky.error.users.EmailInUseException
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.User
+import com.lukaszwodniak.folky.model.UserRole
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
@@ -111,6 +112,13 @@ class UserServiceImpl(
         }
     }
 
+    override fun isContextAdmin(): Boolean {
+        val contextUser = getUserFromContext()
+        return contextUser?.let { user ->
+            user.userRoles?.map { it.role.name }?.contains(ADMIN_ROLE)
+        } ?: false
+    }
+
     private fun createUserOnFirebase(email: String, password: String): String {
         val userCreateRequest = CreateRequest()
         userCreateRequest.setEmail(email)
@@ -179,5 +187,6 @@ class UserServiceImpl(
         const val DEFAULT_PREFERRED_LANGUAGE: String = "pl_PL"
         const val DANCING_TEAM_USER_FIRST_NAME: String = "DANCING_TEAM_FIRST_NAME"
         const val DANCING_TEAM_USER_LAST_NAME: String = "DANCING_TEAM_LAST_NAME"
+        private const val ADMIN_ROLE: String = "admin"
     }
 }

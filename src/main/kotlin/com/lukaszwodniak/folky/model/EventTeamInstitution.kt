@@ -15,16 +15,16 @@ import jakarta.persistence.*
 data class EventTeamInstitution(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
-    val event: Event,
+    val event: Event? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    val team: DancingTeam,
+    val team: DancingTeam? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institution_id")
-    val institution: Institution,
+    val institution: Institution? = null,
     @Enumerated(EnumType.STRING)
     val connectionType: EventConnectionType,
 )

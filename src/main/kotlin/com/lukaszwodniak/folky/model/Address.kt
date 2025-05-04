@@ -15,7 +15,7 @@ import javax.validation.constraints.Max
 data class Address(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     @Max(150)
     val street: String,
     @Max(10)

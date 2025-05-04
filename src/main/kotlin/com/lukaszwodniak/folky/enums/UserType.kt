@@ -12,4 +12,5 @@ enum class UserType {
     NORMAL,
     DANCING_TEAM,
     INSTITUTION,
+    UNKNOWN
 }
