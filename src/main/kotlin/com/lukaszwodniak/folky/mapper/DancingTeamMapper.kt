@@ -1,14 +1,17 @@
 package com.lukaszwodniak.folky.mapper
 
 import com.lukaszwodniak.folky.model.DancingTeam
+import com.lukaszwodniak.folky.model.Event
 import com.lukaszwodniak.folky.model.SocialMedia
 import com.lukaszwodniak.folky.records.FilterTeamsObject
 import com.lukaszwodniak.folky.records.Range
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDataDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
 import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.EventDto
 import com.lukaszwodniak.folky.rest.specification.models.FilterObjectDto
 import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
+import com.lukaszwodniak.folky.rest.specification.models.PagedEventsDto
 import com.lukaszwodniak.folky.rest.specification.models.RangeDto
 import com.lukaszwodniak.folky.service.files.FilesService
 import org.mapstruct.Context
@@ -45,6 +48,11 @@ interface DancingTeamMapper {
 
     fun mapToListElement(dancingTeam: DancingTeam, @Context filesService: FilesService): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
+
+    fun mapEventToDto(event: Event): EventDto
+    fun mapEventListToDto(events: List<Event>): List<EventDto>
+
+    fun mapToPagedEvents(events: Page<Event>): PagedEventsDto
 
     companion object {
         val INSTANCE: DancingTeamMapper = Mappers.getMapper(DancingTeamMapper::class.java)

@@ -26,4 +26,5 @@ interface UserService {
     fun getUserById(id: Long): User?
     fun editUser(existingUser: User, updateData: UserData): User?
     fun getUsers(pageRequest: PageRequest, phrase: String?): Page<User>
+    fun isContextAdmin(): Boolean
 }

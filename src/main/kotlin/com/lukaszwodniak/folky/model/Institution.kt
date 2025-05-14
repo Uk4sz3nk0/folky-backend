@@ -35,7 +35,7 @@ data class Institution(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_id")
     val contact: Contact,
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
 )

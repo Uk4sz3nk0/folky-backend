@@ -1,7 +1,5 @@
 package com.lukaszwodniak.folky.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.lukaszwodniak.folky.enums.UserType
 import jakarta.persistence.*
 import java.time.LocalDate

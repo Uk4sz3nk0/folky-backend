@@ -22,7 +22,7 @@ class AddressServiceImpl(
 
     override fun addAddress(address: Address): Long {
         val saved = addressRepository.saveAndFlush(address)
-        return saved.id
+        return saved.id!!
     }
 
     override fun deleteAddress(id: Long) {

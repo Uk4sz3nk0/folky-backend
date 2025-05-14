@@ -171,6 +171,56 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
+  /api/teams/{id}/events:
+    get:
+      description: |
+        Endpoint used for getting team events
+      tags:
+        - "DancingTeam"
+      operationId: getTeamEvents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+        - name: connection-types
+          in: query
+          required: false
+          allowEmptyValue: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: event-time
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and paged team evens
+          content:
+            application/json:
+              schema:
+                $ref: "events-specification.yaml#/components/schemas/PagedEvents"
   /api/teams/regions/{id}:
     description: |
       Endpoint used for getting list of dances by region
