@@ -22,7 +22,7 @@ interface EventsHandler {
     fun handleDeleteEvent(id: Long)
     fun handleDeleteEventPoster(id: Long)
     fun handleGetEvent(id: Long, teamId: Long?): EventDto
-    fun handleGetEvents(page: Int, size: Int): PagedEventsDto
+    fun handleGetEvents(page: Int, size: Int, phrase: String?): PagedEventsDto
     fun handleGetPoster(id: Long): Resource?
     fun handleUpdateEvent(id: Long, eventRequest: EventRequestDto)
     fun handleUpdatePoster(id: Long, poster: MultipartFile)

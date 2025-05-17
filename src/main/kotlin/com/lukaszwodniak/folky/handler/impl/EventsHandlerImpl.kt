@@ -51,8 +51,8 @@ class EventsHandlerImpl(
         return EventsMapper.INSTANCE.mapToDto(event)
     }
 
-    override fun handleGetEvents(page: Int, size: Int): PagedEventsDto {
-        val events = eventsService.getEvents(page, size)
+    override fun handleGetEvents(page: Int, size: Int, phrase: String?): PagedEventsDto {
+        val events = eventsService.getEvents(page, size, phrase)
         return EventsMapper.INSTANCE.mapToPageableDto(events)
     }
 

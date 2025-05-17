@@ -5,9 +5,13 @@ import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamApi
+import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -57,7 +61,8 @@ class DancingTeamController(
         orderBy: String?,
         direction: String?,
     ): ResponseEntity<PageDancingTeamListElementDto> {
-        val pagination = Pagination(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE)
+        val pagination =
+            Pagination(page ?: ControllerCommons.DEFAULT_PAGE_NUMBER, size ?: ControllerCommons.DEFAULT_PAGE_SIZE)
         val sort = SortObject(
             orderBy ?: DEFAULT_SORT_COLUMN,
             direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION)
@@ -74,7 +79,7 @@ class DancingTeamController(
         filterObject: FilterObjectDto?
     ): ResponseEntity<PageDancingTeamListElementDto> {
         val teams = dancingTeamHandler.handleGetTeams(
-            Pagination(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE),
+            Pagination(page ?: ControllerCommons.DEFAULT_PAGE_NUMBER, size ?: ControllerCommons.DEFAULT_PAGE_SIZE),
             SortObject(
                 orderBy ?: DEFAULT_SORT_COLUMN,
                 direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION),
@@ -102,6 +107,7 @@ class DancingTeamController(
         TODO("Not yet implemented")
     }
 
+
     override fun getGalleryImages(id: Long?): ResponseEntity<MutableList<String>> {
         val images = id?.let { dancingTeamHandler.handleGetGalleryImages(it) }
         return ResponseEntity.ok(images)
@@ -119,17 +125,46 @@ class DancingTeamController(
             dancingTeamHandler.handleGetEvents(
                 it,
                 connectionTypes ?: emptyList(),
-                page?.toInt() ?: DEFAULT_PAGE_NUMBER,
-                size ?: DEFAULT_PAGE_SIZE,
+                page?.toInt() ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE,
                 eventTime
             )
         }
         return ResponseEntity.ok(events)
     }
 
+    @EndpointLogger
+    override fun getTeamAchievements(id: Long?, page: Int?, size: Int?): ResponseEntity<PagedAchievementsDto> {
+        val achievements = id?.let {
+            dancingTeamHandler.handleGetTeamAchievements(
+                it,
+                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE
+            )
+        }
+        return ResponseEntity.ok(achievements)
+    }
+
+    @GetMapping("/api/teams/{id}/people")
+    fun getPeople(
+        @PathVariable id: Long?,
+        @RequestParam("page") page: Int?,
+        @RequestParam("size") size: Int?,
+        @RequestParam("phrase") phrase: String?
+    ): ResponseEntity<PagedPeopleDto> {
+        val people = id?.let {
+            dancingTeamHandler.handleGetTeamPeople(
+                it,
+                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE,
+                phrase
+            )
+        }
+
+        return ResponseEntity.ok(people)
+    }
+
     companion object {
-        private const val DEFAULT_PAGE_NUMBER: Int = 0
-        private const val DEFAULT_PAGE_SIZE: Int = 10
         private const val DEFAULT_SORT_COLUMN: String = "id"
         private val DEFAULT_SORT_DIRECTION: Sort.Direction = Sort.Direction.DESC
     }

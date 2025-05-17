@@ -23,7 +23,7 @@ interface EventsService {
     fun deleteEvent(id: Long)
     fun deleteEventPoster(id: Long)
     fun getEvent(id: Long, team: DancingTeam? = null): Event
-    fun getEvents(page: Int, size: Int): Page<Event>
+    fun getEvents(page: Int, size: Int, phrase: String?): Page<Event>
     fun getPoster(id: Long): Resource?
     fun updateEvent(id: Long, event: Event, additionalData: EventAdditionalData?)
     fun updateOrAddPoster(id: Long, poster: MultipartFile)

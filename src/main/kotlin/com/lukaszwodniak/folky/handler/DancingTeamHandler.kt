@@ -2,6 +2,7 @@ package com.lukaszwodniak.folky.handler
 
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
+import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 
 /**
@@ -40,4 +41,6 @@ interface DancingTeamHandler {
     fun handleDeleteSubscription(teamId: Long)
     fun handleGetGalleryImages(id: Long): MutableList<String>
     fun handleGetEvents(id: Long, connectionTypes: List<String>, page: Int, size: Int, eventTime: List<String>?): PagedEventsDto
+    fun handleGetTeamAchievements(id: Long, page: Int, size: Int): PagedAchievementsDto
+    fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto
 }
