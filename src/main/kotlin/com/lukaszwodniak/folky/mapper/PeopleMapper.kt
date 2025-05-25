@@ -21,10 +21,12 @@ import org.springframework.data.domain.Page
 interface PeopleMapper {
 
     fun mapFromDto(person: PersonDto): Person
+
     @Mapping(source = "dancingTeam.id", target = "dancingTeamId")
     fun mapToDto(person: Person): PersonDto
 
     fun mapToDtoList(people: List<Person>): List<PersonDto>
+    fun mapFromDtoList(people: List<PersonDto>): List<Person>
 
     fun mapToPageable(people: Page<Person>): PagedPeopleDto
 

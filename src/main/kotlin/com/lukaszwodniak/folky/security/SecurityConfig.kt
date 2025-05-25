@@ -52,6 +52,7 @@ class SecurityConfiguration(private val tokenAuthenticationFilter: TokenAuthenti
                 "/api/events/**",
                 "/api/achievements/**",
                 "/api/people/**",
+                "/api/dances/**",
                 "/_ah/health"
             )
     }

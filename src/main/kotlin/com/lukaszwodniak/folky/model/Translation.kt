@@ -14,8 +14,8 @@ import jakarta.persistence.*
 data class Translation(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     val language: String,
-    var specifier: String,
+    var specifier: String? = null,
     var value: String
 )

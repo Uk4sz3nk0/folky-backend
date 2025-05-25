@@ -4,6 +4,7 @@ import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.DanceHandler
 import com.lukaszwodniak.folky.rest.dance.specification.api.DanceApi
 import com.lukaszwodniak.folky.rest.specification.models.DanceDto
+import com.lukaszwodniak.folky.rest.specification.models.DanceRequestDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -20,42 +21,28 @@ class DanceController(
 ) : DanceApi {
 
     @EndpointLogger
-    override fun addDance(dance: DanceDto?): ResponseEntity<DanceDto> {
-        val addedDance = dance?.let { danceHandler.handleAddDance(it) }
+    override fun setDance(danceRequest: DanceRequestDto?): ResponseEntity<DanceDto> {
+        val addedDance = danceRequest?.let { danceHandler.handleAddDance(it) }
         return ResponseEntity.ok(addedDance)
     }
 
     @EndpointLogger
     override fun deleteDance(id: Long?): ResponseEntity<Void> {
+        id?.let { danceHandler.handleDeleteDance(it) }
         return ResponseEntity.ok(null)
     }
 
     @EndpointLogger
-    override fun getDanceById(id: Long?): ResponseEntity<DanceDto> {
+    override fun getDanceById(id: Long?): ResponseEntity<DanceRequestDto> {
         val dance = id?.let { danceHandler.handleGetDanceById(it) }
         return ResponseEntity.ok(dance)
     }
 
     @EndpointLogger
-    override fun getDances(): ResponseEntity<MutableList<DanceDto>> {
-        return ResponseEntity.ok(danceHandler.handleGetDances())
-    }
-
-    @EndpointLogger
-    override fun getDancesByLocale(locale: String?): ResponseEntity<MutableList<DanceDto>> {
+    override fun getDances(locale: String?, phrase: String?): ResponseEntity<MutableList<DanceDto>> {
         val dances = locale?.let { danceHandler.handleGetDancesByLocale(it) }
-        return ResponseEntity.ok(dances)
-    }
-
-    @EndpointLogger
-    override fun getDancesByName(phrase: String?): ResponseEntity<MutableList<DanceDto>> {
-        val dances = phrase?.let { danceHandler.handleGetDancesByName(it) }
-        return ResponseEntity.ok(dances)
-    }
-
-    @EndpointLogger
-    override fun updateDance(dance: DanceDto?): ResponseEntity<DanceDto> {
-        val updatedDance = dance?.let { danceHandler.handleUpdateDance(it) }
-        return ResponseEntity.ok(updatedDance)
+            ?: phrase?.let { danceHandler.handleGetDancesByName(it) }
+            ?: danceHandler.handleGetDances()
+        return ResponseEntity.ok(dances.toMutableList())
     }
 }

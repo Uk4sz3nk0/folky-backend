@@ -11,6 +11,7 @@ import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
+import com.lukaszwodniak.folky.rest.people.specification.models.PersonDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.events.EventsService
@@ -77,8 +78,9 @@ class DancingTeamHandlerImpl(
         return DancingTeamMapper.INSTANCE.map(dancingTeamService.getByRegion(region))
     }
 
-    override fun handleGetTeamDances(teamId: Long): MutableList<DanceDto> {
-        return DanceMapper.INSTANCE.map(dancingTeamService.getTeamDances(teamId))
+    override fun handleGetTeamDances(teamId: Long, page: Int, size: Int): PagedDancesDto {
+        val dances = dancingTeamService.getTeamDances(teamId, PageRequest.of(page, size))
+        return DanceMapper.INSTANCE.mapPagedToDto(dances)
     }
 
     override fun handleGetTeamDancers(teamId: Long): MutableList<UserDto> {
@@ -185,5 +187,19 @@ class DancingTeamHandlerImpl(
     override fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto {
         val people = dancingTeamService.getTeamPeople(id, PageRequest.of(page, size), phrase)
         return PeopleMapper.INSTANCE.mapToPageable(people)
+    }
+
+    override fun handleUpdateTeamDances(id: Long, dances: List<DanceDto>) {
+        val mappedDances = DanceMapper.INSTANCE.mapDancesFromDto(dances)
+        dancingTeamService.updateTeamDances(teamId = id, mappedDances)
+    }
+
+    override fun handleRemoveDanceFromDances(teamId: Long, danceId: Long) {
+        dancingTeamService.removeDanceFromTeam(teamId, danceId)
+    }
+
+    override fun handleSetTeamPeople(id: Long, people: List<PersonDto>) {
+        val mappedPeople = PeopleMapper.INSTANCE.mapFromDtoList(people)
+        dancingTeamService.setTeamPeople(id, mappedPeople)
     }
 }
