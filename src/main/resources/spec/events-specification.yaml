@@ -26,6 +26,12 @@ paths:
           allowEmptyValue: true
           schema:
             type: integer
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
       responses:
         "200":
           description: Ok. Successful response will return paged list of events

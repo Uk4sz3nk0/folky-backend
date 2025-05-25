@@ -17,6 +17,9 @@ import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.events.EventsService
 import com.lukaszwodniak.folky.service.files.FilesService
 import com.lukaszwodniak.folky.service.users.UserService
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Root
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.data.domain.Page
@@ -125,9 +128,15 @@ class EventsServiceImpl(
         }
     }
 
-    override fun getEvents(page: Int, size: Int): Page<Event> {
+    override fun getEvents(page: Int, size: Int, phrase: String?): Page<Event> {
         val pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
-        return eventsRepository.findAll(pageRequest)
+        val phrasePredicate = phrase?.let {
+            Specification { root: Root<Event>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                cb.like(cb.lower(root.get("name")), it.lowercase())
+            }
+        }
+        val finalPredicate = phrasePredicate ?: Specification.where(null)
+        return eventsRepository.findAll(finalPredicate, pageRequest)
     }
 
     override fun getPoster(id: Long): Resource? {
@@ -179,10 +188,15 @@ class EventsServiceImpl(
                     deleteParticipant(savedEvent, dancingTeam)
                 }
 
-                val existingCreatorEti = etiRepository.findByEventAndConnectionType(savedEvent, EventConnectionType.CREATOR)
+                val existingCreatorEti =
+                    etiRepository.findByEventAndConnectionType(savedEvent, EventConnectionType.CREATOR)
                 existingCreatorEti.ifPresent { existingEti ->
                     if (existingEti.team != null && existingEti.team != dancingTeam) {
-                        etiRepository.deleteByTeamAndEventAndConnectionType(existingEti.team, event, EventConnectionType.CREATOR)
+                        etiRepository.deleteByTeamAndEventAndConnectionType(
+                            existingEti.team,
+                            event,
+                            EventConnectionType.CREATOR
+                        )
                         val eti = EventTeamInstitution(
                             event = event,
                             team = dancingTeam,

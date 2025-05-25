@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.lukaszwodniak</groupId>
     <artifactId>folky</artifactId>
-    <version>2.3.0-SNAPSHOT</version>
+    <version>2.4.0-SNAPSHOT</version>
     <name>Folky</name>
     <description>Thesis application project</description>
     <url/>
@@ -491,6 +491,52 @@
                                 <dateLibrary>java17</dateLibrary>
                                 <apiPackage>${base.generated.path}.events.specification.api</apiPackage>
                                 <modelPackage>${base.generated.path}.events.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-achievements-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/achievements-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.achievements.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.achievements.specification.models</modelPackage>
+                                <output>${project.build.directory}</output>
+                                <apis/>
+                                <models/>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-people-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spec/people-specification.yaml</inputSpec>
+                            <language>spring</language>
+                            <library>spring-mvc</library>
+                            <generateApiTests>false</generateApiTests>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java17</dateLibrary>
+                                <apiPackage>${base.generated.path}.people.specification.api</apiPackage>
+                                <modelPackage>${base.generated.path}.people.specification.models</modelPackage>
                                 <output>${project.build.directory}</output>
                                 <apis/>
                                 <models/>

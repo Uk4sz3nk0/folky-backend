@@ -46,8 +46,8 @@ class EventsController(
     }
 
     @EndpointLogger
-    override fun getEvents(page: Int?, size: Int?): ResponseEntity<PagedEventsDto> {
-        val events = eventsHandler.handleGetEvents(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE)
+    override fun getEvents(page: Int?, size: Int?, phrase: String?): ResponseEntity<PagedEventsDto> {
+        val events = eventsHandler.handleGetEvents(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE, phrase)
         return ResponseEntity.ok(events)
     }
 

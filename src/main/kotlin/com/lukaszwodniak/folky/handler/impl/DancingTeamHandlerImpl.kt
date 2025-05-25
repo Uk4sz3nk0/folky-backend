@@ -4,15 +4,13 @@ import com.lukaszwodniak.folky.enums.EventConnectionType
 import com.lukaszwodniak.folky.enums.EventTime
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
-import com.lukaszwodniak.folky.mapper.DanceMapper
-import com.lukaszwodniak.folky.mapper.DancingTeamMapper
-import com.lukaszwodniak.folky.mapper.FilterMapper
-import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.mapper.*
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
 import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
+import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.events.EventsService
@@ -177,5 +175,15 @@ class DancingTeamHandlerImpl(
         val events = eventsService.getTeamEvents(team, page, size, mappedConnectionTypes, mappedEventTime)
 
         return DancingTeamMapper.INSTANCE.mapToPagedEvents(events)
+    }
+
+    override fun handleGetTeamAchievements(id: Long, page: Int, size: Int): PagedAchievementsDto {
+        val achievements = dancingTeamService.getTeamAchievements(id, PageRequest.of(page, size))
+        return DancingTeamMapper.INSTANCE.mapAchievementsToDto(achievements)
+    }
+
+    override fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto {
+        val people = dancingTeamService.getTeamPeople(id, PageRequest.of(page, size), phrase)
+        return PeopleMapper.INSTANCE.mapToPageable(people)
     }
 }

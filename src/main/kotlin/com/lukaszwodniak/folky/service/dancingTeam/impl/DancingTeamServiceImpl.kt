@@ -5,7 +5,9 @@ import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.model.*
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.FilterTeamsObject
+import com.lukaszwodniak.folky.repository.AchievementsRepository
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
+import com.lukaszwodniak.folky.repository.PeopleRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
 import com.lukaszwodniak.folky.service.files.FilesService
@@ -37,7 +39,9 @@ import kotlin.io.path.Path
 class DancingTeamServiceImpl(
     private val dancingTeamRepository: DancingTeamRepository,
     private val subscriptionRepository: SubscriptionRepository,
-    private val filesService: FilesService
+    private val filesService: FilesService,
+    private val achievementsRepository: AchievementsRepository,
+    private val peopleRepository: PeopleRepository
 ) : DancingTeamService {
 
     override fun addTeam(team: DancingTeam, user: User?): DancingTeam {
@@ -239,6 +243,28 @@ class DancingTeamServiceImpl(
             val optionalSub = subscriptionRepository.findByUserAndDancingTeam(user, team)
             optionalSub.ifPresent { subscriptionRepository.deleteById(it.id!!) }
         }
+    }
+
+    override fun getTeamAchievements(teamId: Long, pageRequest: PageRequest): Page<Achievement> {
+        val team = getById(teamId)
+        return achievementsRepository.findByDancingTeam(team, pageRequest)
+    }
+
+    override fun getTeamPeople(teamId: Long, pageRequest: PageRequest, phrase: String?): Page<Person> {
+        val predicate = Specification.where { root: Root<Person>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+            cb.equal(root.get<DancingTeam>("dancingTeam").get<Long>("id"), teamId)
+        }
+        val phrasePredicate = phrase?.let {
+            Specification { root: Root<Person>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                val phraseLike = "%${it.lowercase()}%"
+                cb.or(
+                    cb.like(cb.lower(root.get("firstName")), phraseLike),
+                    cb.like(cb.lower(root.get("lastName")), phraseLike)
+                )
+            }
+        }
+        val finalPredicate = predicate.and(phrasePredicate)
+        return peopleRepository.findAll(finalPredicate, pageRequest)
     }
 
     private fun updateExistingDancingTeam(existingTeam: DancingTeam, newTeamData: DancingTeam) {

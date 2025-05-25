@@ -1,9 +1,6 @@
 package com.lukaszwodniak.folky.service.dancingTeam
 
-import com.lukaszwodniak.folky.model.Dance
-import com.lukaszwodniak.folky.model.DancingTeam
-import com.lukaszwodniak.folky.model.Region
-import com.lukaszwodniak.folky.model.User
+import com.lukaszwodniak.folky.model.*
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.FilterTeamsObject
 import org.springframework.data.domain.Page
@@ -33,4 +30,6 @@ interface DancingTeamService {
     fun getSubscribedTeams(user: User, pageRequest: PageRequest): Page<DancingTeam>
     fun addSubscription(team: DancingTeam, user: User)
     fun deleteSubscription(team: DancingTeam, user: User)
+    fun getTeamAchievements(teamId: Long, pageRequest: PageRequest): Page<Achievement>
+    fun getTeamPeople(teamId: Long, pageRequest: PageRequest, phrase: String?): Page<Person>
 }

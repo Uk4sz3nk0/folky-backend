@@ -1,18 +1,9 @@
 package com.lukaszwodniak.folky.mapper
 
+import com.lukaszwodniak.folky.model.Achievement
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.Event
-import com.lukaszwodniak.folky.model.SocialMedia
-import com.lukaszwodniak.folky.records.FilterTeamsObject
-import com.lukaszwodniak.folky.records.Range
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDataDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamDto
-import com.lukaszwodniak.folky.rest.specification.models.DancingTeamListElementDto
-import com.lukaszwodniak.folky.rest.specification.models.EventDto
-import com.lukaszwodniak.folky.rest.specification.models.FilterObjectDto
-import com.lukaszwodniak.folky.rest.specification.models.PageDancingTeamListElementDto
-import com.lukaszwodniak.folky.rest.specification.models.PagedEventsDto
-import com.lukaszwodniak.folky.rest.specification.models.RangeDto
+import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.files.FilesService
 import org.mapstruct.Context
 import org.mapstruct.Mapper
@@ -20,9 +11,6 @@ import org.mapstruct.Mapping
 import org.mapstruct.Named
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.nio.file.Files
 import java.util.*
 
 /**
@@ -38,13 +26,20 @@ import java.util.*
 interface DancingTeamMapper {
 
     fun map(dancingTeam: DancingTeam): DancingTeamDto
+
     @Mapping(target = "director", ignore = true)
     @Mapping(target = "accountUser", ignore = true)
     fun map(dancingTeamDto: DancingTeamDto): DancingTeam
     fun map(dancingTeams: List<DancingTeam>): MutableList<DancingTeamDto>
-    fun mapToListElements(dancingTeams: List<DancingTeam>, @Context filesService: FilesService): MutableList<DancingTeamListElementDto>
+    fun mapToListElements(
+        dancingTeams: List<DancingTeam>,
+        @Context filesService: FilesService
+    ): MutableList<DancingTeamListElementDto>
 
-    fun mapListElementsToPage(pagedTeams: Page<DancingTeam>, @Context filesService: FilesService): PageDancingTeamListElementDto
+    fun mapListElementsToPage(
+        pagedTeams: Page<DancingTeam>,
+        @Context filesService: FilesService
+    ): PageDancingTeamListElementDto
 
     fun mapToListElement(dancingTeam: DancingTeam, @Context filesService: FilesService): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
@@ -53,6 +48,11 @@ interface DancingTeamMapper {
     fun mapEventListToDto(events: List<Event>): List<EventDto>
 
     fun mapToPagedEvents(events: Page<Event>): PagedEventsDto
+
+    @Mapping(source = "event.id", target = "eventId")
+    @Mapping(source = "dancingTeam.id", target = "dancingTeamId")
+    fun mapAchievementToDto(achievement: Achievement): AchievementDto
+    fun mapAchievementsToDto(achievements: Page<Achievement>): PagedAchievementsDto
 
     companion object {
         val INSTANCE: DancingTeamMapper = Mappers.getMapper(DancingTeamMapper::class.java)

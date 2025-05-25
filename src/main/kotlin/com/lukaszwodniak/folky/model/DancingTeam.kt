@@ -73,4 +73,6 @@ data class DancingTeam(
     @OneToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact? = null,
+    @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
+    val achievements: MutableList<Achievement> = mutableListOf()
 )
