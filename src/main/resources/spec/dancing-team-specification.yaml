@@ -280,9 +280,34 @@ paths:
                 items:
                   $ref: "#/components/schemas/DancingTeam"
   /api/teams/{id}/dances:
-    description: |
-      Endpoint used for getting dancing team dances
+    put:
+      description: |
+        Endpoint used for updating or adding team dances
+      tags:
+        - "DancingTeam"
+      operationId: updateTeamDances
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "dance-specification.yaml#/components/schemas/Dance"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
     get:
+      description: |
+        Endpoint used for getting dancing team dances
       tags:
         - "DancingTeam"
       operationId: getTeamDances
@@ -294,15 +319,50 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Ok. Successful response will return ok status and list of team dances
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "dance-specification.yaml#/components/schemas/Dance"
+                $ref: "dance-specification.yaml#/components/schemas/PagedDances"
+  /api/teams/{id}/dances/{danceId}:
+    delete:
+      description: |
+        Endpoint used for deleting dance from team dances list
+      tags:
+        - "DancingTeam"
+      operationId: removeDanceFromTeamDances
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: danceId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
   /api/teams/{id}/dancers:
     description: |
       Endpoint used for getting dancing team dancers

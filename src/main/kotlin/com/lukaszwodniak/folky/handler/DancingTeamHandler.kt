@@ -3,6 +3,7 @@ package com.lukaszwodniak.folky.handler
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
+import com.lukaszwodniak.folky.rest.people.specification.models.PersonDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 
 /**
@@ -18,7 +19,7 @@ interface DancingTeamHandler {
     fun handleDeleteTeam(teamId: Long)
     fun handleGetById(teamId: Long): DancingTeamDto
     fun handleGetByRegion(regionId: Long): MutableList<DancingTeamDto>
-    fun handleGetTeamDances(teamId: Long): MutableList<DanceDto>
+    fun handleGetTeamDances(teamId: Long, page: Int, size: Int): PagedDancesDto
     fun handleGetTeamDancers(teamId: Long): MutableList<UserDto>
     fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto>
     fun handleGetTeams(
@@ -43,4 +44,7 @@ interface DancingTeamHandler {
     fun handleGetEvents(id: Long, connectionTypes: List<String>, page: Int, size: Int, eventTime: List<String>?): PagedEventsDto
     fun handleGetTeamAchievements(id: Long, page: Int, size: Int): PagedAchievementsDto
     fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto
+    fun handleUpdateTeamDances(id: Long, dances: List<DanceDto>)
+    fun handleRemoveDanceFromDances(teamId: Long, danceId: Long)
+    fun handleSetTeamPeople(id: Long, people: List<PersonDto>)
 }

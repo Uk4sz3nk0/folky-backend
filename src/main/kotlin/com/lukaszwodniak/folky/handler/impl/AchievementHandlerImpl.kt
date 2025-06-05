@@ -60,7 +60,7 @@ class AchievementHandlerImpl(
     override fun handleUpdateAchievement(id: Long, achievement: AchievementDto) {
         val existingAchievement = achievementsService.getAchievement(id)
         val mappedAchievement = AchievementMapper.INSTANCE.mapAchievementFromDto(achievement)
-        val event = eventsService.getEvent(achievement.eventId)
+        val event = achievement.eventId?.let { eventsService.getEvent(it) }
         val dancingTeam = dancingTeamService.getById(achievement.dancingTeamId)
         val mappedPeople = mapDistinguishedPeople(mappedAchievement, dancingTeam)
         achievementsService.updateAchievement(

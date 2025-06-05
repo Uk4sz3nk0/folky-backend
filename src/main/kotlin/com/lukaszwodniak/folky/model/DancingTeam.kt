@@ -3,6 +3,8 @@ package com.lukaszwodniak.folky.model
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDate
 import java.util.*
 
@@ -36,7 +38,7 @@ data class DancingTeam(
     var homeNumber: String? = "",
     var flatNumber: Int? = 0,
     var zipCode: String? = null,
-    @ManyToMany
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE])
     @JoinTable(
         name = "dancing_team_dances",
         joinColumns = [JoinColumn(name = "team_id")],
@@ -50,12 +52,6 @@ data class DancingTeam(
         inverseJoinColumns = [JoinColumn(name = "dancer_id")]
     )
     var dancers: MutableList<User>? = mutableListOf(),
-//    @ManyToMany
-//    @JoinTable(
-//        joinColumns = [JoinColumn(name = "team_id")],
-//        inverseJoinColumns = [JoinColumn(name = "musician_id")]
-//    )
-//    var musicians: MutableList<User>? = mutableListOf(),
     var logoFilename: String? = null,
     var bannerFilename: String? = null,
     var isRecruitmentOpened: Boolean? = false,

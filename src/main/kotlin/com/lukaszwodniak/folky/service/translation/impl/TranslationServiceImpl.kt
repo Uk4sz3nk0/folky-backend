@@ -24,7 +24,7 @@ class TranslationServiceImpl(
 
     override fun getTranslationsByLanguageAndPrefix(language: String, prefix: String): Map<String, String> {
         val translations = translationRepository.findAllByLanguageAndSpecifierContaining(language, prefix)
-        return translations.associate { it.specifier to it.value }
+        return translations.associate { it.specifier!! to it.value }
     }
 
     override fun getTranslationsBySpecifier(specifier: String): MutableList<Translation> {

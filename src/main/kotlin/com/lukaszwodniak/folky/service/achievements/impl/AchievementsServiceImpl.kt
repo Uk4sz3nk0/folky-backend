@@ -1,10 +1,9 @@
 package com.lukaszwodniak.folky.service.achievements.impl
 
 import com.lukaszwodniak.folky.model.Achievement
-import com.lukaszwodniak.folky.model.Person
 import com.lukaszwodniak.folky.repository.AchievementsRepository
-import com.lukaszwodniak.folky.repository.PeopleRepository
 import com.lukaszwodniak.folky.service.achievements.AchievementsService
+import com.lukaszwodniak.folky.service.people.PeopleService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -21,12 +20,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AchievementsServiceImpl(
     private val achievementsRepository: AchievementsRepository,
-    private val peopleRepository: PeopleRepository
+    private val peopleService: PeopleService
 ) : AchievementsService {
 
     @Transactional
     override fun addAchievement(achievement: Achievement) {
-        val updatedPeople = updatedPeople(achievement)
+        val updatedPeople = peopleService.updatedPeople(achievement.distinguishedPeople).toMutableList()
 
         achievementsRepository.saveAndFlush(achievement.copy(distinguishedPeople = updatedPeople))
     }
@@ -44,7 +43,7 @@ class AchievementsServiceImpl(
     }
 
     override fun updateAchievement(existingAchievement: Achievement, updateData: Achievement) {
-        val updatedPeople = updatedPeople(updateData)
+        val updatedPeople = peopleService.updatedPeople(updateData.distinguishedPeople).toMutableList()
 
         val achievementToUpdate = existingAchievement.copy(
             name = updateData.name,
@@ -62,19 +61,4 @@ class AchievementsServiceImpl(
         achievementsRepository.save(achievementToUpdate)
     }
 
-    private fun updatedPeople(updateData: Achievement): MutableList<Person> {
-        val peopleWithoutPositions = updateData.distinguishedPeople.map { it.copy(positions = mutableListOf()) }
-        val savedPeople = peopleRepository.saveAllAndFlush(peopleWithoutPositions)
-
-        val peopleWithPositions = savedPeople.mapIndexed { index, savedPerson ->
-            val originalPerson = updateData.distinguishedPeople[index]
-            val updatedPositions = originalPerson.positions.map {
-                it.copy(person = savedPerson)
-            }.toMutableList()
-            savedPerson.copy(positions = updatedPositions)
-        }
-
-        val updatedPeople = peopleRepository.saveAllAndFlush(peopleWithPositions)
-        return updatedPeople
-    }
 }

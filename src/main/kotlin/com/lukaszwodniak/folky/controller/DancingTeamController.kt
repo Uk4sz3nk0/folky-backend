@@ -6,13 +6,11 @@ import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.rest.dancing_team.specification.api.DancingTeamApi
 import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
+import com.lukaszwodniak.folky.rest.people.specification.models.PersonDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * DancingTeamController
@@ -46,8 +44,16 @@ class DancingTeamController(
         return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamDancers(it) })
     }
 
-    override fun getTeamDances(teamId: Long?): ResponseEntity<MutableList<DanceDto>> {
-        return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamDances(it) })
+    @EndpointLogger
+    override fun getTeamDances(id: Long?, page: Int?, size: Int?): ResponseEntity<PagedDancesDto> {
+        val teamDances = id?.let {
+            dancingTeamHandler.handleGetTeamDances(
+                it,
+                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE
+            )
+        }
+        return ResponseEntity.ok(teamDances)
     }
 
     override fun getTeamMusicians(teamId: Long?): ResponseEntity<MutableList<UserDto>> {
@@ -145,6 +151,27 @@ class DancingTeamController(
         return ResponseEntity.ok(achievements)
     }
 
+    @EndpointLogger
+    override fun updateTeamDances(id: Long?, dances: MutableList<DanceDto>?): ResponseEntity<Void> {
+        id?.let { teamId ->
+            dances?.let {
+                dancingTeamHandler.handleUpdateTeamDances(teamId, it)
+            }
+        }
+        return ResponseEntity.ok().build()
+    }
+
+    @EndpointLogger
+    override fun removeDanceFromTeamDances(id: Long?, danceId: Long?): ResponseEntity<Void> {
+        id?.let { teamId ->
+            danceId?.let {
+                dancingTeamHandler.handleRemoveDanceFromDances(teamId, it)
+            }
+        }
+        return ResponseEntity.ok().build()
+    }
+
+    @EndpointLogger
     @GetMapping("/api/teams/{id}/people")
     fun getPeople(
         @PathVariable id: Long?,
@@ -162,6 +189,17 @@ class DancingTeamController(
         }
 
         return ResponseEntity.ok(people)
+    }
+
+    @EndpointLogger
+    @PutMapping("/api/teams/{id}/people")
+    fun setTeamPeople(@PathVariable("id") id: Long?, @RequestBody people: List<PersonDto>?): ResponseEntity<Void> {
+        id?.let { teamId ->
+            people?.let {
+                dancingTeamHandler.handleSetTeamPeople(teamId, it)
+            }
+        }
+        return ResponseEntity.ok().build()
     }
 
     companion object {

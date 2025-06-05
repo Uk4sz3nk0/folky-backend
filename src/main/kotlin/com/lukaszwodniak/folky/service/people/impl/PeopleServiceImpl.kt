@@ -45,4 +45,20 @@ class PeopleServiceImpl(
         )
         peopleRepository.save(updated)
     }
+
+    override fun updatedPeople(people: List<Person>): List<Person> {
+        val peopleWithoutPositions = people.map { it.copy(positions = mutableListOf()) }
+        val savedPeople = peopleRepository.saveAllAndFlush(peopleWithoutPositions)
+
+        val peopleWithPositions = savedPeople.mapIndexed { index, savedPerson ->
+            val originalPerson = people[index]
+            val updatedPositions = originalPerson.positions.map {
+                it.copy(person = savedPerson)
+            }.toMutableList()
+            savedPerson.copy(positions = updatedPositions)
+        }
+
+        val updatedPeople = peopleRepository.saveAllAndFlush(peopleWithPositions)
+        return updatedPeople
+    }
 }

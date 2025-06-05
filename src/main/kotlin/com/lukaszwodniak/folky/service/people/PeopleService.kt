@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.service.people
 
+import com.lukaszwodniak.folky.model.Achievement
 import com.lukaszwodniak.folky.model.Person
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -18,4 +19,5 @@ interface PeopleService {
     fun getPerson(id: Long): Person
     fun getPeople(pageRequest: PageRequest): Page<Person>
     fun updatePerson(existingPerson: Person, newPersonData: Person)
+    fun updatedPeople(people: List<Person>): List<Person>
 }
