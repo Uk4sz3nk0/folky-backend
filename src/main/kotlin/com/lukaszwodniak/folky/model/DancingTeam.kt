@@ -3,13 +3,12 @@ package com.lukaszwodniak.folky.model
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDate
 import java.util.*
 
 /**
  * DancingTeam
+ *
  * Created on: 2024-07-31
  * @author Łukasz Wodniak
  */
@@ -70,5 +69,11 @@ data class DancingTeam(
     @JoinColumn(name = "contact_id")
     val contact: Contact? = null,
     @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
-    val achievements: MutableList<Achievement> = mutableListOf()
+    val achievements: MutableList<Achievement>? = mutableListOf(),
+    var isVerified: Boolean = false,
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "team_age_category", joinColumns = [JoinColumn(name = "team_id")])
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name")
+    var ageCategories: Set<String> = emptySet()
 )

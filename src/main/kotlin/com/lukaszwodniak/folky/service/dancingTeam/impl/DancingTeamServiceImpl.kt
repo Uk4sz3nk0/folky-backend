@@ -82,8 +82,8 @@ class DancingTeamServiceImpl(
 
     override fun updateTeam(team: DancingTeam): DancingTeam {
         val existingTeam = getById(team.id!!)
-        updateExistingDancingTeam(existingTeam, team)
-        return dancingTeamRepository.save(existingTeam)
+        val updatedTeam = updateExistingDancingTeam(existingTeam, team)
+        return dancingTeamRepository.save(updatedTeam)
     }
 
     override fun deleteTeam(teamId: Long) {
@@ -300,24 +300,28 @@ class DancingTeamServiceImpl(
         peopleRepository.saveAllAndFlush(mappedPeople)
     }
 
-    private fun updateExistingDancingTeam(existingTeam: DancingTeam, newTeamData: DancingTeam) {
-        existingTeam.name = newTeamData.name
-        existingTeam.description = newTeamData.description
-        existingTeam.creationDate = newTeamData.creationDate
-        existingTeam.region = newTeamData.region
-        existingTeam.city = newTeamData.city
-        existingTeam.street = newTeamData.street
-        existingTeam.homeNumber = newTeamData.homeNumber
-        existingTeam.flatNumber = newTeamData.flatNumber
-        existingTeam.zipCode = newTeamData.zipCode
-        existingTeam.dances = newTeamData.dances
-        existingTeam.dancers = newTeamData.dancers
-//        existingTeam.musicians = newTeamData.musicians
+    private fun updateExistingDancingTeam(existingTeam: DancingTeam, newTeamData: DancingTeam): DancingTeam {
         val socialMedia = newTeamData.socialMedia
         socialMedia?.dancingTeam = existingTeam
-        existingTeam.socialMedia = socialMedia
-        existingTeam.accountUser = newTeamData.accountUser
-        existingTeam.director = newTeamData.director
+        return existingTeam.copy(
+            name = newTeamData.name,
+            description = newTeamData.description,
+            creationDate = newTeamData.creationDate,
+            region = newTeamData.region,
+            city = newTeamData.city,
+            street = newTeamData.street,
+            homeNumber = newTeamData.homeNumber,
+            flatNumber = newTeamData.flatNumber,
+            zipCode = newTeamData.zipCode,
+            dances = newTeamData.dances,
+            dancers = newTeamData.dancers,
+            socialMedia = socialMedia,
+            accountUser = newTeamData.accountUser,
+            director = newTeamData.director,
+            isRecruitmentOpened = newTeamData.isRecruitmentOpened,
+            isVerified = newTeamData.isVerified,
+            ageCategories = newTeamData.ageCategories
+        )
     }
 
     private fun storeDancingTeamFile(directoryUUID: UUID, file: MultipartFile) {
@@ -336,6 +340,5 @@ class DancingTeamServiceImpl(
         private const val CORRECT_TIKTOK_FILTER_NAME: String = "tikTok"
         private const val MORE_PLUS_RANGE: Int = 50
         const val UPLOADS_DIRECTORY: String = "storage"
-        const val IMAGES_DIRECTORY: String = "images"
     }
 }
