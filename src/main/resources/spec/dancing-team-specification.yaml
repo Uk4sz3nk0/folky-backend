@@ -507,6 +507,8 @@ components:
         logoFilename:
           type: string
           nullable: true
+        isVerified:
+          type: boolean
     PageDancingTeamListElement:
       type: object
       properties:
@@ -603,6 +605,12 @@ components:
           $ref: "#/components/schemas/SocialMedia"
         contact:
           $ref: "#/components/schemas/Contact"
+        isVerified:
+          type: boolean
+        ageCategories:
+          type: array
+          items:
+            type: string
     SocialMedia:
       type: object
       properties:

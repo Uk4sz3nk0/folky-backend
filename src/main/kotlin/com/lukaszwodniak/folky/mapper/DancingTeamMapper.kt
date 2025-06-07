@@ -25,6 +25,8 @@ import java.util.*
 )
 interface DancingTeamMapper {
 
+    @Mapping(source = "recruitmentOpened", target = "isRecruitmentOpened")
+    @Mapping(source = "verified", target = "isVerified")
     fun map(dancingTeam: DancingTeam): DancingTeamDto
 
     @Mapping(target = "director", ignore = true)
@@ -41,6 +43,7 @@ interface DancingTeamMapper {
         @Context filesService: FilesService
     ): PageDancingTeamListElementDto
 
+    @Mapping(target = "isVerified", source = "verified")
     fun mapToListElement(dancingTeam: DancingTeam, @Context filesService: FilesService): DancingTeamListElementDto
     fun mapDancingTeamData(dancingTeam: DancingTeam): DancingTeamDataDto
 
