@@ -7,5 +7,4 @@ package com.lukaszwodniak.folky.error.users
  * @author Łukasz Wodniak
  */
 
-class InvalidLoginCredentialsException(errorMessage: String) : RuntimeException(errorMessage) {
-}
+class InvalidLoginCredentialsException(errorMessage: String) : RuntimeException(errorMessage)

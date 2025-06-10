@@ -6,12 +6,12 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /api/intitution:
+  /api/intitutions:
     get:
       description: |
         Endpoint used for getting list of institutions
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: getInstitutions
       parameters:
         - name: page
@@ -38,7 +38,7 @@ paths:
       description: |
         Endpoint used for adding new institutions
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: addInstitution
       requestBody:
         required: true
@@ -49,12 +49,12 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /api/institution/{id}:
+  /api/institutions/{id}:
     get:
       description: |
         Endpoint used for getting specified institution
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: getInstitution
       parameters:
         - name: id
@@ -75,7 +75,7 @@ paths:
       description: |
         Endpoint used for updating institution
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: updateInstitution
       parameters:
         - name: id
@@ -98,7 +98,7 @@ paths:
       description: |
         Endpoint used for deleting institutions
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: deleteInstitution
       parameters:
         - name: id
@@ -111,12 +111,12 @@ paths:
       responses:
         "200":
           description: Ok. Successful response will return ok status
-  /api/institution/{id}/events:
+  /api/institutions/{id}/events:
     get:
       description: |
         Endpoint used for getting institution events
       tags:
-        - "Institution"
+        - "Institutions"
       operationId: getEvents
       parameters:
         - name: id

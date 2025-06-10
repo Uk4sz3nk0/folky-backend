@@ -13,5 +13,4 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface EventsRepository : JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
-}
+interface EventsRepository : JpaRepository<Event, Long>, JpaSpecificationExecutor<Event>

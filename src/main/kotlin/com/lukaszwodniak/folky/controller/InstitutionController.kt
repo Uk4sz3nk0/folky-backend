@@ -2,7 +2,7 @@ package com.lukaszwodniak.folky.controller
 
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.InstitutionHandler
-import com.lukaszwodniak.folky.rest.institution.specification.api.InstitutionApi
+import com.lukaszwodniak.folky.rest.institution.specification.api.InstitutionsApi
 import com.lukaszwodniak.folky.rest.institution.specification.models.InstitutionDto
 import com.lukaszwodniak.folky.rest.institution.specification.models.PagedEventsDto
 import com.lukaszwodniak.folky.rest.institution.specification.models.PagedInstitutionsDto
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class InstitutionController(
     private val institutionHandler: InstitutionHandler
-) : InstitutionApi {
+) : InstitutionsApi {
 
     @EndpointLogger
     override fun addInstitution(institution: InstitutionDto?): ResponseEntity<Void> {
@@ -42,7 +42,10 @@ class InstitutionController(
     @EndpointLogger
     override fun getInstitutions(page: Int?, size: Int?): ResponseEntity<PagedInstitutionsDto> {
         val institutions =
-            institutionHandler.handleGetInstitutions(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE)
+            institutionHandler.handleGetInstitutions(
+                page ?: ControllerCommons.DEFAULT_PAGE,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE
+            )
         return ResponseEntity.ok(institutions)
     }
 
@@ -58,8 +61,4 @@ class InstitutionController(
         TODO("Not yet implemented")
     }
 
-    companion object {
-        private const val DEFAULT_PAGE_NUMBER: Int = 0
-        private const val DEFAULT_PAGE_SIZE: Int = 10
-    }
 }

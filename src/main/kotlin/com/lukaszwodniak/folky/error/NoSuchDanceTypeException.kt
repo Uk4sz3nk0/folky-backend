@@ -8,10 +8,8 @@ package com.lukaszwodniak.folky.error
  */
 
 class NoSuchDanceTypeException(id: Long) : RuntimeException(buildMessage(id)) {
-    companion object {
 
-        fun buildMessage(id: Long): String {
-            return "Dance type with id = $id does not exists"
-        }
+    companion object {
+        fun buildMessage(id: Long): String = "Dance type with id = $id does not exists"
     }
 }

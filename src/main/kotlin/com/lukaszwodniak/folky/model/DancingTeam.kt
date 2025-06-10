@@ -54,8 +54,6 @@ data class DancingTeam(
     var logoFilename: String? = null,
     var bannerFilename: String? = null,
     var isRecruitmentOpened: Boolean? = false,
-    @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
-    var recruitments: MutableList<Recruitment>? = mutableListOf(),
     @OneToMany(mappedBy = "dancingTeam")
     val userRoles: List<UserRole>? = emptyList(),
     @ManyToOne

@@ -27,8 +27,6 @@ class RegionServiceImpl(
 
     @Transactional
     override fun addRegion(region: Region, translations: MutableList<Translation>): Region {
-        // TODO: Add required logic
-        // TODO: Add exists by name exception
         val mappedName = mapRegionName(region.name)
         val translationsToSave = translations
             .filter { it.value.isNotBlank() && it.language.isNotBlank() }

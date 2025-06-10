@@ -1,6 +1,5 @@
 package com.lukaszwodniak.folky.handler
 
-import com.lukaszwodniak.folky.model.Dance
 import com.lukaszwodniak.folky.rest.specification.models.DanceDto
 import com.lukaszwodniak.folky.rest.specification.models.DanceRequestDto
 

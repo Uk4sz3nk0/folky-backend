@@ -10,8 +10,6 @@ package com.lukaszwodniak.folky.error
 class NoSuchAddressException(id: Long) : NoSuchElementException(mapMessage(id)) {
 
     companion object {
-        fun mapMessage(id: Long): String {
-            return "No such address with id = $id"
-        }
+        fun mapMessage(id: Long): String = "No such address with id = $id"
     }
 }

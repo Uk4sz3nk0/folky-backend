@@ -39,8 +39,6 @@ data class User(
     var instruments: MutableList<MusicInstrument>,
     @OneToMany(mappedBy = "user")
     val userRoles: List<UserRole>? = emptyList(),
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    val recruitmentRequests: MutableList<RecruitmentRequest>,
     var preferredLanguage: String,
     var wantReceivePushNotifications: Boolean,
     var wantReceiveEmailNotifications: Boolean,

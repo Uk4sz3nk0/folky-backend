@@ -5,7 +5,6 @@ import com.lukaszwodniak.folky.handler.RegionHandler
 import com.lukaszwodniak.folky.rest.region.specification.api.RegionApi
 import com.lukaszwodniak.folky.rest.specification.models.RegionDto
 import com.lukaszwodniak.folky.rest.specification.models.TranslationDto
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 

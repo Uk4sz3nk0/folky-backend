@@ -4,6 +4,7 @@ import jakarta.persistence.*
 
 /**
  * MusicInstrumentType
+ *
  * Created on: 2024-07-28
  * @author Łukasz Wodniak (lukasz.wodniak@student.up.krakow.pl)
  */

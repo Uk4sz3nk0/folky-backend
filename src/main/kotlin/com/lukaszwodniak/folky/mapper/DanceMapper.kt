@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page
 
 /**
  * DanceMapper
+ *
  * Created on: 2024-08-12
  * @author Łukasz Wodniak
  */

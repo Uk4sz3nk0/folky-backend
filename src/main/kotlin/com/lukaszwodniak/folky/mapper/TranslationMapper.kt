@@ -25,6 +25,6 @@ interface TranslationMapper {
     fun mapFromDto(translations: MutableList<TranslationDto>): MutableList<Translation>
 
     companion object {
-        val INSTANCE = Mappers.getMapper(TranslationMapper::class.java)
+        val INSTANCE: TranslationMapper = Mappers.getMapper(TranslationMapper::class.java)
     }
 }

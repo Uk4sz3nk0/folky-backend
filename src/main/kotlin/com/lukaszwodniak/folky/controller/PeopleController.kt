@@ -35,7 +35,7 @@ class PeopleController(
     @EndpointLogger
     override fun getPeople(page: Int?, size: Int?): ResponseEntity<PagedPeopleDto> {
         val people = peopleHandler.handleGetPeople(
-            page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+            page ?: ControllerCommons.DEFAULT_PAGE,
             size ?: ControllerCommons.DEFAULT_PAGE_SIZE
         )
         return ResponseEntity.ok(people)

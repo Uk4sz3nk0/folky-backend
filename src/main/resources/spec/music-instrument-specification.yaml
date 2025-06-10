@@ -6,13 +6,42 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /music-instrument/add-instrument:
-    description: |
-      Endpoint used for adding new instrument
-    post:
+  /api/music-instruments/:
+    get:
+      description: |
+        Endpoint used for getting instruments
       tags:
-        - "MusicInstrument"
-      operationId: addInstument
+        - "MusicInstruments"
+      operationId: getInstruments
+      parameters:
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: typeId
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status with list of matching instruments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MusicInstrument"
+    post:
+      description: |
+        Endpoint used for adding new instrument
+      tags:
+        - "MusicInstruments"
+      operationId: addMusicInstrument
       requestBody:
         required: true
         content:
@@ -26,54 +55,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MusicInstrument"
-  /music-instrument/update-instrument:
-    description: |
-      Endpoint used for updating existing instruments
-    patch:
-      tags:
-        - "MusicInstrument"
-      operationId: updateInstrument
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/MusicInstrument"
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status and updated object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MusicInstrument"
-  /music-instrument/delete-instrument:
-    description: |
-      Endpoint used for deleting instrument
-    delete:
-      tags:
-        - "MusicInstrument"
-      operationId: deleteInstrument
-      parameters:
-        - name: id
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
-  /music-instrument/get-instrument-by-id:
-    description: |
-      Endpoint is used for getting instrument by id
+  /api/music-instruments/{id}:
     get:
+      description: |
+        Endpoint is used for getting instrument by id
       tags:
-        - "MusicInstrument"
+        - "MusicInstruments"
       operationId: getInstrumentById
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -86,39 +77,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MusicInstrument"
-  /music-instrument/get-instruments-by-name:
-    description: |
-      Endpoint used for getting instruments by matching name
-    get:
+    patch:
+      description: |
+        Endpoint used for updating existing instruments
       tags:
-        - "MusicInstrument"
-      operationId: getInstrumentsByName
+        - "MusicInstruments"
+      operationId: updateInstrument
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MusicInstrument"
       parameters:
-        - name: phrase
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status with list of matching instruments
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MusicInstrument"
-  /music-instrument/get-instruments-by-type:
-    description: |
-      Endpoint used for getting instruments by type
-    get:
-      tags:
-        - "MusicInstrument"
-      operationId: getInstrumentsByType
-      parameters:
-        - name: typeId
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -126,19 +99,56 @@ paths:
             format: int64
       responses:
         "200":
-          description: Ok. Successful response will return ok status and list of instruments
+          description: Ok. Successful response will return ok status and updated object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MusicInstrument"
+    delete:
+      description: |
+        Endpoint used for deleting instrument
+      tags:
+        - "MusicInstruments"
+      operationId: deleteInstrument
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/music-instruments/types/:
+    get:
+      description: |
+        Endpoint used for getting list of music instrument types by name
+      tags:
+        - "MusicInstruments"
+      operationId: getInstrumentTypesByName
+      parameters:
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and list of music instrument types
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MusicInstrument"
-  /music-instrument/add-instrument-type:
-    description: |
-      Endpoint used for adding new instrument type
+                  $ref: "#/components/schemas/MusicInstrumentType"
     post:
+      description: |
+        Endpoint used for adding new instrument type
       tags:
-        - "MusicInstrument"
+        - "MusicInstruments"
       operationId: addInstrumentType
       requestBody:
         required: true
@@ -153,12 +163,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MusicInstrumentType"
-  /music-instrument/update-instrument-type:
-    description: |
-      Endpoint used for updating existing instrument type
     patch:
+      description: |
+        Endpoint used for updating existing instrument type
       tags:
-        - "MusicInstrument"
+        - "MusicInstruments"
       operationId: updateInstrumentType
       requestBody:
         required: true
@@ -173,34 +182,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MusicInstrumentType"
-  /music-instrument/delete-instrument-type:
-    description: |
-      Endpoint used for deleting instrument type by id
-    delete:
-      tags:
-        - "MusicInstrument"
-      operationId: deleteInstrumentType
-      parameters:
-        - name: id
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
-  /music-instrument/get-instrument-type-by-id:
-    description: |
-      Endpoint used for getting specified instrument type
+  /api/music-instruments/type/{id}:
     get:
+      description: |
+        Endpoint used for getting specified instrument type
       tags:
-        - "MusicInstrument"
+        - "MusicInstruments"
       operationId: getInstrumentTypeById
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -213,29 +204,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MusicInstrumentType"
-  /music-instrument/get-instrument-types-by-name:
-    description: |
-      Endpoint used for getting list of music instrument types by name
-    get:
+    delete:
+      description: |
+        Endpoint used for deleting instrument type by id
       tags:
-        - "MusicInstrument"
-      operationId: getInstrumentTypesByName
+        - "MusicInstruments"
+      operationId: deleteInstrumentType
       parameters:
-        - name: phrase
+        - name: id
           in: query
           required: true
           allowEmptyValue: false
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
-          description: Ok. Successful response will return ok status and list of music instrument types
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MusicInstrumentType"
+          description: Ok. Successful response will return ok status
 components:
   schemas:
     MusicInstrument:

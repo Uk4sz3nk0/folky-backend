@@ -7,5 +7,4 @@ package com.lukaszwodniak.folky.error.users
  * @author Łukasz Wodniak
  */
 
-class EmailInUseException(errorMessage: String) : RuntimeException(errorMessage) {
-}
+class EmailInUseException(errorMessage: String) : RuntimeException(errorMessage)

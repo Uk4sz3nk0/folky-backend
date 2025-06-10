@@ -20,7 +20,6 @@ import com.lukaszwodniak.folky.service.users.UserService
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
-import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -340,7 +339,6 @@ class EventsServiceImpl(
         }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(EventsServiceImpl::class.java.name)
         private const val START_DATE_FIELD: String = "startDate"
         private const val END_DATE_FIELD: String = "endDate"
     }

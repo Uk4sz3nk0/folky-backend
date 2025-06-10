@@ -41,7 +41,10 @@ class AchievementsController(
     @EndpointLogger
     override fun getAchievements(page: Int?, size: Int?, phrase: String?): ResponseEntity<PagedAchievementsDto> {
         val achievements =
-            achievementsHandler.handleGetAchievements(page ?: DEFAULT_PAGE_NUMBER, size ?: DEFAULT_PAGE_SIZE)
+            achievementsHandler.handleGetAchievements(
+                page ?: ControllerCommons.DEFAULT_PAGE,
+                size ?: ControllerCommons.DEFAULT_PAGE_SIZE
+            )
         return ResponseEntity.ok(achievements)
     }
 
@@ -53,10 +56,5 @@ class AchievementsController(
             }
         }
         return ResponseEntity.ok().build()
-    }
-
-    companion object {
-        private const val DEFAULT_PAGE_NUMBER: Int = 0
-        private const val DEFAULT_PAGE_SIZE: Int = 10
     }
 }

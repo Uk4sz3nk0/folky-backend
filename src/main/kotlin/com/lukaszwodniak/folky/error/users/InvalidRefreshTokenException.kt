@@ -7,5 +7,4 @@ package com.lukaszwodniak.folky.error.users
  * @author Łukasz Wodniak
  */
 
-class InvalidRefreshTokenException(errorMessage: String) : RuntimeException(errorMessage) {
-}
+class InvalidRefreshTokenException(errorMessage: String) : RuntimeException(errorMessage)

@@ -10,5 +10,4 @@ import org.springframework.data.jpa.repository.JpaRepository
  * @author Łukasz Wodniak
  */
 
-interface AddressRepository : JpaRepository<Address, Long> {
-}
+interface AddressRepository : JpaRepository<Address, Long>

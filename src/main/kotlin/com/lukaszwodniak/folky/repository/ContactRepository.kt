@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface ContactRepository : JpaRepository<Contact, Long> {
-}
+interface ContactRepository : JpaRepository<Contact, Long>
