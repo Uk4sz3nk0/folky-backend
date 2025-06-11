@@ -1,0 +1,45 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'openjdk'
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{secrets.GCLOUD_PROJECT_ID}}
+          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          export_default_credentials: true
+
+      - name: Build JAR with Maven
+        run: mvn clean install
+
+      - name: Package JAR with Maven
+        run: mvn clean package
+
+      - name: Find JAR file
+        id: find-jar
+        run: |
+          JAR_PATH=$(find target -name "*.jar" | grep -v "original" | head -n 1)
+          echo "Found JAR: $JAR_PATH"
+          echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy to App Engine
+        run: |
+          gcloud app deploy ${{ steps.find-jar.outputs.jar_path }} \
+            --appyaml src/main/appengine/app.yaml \
+            --quiet
