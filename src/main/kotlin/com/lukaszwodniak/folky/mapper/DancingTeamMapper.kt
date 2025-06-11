@@ -8,21 +8,17 @@ import com.lukaszwodniak.folky.service.files.FilesService
 import org.mapstruct.Context
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
-import org.mapstruct.Named
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
-import java.util.*
 
 /**
  * DancingTeamMapper
+ *
  * Created on: 2024-08-09
  * @author Łukasz Wodniak
  */
 
-@Mapper(
-    componentModel = "spring",
-//    uses = [SocialMedia::class]
-)
+@Mapper(componentModel = "spring")
 interface DancingTeamMapper {
 
     @Mapping(source = "recruitmentOpened", target = "isRecruitmentOpened")
@@ -59,20 +55,5 @@ interface DancingTeamMapper {
 
     companion object {
         val INSTANCE: DancingTeamMapper = Mappers.getMapper(DancingTeamMapper::class.java)
-
-        @Named("dancersCount")
-        @JvmStatic
-        fun dancersCount(dancingTeam: DancingTeam): Int = dancingTeam.dancers?.size ?: 0
-
-        @Named("musiciansCount")
-        @JvmStatic
-        fun musiciansCount(dancingTeam: DancingTeam): Int = 0
-
-        @Named("mapLogo")
-        @JvmStatic
-        fun mapLogo(dancingTeam: DancingTeam, @Context filesService: FilesService): String {
-            val file = dancingTeam.logoFilename?.let { filesService.getImageFile(dancingTeam.filesUUID, it) }
-            return file?.inputStream?.use { Base64.getEncoder().encodeToString(it.readBytes()) } ?: ""
-        }
     }
 }

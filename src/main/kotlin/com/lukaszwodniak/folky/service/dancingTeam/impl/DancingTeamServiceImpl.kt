@@ -96,10 +96,6 @@ class DancingTeamServiceImpl(
         return dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
     }
 
-    override fun getByRegion(region: Region): List<DancingTeam> {
-        return dancingTeamRepository.findAllByRegion(region).orElse(emptyList())
-    }
-
     override fun getTeamDances(teamId: Long, pageRequest: PageRequest): Page<Dance> {
         val dancingTeam = getById(teamId)
         val dances = dancingTeam.dances ?: emptyList()
@@ -113,17 +109,6 @@ class DancingTeamServiceImpl(
         }
         val translatedDances = dancesService.assignTranslatedNames(pagedDances)
         return PageImpl(translatedDances, pageRequest, dances.size.toLong())
-    }
-
-    override fun getTeamDancers(teamId: Long): List<User> {
-        val dancingTeam = getById(teamId)
-        return dancingTeam.dancers ?: emptyList()
-    }
-
-    override fun getTeamMusicians(teamId: Long): List<User> {
-        val dancingTeam =
-            dancingTeamRepository.findById(teamId).orElseThrow { NoSuchDancingTeamException(teamId) }
-        return emptyList()
     }
 
     override fun getTeams(pageRequest: PageRequest, searchPhrase: String?): Page<DancingTeam> {
@@ -232,14 +217,6 @@ class DancingTeamServiceImpl(
         }
     }
 
-    override fun getTeamsByName(phrase: String): List<DancingTeam> {
-        return dancingTeamRepository.findAllByNameContainsIgnoreCase(phrase).orElse(emptyList())
-    }
-
-    override fun getSubscribedTeams(user: User): List<DancingTeam> {
-        return subscriptionRepository.findAllByUser(user).map { sub -> sub.dancingTeam }
-    }
-
     override fun getSubscribedTeams(user: User, pageRequest: PageRequest): Page<DancingTeam> {
         return subscriptionRepository.findAllDancingTeamsByUser(user, pageRequest)
     }
@@ -283,13 +260,6 @@ class DancingTeamServiceImpl(
     override fun updateTeamDances(teamId: Long, dances: List<Dance>) {
         val dancingTeam = getById(teamId)
         dancingTeam.dances = dances.toMutableList()
-        dancingTeamRepository.saveAndFlush(dancingTeam)
-    }
-
-    override fun removeDanceFromTeam(teamId: Long, danceId: Long) {
-        val dancingTeam = getById(teamId)
-        val filteredDances = dancingTeam.dances?.filter { it.id != danceId } ?: emptyList()
-        dancingTeam.dances = filteredDances.toMutableList()
         dancingTeamRepository.saveAndFlush(dancingTeam)
     }
 

@@ -10,5 +10,4 @@ import org.springframework.data.jpa.repository.JpaRepository
  * @author Łukasz Wodniak
  */
 
-interface InstitutionRepository : JpaRepository<Institution, Long> {
-}
+interface InstitutionRepository : JpaRepository<Institution, Long>

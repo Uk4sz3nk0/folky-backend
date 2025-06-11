@@ -8,6 +8,7 @@ import com.lukaszwodniak.folky.rest.specification.models.*
 
 /**
  * DancingTeamHandler
+ *
  * Created on: 2024-08-09
  * @author Łukasz Wodniak
  */
@@ -18,33 +19,28 @@ interface DancingTeamHandler {
     fun handleUpdateTeam(team: DancingTeamDto): DancingTeamDto
     fun handleDeleteTeam(teamId: Long)
     fun handleGetById(teamId: Long): DancingTeamDto
-    fun handleGetByRegion(regionId: Long): MutableList<DancingTeamDto>
     fun handleGetTeamDances(teamId: Long, page: Int, size: Int): PagedDancesDto
-    fun handleGetTeamDancers(teamId: Long): MutableList<UserDto>
-    fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto>
-    fun handleGetTeams(
-        pagination: Pagination,
-        sortObject: SortObject,
-        searchPhrase: String?
-    ): PageDancingTeamListElementDto
-
     fun handleGetTeams(
         pagination: Pagination,
         sortObject: SortObject,
         searchPhrase: String?,
-        filterObject: FilterObjectDto?
+        filterObject: FilterObjectDto? = null
     ): PageDancingTeamListElementDto
 
-    fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto>
-    fun handleGetSubscribedTeams(): MutableList<DancingTeamListElementDto>
     fun handleGetSubscribedTeams(id: Long, page: Int, size: Int): PageDancingTeamListElementDto
     fun handleAddSubscription(teamId: Long)
     fun handleDeleteSubscription(teamId: Long)
     fun handleGetGalleryImages(id: Long): MutableList<String>
-    fun handleGetEvents(id: Long, connectionTypes: List<String>, page: Int, size: Int, eventTime: List<String>?): PagedEventsDto
+    fun handleGetEvents(
+        id: Long,
+        connectionTypes: List<String>,
+        page: Int,
+        size: Int,
+        eventTime: List<String>?
+    ): PagedEventsDto
+
     fun handleGetTeamAchievements(id: Long, page: Int, size: Int): PagedAchievementsDto
     fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto
     fun handleUpdateTeamDances(id: Long, dances: List<DanceDto>)
-    fun handleRemoveDanceFromDances(teamId: Long, danceId: Long)
     fun handleSetTeamPeople(id: Long, people: List<PersonDto>)
 }

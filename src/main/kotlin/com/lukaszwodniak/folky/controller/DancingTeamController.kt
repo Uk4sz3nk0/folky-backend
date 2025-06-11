@@ -36,28 +36,16 @@ class DancingTeamController(
         return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetById(it) })
     }
 
-    override fun getByRegion(regionId: Long?): ResponseEntity<MutableList<DancingTeamDto>> {
-        return ResponseEntity.ok(regionId?.let { dancingTeamHandler.handleGetByRegion(it) })
-    }
-
-    override fun getTeamDancers(teamId: Long?): ResponseEntity<MutableList<UserDto>> {
-        return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamDancers(it) })
-    }
-
     @EndpointLogger
     override fun getTeamDances(id: Long?, page: Int?, size: Int?): ResponseEntity<PagedDancesDto> {
         val teamDances = id?.let {
             dancingTeamHandler.handleGetTeamDances(
                 it,
-                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                page ?: ControllerCommons.DEFAULT_PAGE,
                 size ?: ControllerCommons.DEFAULT_PAGE_SIZE
             )
         }
         return ResponseEntity.ok(teamDances)
-    }
-
-    override fun getTeamMusicians(teamId: Long?): ResponseEntity<MutableList<UserDto>> {
-        return ResponseEntity.ok(teamId?.let { dancingTeamHandler.handleGetTeamMusicians(it) })
     }
 
     override fun getTeams(
@@ -68,10 +56,10 @@ class DancingTeamController(
         direction: String?,
     ): ResponseEntity<PageDancingTeamListElementDto> {
         val pagination =
-            Pagination(page ?: ControllerCommons.DEFAULT_PAGE_NUMBER, size ?: ControllerCommons.DEFAULT_PAGE_SIZE)
+            Pagination(page ?: ControllerCommons.DEFAULT_PAGE, size ?: ControllerCommons.DEFAULT_PAGE_SIZE)
         val sort = SortObject(
-            orderBy ?: DEFAULT_SORT_COLUMN,
-            direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION)
+            orderBy ?: ControllerCommons.DEFAULT_SORT_COLUMN,
+            direction?.let { Sort.Direction.fromString(it) } ?: ControllerCommons.DEFAULT_SORT_DIRECTION)
         val teams = dancingTeamHandler.handleGetTeams(pagination, sort, phrase)
         return ResponseEntity.ok(teams)
     }
@@ -85,10 +73,10 @@ class DancingTeamController(
         filterObject: FilterObjectDto?
     ): ResponseEntity<PageDancingTeamListElementDto> {
         val teams = dancingTeamHandler.handleGetTeams(
-            Pagination(page ?: ControllerCommons.DEFAULT_PAGE_NUMBER, size ?: ControllerCommons.DEFAULT_PAGE_SIZE),
+            Pagination(page ?: ControllerCommons.DEFAULT_PAGE, size ?: ControllerCommons.DEFAULT_PAGE_SIZE),
             SortObject(
-                orderBy ?: DEFAULT_SORT_COLUMN,
-                direction?.let { Sort.Direction.fromString(it) } ?: DEFAULT_SORT_DIRECTION),
+                orderBy ?: ControllerCommons.DEFAULT_SORT_COLUMN,
+                direction?.let { Sort.Direction.fromString(it) } ?: ControllerCommons.DEFAULT_SORT_DIRECTION),
             phrase,
             filterObject
         )
@@ -131,7 +119,7 @@ class DancingTeamController(
             dancingTeamHandler.handleGetEvents(
                 it,
                 connectionTypes ?: emptyList(),
-                page?.toInt() ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                page?.toInt() ?: ControllerCommons.DEFAULT_PAGE,
                 size ?: ControllerCommons.DEFAULT_PAGE_SIZE,
                 eventTime
             )
@@ -144,7 +132,7 @@ class DancingTeamController(
         val achievements = id?.let {
             dancingTeamHandler.handleGetTeamAchievements(
                 it,
-                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                page ?: ControllerCommons.DEFAULT_PAGE,
                 size ?: ControllerCommons.DEFAULT_PAGE_SIZE
             )
         }
@@ -162,16 +150,6 @@ class DancingTeamController(
     }
 
     @EndpointLogger
-    override fun removeDanceFromTeamDances(id: Long?, danceId: Long?): ResponseEntity<Void> {
-        id?.let { teamId ->
-            danceId?.let {
-                dancingTeamHandler.handleRemoveDanceFromDances(teamId, it)
-            }
-        }
-        return ResponseEntity.ok().build()
-    }
-
-    @EndpointLogger
     @GetMapping("/api/teams/{id}/people")
     fun getPeople(
         @PathVariable id: Long?,
@@ -182,7 +160,7 @@ class DancingTeamController(
         val people = id?.let {
             dancingTeamHandler.handleGetTeamPeople(
                 it,
-                page ?: ControllerCommons.DEFAULT_PAGE_NUMBER,
+                page ?: ControllerCommons.DEFAULT_PAGE,
                 size ?: ControllerCommons.DEFAULT_PAGE_SIZE,
                 phrase
             )
@@ -202,8 +180,4 @@ class DancingTeamController(
         return ResponseEntity.ok().build()
     }
 
-    companion object {
-        private const val DEFAULT_SORT_COLUMN: String = "id"
-        private val DEFAULT_SORT_DIRECTION: Sort.Direction = Sort.Direction.DESC
-    }
 }

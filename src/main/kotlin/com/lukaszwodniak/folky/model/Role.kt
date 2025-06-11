@@ -4,6 +4,7 @@ import jakarta.persistence.*
 
 /**
  * Role
+ *
  * Created on: 2204-07-28
  * @author Łukasz Wodniak (lukasz.wodniak@student.up.krakow.pl)
  */

@@ -32,16 +32,6 @@ class SecurityHandlerImpl(
         userService.registerUser(SecurityMapper.INSTANCE.mapRegisterRequest(registerUserRequestDto))
     }
 
-    override fun handleRegisterDancingTeamUser(registerRequest: RegisterDancingTeamAccountRequestDto) {
-        val mappedRequest = SecurityMapper.INSTANCE.mapRegisterDancingTeamRequest(registerRequest)
-        val regionOptional =
-            if (registerRequest.regionId == NO_REGION_ID) regionRepository.findById(1) else regionRepository.findById(
-                registerRequest.regionId
-            )
-        val updatedRequest = regionOptional.map { region -> mappedRequest.copy(region = region) }.orElse(mappedRequest)
-        userService.registerDancingTeamUser(updatedRequest)
-    }
-
     override fun handleRegisterDancingTeamAsUser(registerRequest: RegisterDancingTeamUserRequest, regionId: Long) {
         val regionOptional =
             if (regionId == NO_REGION_ID) regionRepository.findById(1) else regionRepository.findById(

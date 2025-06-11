@@ -9,12 +9,3 @@ class FolkyApplication
 fun main(args: Array<String>) {
     runApplication<FolkyApplication>(*args)
 }
-
-/**
- * TODO
- * - Add tests
- * - Rewrite dance-specification
- * - Rewrite messaging-specification
- * - Rewrite music instrument specification
- * - Rewrite recruitment specification
- */

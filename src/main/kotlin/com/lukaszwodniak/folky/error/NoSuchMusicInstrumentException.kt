@@ -10,9 +10,6 @@ package com.lukaszwodniak.folky.error
 class NoSuchMusicInstrumentException(id: Long) : RuntimeException(buildMessage(id)) {
 
     companion object {
-
-        fun buildMessage(id: Long): String {
-            return "Music instrument with id  = $id does not exists"
-        }
+        fun buildMessage(id: Long): String = "Music instrument with id  = $id does not exists"
     }
 }

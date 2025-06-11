@@ -13,5 +13,4 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface PeopleRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
-}
+interface PeopleRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person>

@@ -40,7 +40,10 @@ class AddressController(
 
     @EndpointLogger
     override fun getAddresses(page: Int?, size: Int?): ResponseEntity<PagedAddressesDto> {
-        val addresses = addressHandler.handleGetAddresses(page ?: DEFAULT_PAGE, size ?: DEFAULT_SIZE)
+        val addresses = addressHandler.handleGetAddresses(
+            page ?: ControllerCommons.DEFAULT_PAGE,
+            size ?: ControllerCommons.DEFAULT_PAGE_SIZE
+        )
         return ResponseEntity.ok(addresses)
     }
 
@@ -53,9 +56,5 @@ class AddressController(
         }
         return ResponseEntity.ok().build()
     }
-
-    companion object {
-        private const val DEFAULT_PAGE: Int = 0
-        private const val DEFAULT_SIZE: Int = 10
-    }
+    
 }

@@ -10,8 +10,6 @@ package com.lukaszwodniak.folky.error
 class NoSuchInstitutionException(id: Long) : NoSuchElementException(toMessage(id)) {
 
     companion object {
-        fun toMessage(id: Long): String {
-            return "No institution found for id: $id"
-        }
+        fun toMessage(id: Long): String = "No institution found for id: $id"
     }
 }

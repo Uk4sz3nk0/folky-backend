@@ -8,7 +8,6 @@ import com.lukaszwodniak.folky.enums.UserType
 import com.lukaszwodniak.folky.error.users.EmailInUseException
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.User
-import com.lukaszwodniak.folky.model.UserRole
 import com.lukaszwodniak.folky.records.DancingTeamFiles
 import com.lukaszwodniak.folky.records.RegisterDancingTeamUserRequest
 import com.lukaszwodniak.folky.records.RegisterUserRequest
@@ -17,8 +16,6 @@ import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.security.AuthenticatedUserIdProvider
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
-import com.lukaszwodniak.folky.service.files.FilesService
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import com.lukaszwodniak.folky.service.users.UserService
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
@@ -26,7 +23,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
-import kotlin.NoSuchElementException
 
 /**
  * UserServiceImpl
@@ -41,7 +37,6 @@ class UserServiceImpl(
     private val firebaseAuth: FirebaseAuth,
     private val authenticatedUserIdProvider: AuthenticatedUserIdProvider,
     private val dancingTeamService: DancingTeamService,
-    private val filesService: FilesService,
     private val regionRepository: RegionRepository,
 ) : UserService {
 
@@ -75,11 +70,6 @@ class UserServiceImpl(
     override fun getUserFromContext(): User? {
         val userId = authenticatedUserIdProvider.userId
         return userRepository.findByUid(userId)
-    }
-
-    override fun getFirebaseUserFromContext(): UserRecord {
-        val userId = authenticatedUserIdProvider.userId
-        return firebaseAuth.getUser(userId)
     }
 
     override fun getUserByEmail(email: String): User? =
@@ -132,7 +122,7 @@ class UserServiceImpl(
             if (exception.message?.contains(DUPLICATE_ACCOUNT_ERROR) == true) {
                 throw EmailInUseException("Account with given email-id already exists")
             }
-            throw exception;
+            throw exception
         }
     }
 
@@ -149,7 +139,6 @@ class UserServiceImpl(
             request.howLongPlayingInstruments ?: 0,
             mutableListOf(),
             emptyList(),
-            mutableListOf(),
             request.preferredLanguage ?: DEFAULT_PREFERRED_LANGUAGE,
             request.wantReceivePushNotifications ?: false,
             request.wantReceiveEmailNotifications ?: false,

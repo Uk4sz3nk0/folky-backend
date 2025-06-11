@@ -10,9 +10,6 @@ package com.lukaszwodniak.folky.error
 class NoSuchDancingTeamException(id: Long) : RuntimeException(buildErrorMessage(id)) {
 
     companion object {
-
-        private fun buildErrorMessage(id: Long): String {
-            return "Session with id = $id not exists"
-        }
+        fun buildErrorMessage(id: Long): String = "Session with id = $id not exists"
     }
 }

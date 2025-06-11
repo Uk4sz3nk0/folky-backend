@@ -4,8 +4,6 @@ import com.lukaszwodniak.folky.enums.EventConnectionType
 import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.Event
 import com.lukaszwodniak.folky.model.EventTeamInstitution
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying

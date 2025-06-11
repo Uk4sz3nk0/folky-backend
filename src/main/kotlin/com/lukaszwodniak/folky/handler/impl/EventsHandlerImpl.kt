@@ -41,10 +41,6 @@ class EventsHandlerImpl(
         eventsService.deleteEvent(id)
     }
 
-    override fun handleDeleteEventPoster(id: Long) {
-        eventsService.deleteEventPoster(id)
-    }
-
     override fun handleGetEvent(id: Long, teamId: Long?): EventDto {
         val dancingTeam = teamId?.let { dancingTeamService.getById(it) }
         val event = eventsService.getEvent(id, dancingTeam)
@@ -56,10 +52,6 @@ class EventsHandlerImpl(
         return EventsMapper.INSTANCE.mapToPageableDto(events)
     }
 
-    override fun handleGetPoster(id: Long): Resource? {
-        return eventsService.getPoster(id)
-    }
-
     override fun handleUpdateEvent(id: Long, eventRequest: EventRequestDto) {
         val event = eventRequest.event
         val address = eventRequest.address
@@ -67,10 +59,6 @@ class EventsHandlerImpl(
         val mappedAddress = EventsMapper.INSTANCE.mapAddressFromDto(address)
         val additionalData = EventAdditionalData(event.isIsFreeEntry, event.isIsParticipantToo, event.creatorId)
         eventsService.updateEvent(id, mappedEvent.copy(address = mappedAddress), additionalData)
-    }
-
-    override fun handleUpdatePoster(id: Long, poster: MultipartFile) {
-        eventsService.updateOrAddPoster(id, poster)
     }
 
     override fun handleAddParticipant(id: Long, teamId: Long) {

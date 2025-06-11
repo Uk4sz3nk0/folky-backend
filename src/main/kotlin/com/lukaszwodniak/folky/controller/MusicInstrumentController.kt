@@ -2,7 +2,7 @@ package com.lukaszwodniak.folky.controller
 
 import com.lukaszwodniak.folky.annotations.endpointLogger.EndpointLogger
 import com.lukaszwodniak.folky.handler.MusicInstrumentHandler
-import com.lukaszwodniak.folky.rest.music_instrument.specification.api.MusicInstrumentApi
+import com.lukaszwodniak.folky.rest.music_instrument.specification.api.MusicInstrumentsApi
 import com.lukaszwodniak.folky.rest.specification.models.MusicInstrumentDto
 import com.lukaszwodniak.folky.rest.specification.models.MusicInstrumentTypeDto
 import org.springframework.http.ResponseEntity
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class MusicInstrumentController(
     val musicInstrumentHandler: MusicInstrumentHandler
-) : MusicInstrumentApi {
+) : MusicInstrumentsApi {
 
     @EndpointLogger
     override fun addInstrumentType(instrumentType: MusicInstrumentTypeDto?): ResponseEntity<MusicInstrumentTypeDto> {
@@ -26,16 +26,11 @@ class MusicInstrumentController(
         return ResponseEntity.ok(addedType)
     }
 
-    @EndpointLogger
-    override fun addInstument(instrument: MusicInstrumentDto?): ResponseEntity<MusicInstrumentDto> {
-        val addedInstrument = instrument?.let { musicInstrumentHandler.handleAddInstrument(it) }
-        return ResponseEntity.ok(addedInstrument)
-    }
-
-    @EndpointLogger
     override fun deleteInstrument(id: Long?): ResponseEntity<Void> {
-        id?.let { musicInstrumentHandler.handleDeleteInstrument(it) }
-        return ResponseEntity.ok(null)
+        id?.let {
+            musicInstrumentHandler.handleDeleteInstrument(it)
+        }
+        return ResponseEntity.ok().build()
     }
 
     @EndpointLogger
@@ -62,27 +57,33 @@ class MusicInstrumentController(
         return ResponseEntity.ok(instruments)
     }
 
-    @EndpointLogger
-    override fun getInstrumentsByName(phrase: String?): ResponseEntity<MutableList<MusicInstrumentDto>> {
-        val types = phrase?.let { musicInstrumentHandler.handleGetInstrumentByName(it) }
-        return ResponseEntity.ok(types)
-    }
-
-    @EndpointLogger
-    override fun getInstrumentsByType(typeId: Long?): ResponseEntity<MutableList<MusicInstrumentDto>> {
-        val instruments = typeId?.let { musicInstrumentHandler.handleGetInstrumentByType(it) }
-        return ResponseEntity.ok(instruments)
-    }
-
-    @EndpointLogger
-    override fun updateInstrument(instrument: MusicInstrumentDto?): ResponseEntity<MusicInstrumentDto> {
-        val updatedInstrument = instrument?.let { musicInstrumentHandler.handleUpdateInstrument(it) }
-        return ResponseEntity.ok(updatedInstrument)
-    }
 
     @EndpointLogger
     override fun updateInstrumentType(instrumentType: MusicInstrumentTypeDto?): ResponseEntity<MusicInstrumentTypeDto> {
         val updatedType = instrumentType?.let { musicInstrumentHandler.handleUpdateInstrumentType(it) }
         return ResponseEntity.ok(updatedType)
+    }
+
+    override fun addMusicInstrument(musicInstrument: MusicInstrumentDto?): ResponseEntity<MusicInstrumentDto> {
+        val addedInstrument = musicInstrument?.let {
+            musicInstrumentHandler.handleAddInstrument(it)
+        }
+        return ResponseEntity.ok(addedInstrument)
+    }
+
+    override fun getInstruments(phrase: String?, typeId: Long?): ResponseEntity<MutableList<MusicInstrumentDto>> {
+        val instruments = phrase?.let {
+            musicInstrumentHandler.handleGetInstrumentByName(it)
+        } ?: typeId?.let { musicInstrumentHandler.handleGetInstrumentByType(it) }
+        return ResponseEntity.ok(instruments)
+    }
+
+    override fun updateInstrument(id: Long?, musicInstrument: MusicInstrumentDto?): ResponseEntity<MusicInstrumentDto> {
+        val updatedInstrument = musicInstrument?.let { instrument ->
+            id?.let {
+                musicInstrumentHandler.handleUpdateInstrument(instrument)
+            }
+        }
+        return ResponseEntity.ok(updatedInstrument)
     }
 }

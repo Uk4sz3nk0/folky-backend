@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 
 /**
  * UserMapper
+ *
  * Created on: 2024-08-12
  * @author Łukasz Wodniak
  */

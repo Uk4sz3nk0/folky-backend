@@ -10,9 +10,6 @@ package com.lukaszwodniak.folky.error
 class NoSuchDanceException(id: Long) : RuntimeException(buildMessage(id)) {
 
     companion object {
-
-        fun buildMessage(id: Long): String {
-            return "Dance with id = $id does not exists"
-        }
+        fun buildMessage(id: Long): String = "Dance with id = $id does not exists"
     }
 }
