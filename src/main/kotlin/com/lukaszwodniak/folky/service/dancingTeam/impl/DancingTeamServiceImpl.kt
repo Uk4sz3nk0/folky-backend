@@ -28,6 +28,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.time.LocalDate
+import java.time.Month
 import java.util.*
 import kotlin.io.path.Path
 
@@ -128,92 +129,20 @@ class DancingTeamServiceImpl(
         searchPhrase: String?,
         filterTeamsObject: FilterTeamsObject?
     ): Page<DancingTeam> {
-        if (filterTeamsObject != null) {
+        return if (filterTeamsObject != null) {
             var filterSpecification: Specification<DancingTeam> = Specification.where(null)
 
+            filterSpecification = filterSpecification
+                .andIfNotNull(getSearchPhrasePredicate(searchPhrase))
+                .andIfNotNull(getCreationYearPredicate(filterTeamsObject))
+                .andIfNotNull(getDancersAmountPredicate(filterTeamsObject))
+                .andIfNotNull(getMusicianAmountPredicate(filterTeamsObject))
+                .andIfNotNull(getRegionsPredicate(filterTeamsObject))
+                .andIfNotNull(getSocialMediaPredicate(filterTeamsObject))
 
-            val searchPhrasePredicate = searchPhrase?.let {
-                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
-                    cb.like(root.get("name"), "%$searchPhrase%")
-                }.or { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
-                    cb.like(root.get("description"), "%$searchPhrase%")
-                }
-            }
-            if (searchPhrasePredicate != null) {
-                filterSpecification = filterSpecification.and(searchPhrasePredicate)
-            }
-
-            val creationYearPredicate = filterTeamsObject.creationDate?.let {
-                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
-                    val startDate = LocalDate.of(it.start, java.time.Month.JANUARY, 1)
-                    val endDate = LocalDate.of(it.end, java.time.Month.DECEMBER, 31)
-
-                    cb.between(root.get("creationDate"), startDate, endDate)
-                }
-            }
-            if (creationYearPredicate != null) {
-                filterSpecification = filterSpecification.and(creationYearPredicate)
-            }
-
-            val dancersAmountPredicate = filterTeamsObject.dancersAmount?.let {
-                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
-                    if (it.end <= MORE_PLUS_RANGE) {
-                        criteriaBuilder.between(root.get("dancersAmount"), it.start, it.end)
-                    } else {
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("dancersAmount"), it.start)
-                    }
-                }
-            }
-            if (dancersAmountPredicate != null) {
-                filterSpecification = filterSpecification.and(dancersAmountPredicate)
-            }
-
-            val musicianAmountPredicate = filterTeamsObject.musiciansAmount?.let {
-                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
-                    if (it.end <= MORE_PLUS_RANGE) {
-                        criteriaBuilder.between(root.get("musiciansAmount"), it.start, it.end)
-                    } else {
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("musiciansAmount"), it.start)
-                    }
-                }
-            }
-            if (musicianAmountPredicate != null) {
-                filterSpecification = filterSpecification.and(musicianAmountPredicate)
-            }
-
-            val regionsPredicate = filterTeamsObject.selectedRegions.takeIf { it.isNotEmpty() }?.let {
-                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, _: CriteriaBuilder ->
-                    root.get<Any>("region").get<Long>("id").`in`(it)
-                }
-            }
-            if (regionsPredicate != null) {
-                filterSpecification = filterSpecification.and(regionsPredicate)
-            }
-
-            val socialMediaPredicate = filterTeamsObject.ownedSocialMedia
-                .map {
-                    if (it == TIKTOK_FILTER_NAME) CORRECT_TIKTOK_FILTER_NAME else it
-                }
-                .takeIf { it.isNotEmpty() }
-                ?.let { socialPlatforms ->
-                    Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
-
-                        val predicates = socialPlatforms.map { platform ->
-                            criteriaBuilder.isNotNull(
-                                root.get<SocialMedia>("socialMedia").get<String>("${platform}Url")
-                            )
-                        }
-
-                        criteriaBuilder.or(*predicates.toTypedArray())
-                    }
-                }
-            if (socialMediaPredicate != null) {
-                filterSpecification = filterSpecification.and(socialMediaPredicate)
-            }
-
-            return dancingTeamRepository.findAll(filterSpecification, pageRequest)
+            dancingTeamRepository.findAll(filterSpecification, pageRequest)
         } else {
-            return getTeams(pageRequest, searchPhrase)
+            getTeams(pageRequest, searchPhrase)
         }
     }
 
@@ -266,7 +195,7 @@ class DancingTeamServiceImpl(
     override fun setTeamPeople(teamId: Long, people: List<Person>) {
         val team = getById(teamId)
         val teamAssignedPeople = people.map { it.copy(dancingTeam = team) }
-        val mappedPeople = peopleService.updatedPeople(teamAssignedPeople)
+        val mappedPeople = peopleService.updatedPeople(teamAssignedPeople, team)
         peopleRepository.saveAllAndFlush(mappedPeople)
     }
 
@@ -302,6 +231,83 @@ class DancingTeamServiceImpl(
         } catch (exception: Exception) {
             logger.error("Error during storing file. Reason: ${exception.localizedMessage}")
         }
+    }
+
+    private fun getSearchPhrasePredicate(searchPhrase: String?): Specification<DancingTeam>? {
+        return searchPhrase?.let {
+            Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                cb.like(root.get("name"), "%$searchPhrase%")
+            }.or { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                cb.like(root.get("description"), "%$searchPhrase%")
+            }
+        }
+    }
+
+    private fun getCreationYearPredicate(filterTeamsObject: FilterTeamsObject): Specification<DancingTeam>? {
+        return filterTeamsObject.creationDate?.let {
+            Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, cb: CriteriaBuilder ->
+                val startDate = LocalDate.of(it.start, Month.JANUARY, 1)
+                val endDate = LocalDate.of(it.end, Month.DECEMBER, 31)
+
+                cb.between(root.get("creationDate"), startDate, endDate)
+            }
+        }
+    }
+
+    private fun getDancersAmountPredicate(filterTeamsObject: FilterTeamsObject): Specification<DancingTeam>? {
+        return filterTeamsObject.dancersAmount?.let {
+            Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+                if (it.end <= MORE_PLUS_RANGE) {
+                    criteriaBuilder.between(root.get("dancersAmount"), it.start, it.end)
+                } else {
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("dancersAmount"), it.start)
+                }
+            }
+        }
+    }
+
+    private fun getMusicianAmountPredicate(filterTeamsObject: FilterTeamsObject): Specification<DancingTeam>? {
+        return filterTeamsObject.musiciansAmount?.let {
+            Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+                if (it.end <= MORE_PLUS_RANGE) {
+                    criteriaBuilder.between(root.get("musiciansAmount"), it.start, it.end)
+                } else {
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("musiciansAmount"), it.start)
+                }
+            }
+        }
+    }
+
+    private fun getRegionsPredicate(filterTeamsObject: FilterTeamsObject): Specification<DancingTeam>? {
+        return filterTeamsObject.selectedRegions.takeIf { it.isNotEmpty() }?.let {
+            Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, _: CriteriaBuilder ->
+                root.get<Any>("region").get<Long>("id").`in`(it)
+            }
+        }
+    }
+
+    private fun getSocialMediaPredicate(filterTeamsObject: FilterTeamsObject): Specification<DancingTeam>? {
+        return filterTeamsObject.ownedSocialMedia
+            .map {
+                if (it == TIKTOK_FILTER_NAME) CORRECT_TIKTOK_FILTER_NAME else it
+            }
+            .takeIf { it.isNotEmpty() }
+            ?.let { socialPlatforms ->
+                Specification { root: Root<DancingTeam>, _: CriteriaQuery<*>, criteriaBuilder: CriteriaBuilder ->
+
+                    val predicates = socialPlatforms.map { platform ->
+                        criteriaBuilder.isNotNull(
+                            root.get<SocialMedia>("socialMedia").get<String>("${platform}Url")
+                        )
+                    }
+
+                    criteriaBuilder.or(*predicates.toTypedArray())
+                }
+            }
+    }
+
+    private fun <T> Specification<T>.andIfNotNull(spec: Specification<T>?): Specification<T> {
+        return spec?.let { this.and(it) } ?: this
     }
 
     companion object {

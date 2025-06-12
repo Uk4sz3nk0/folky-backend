@@ -1,5 +1,6 @@
 package com.lukaszwodniak.folky.repository
 
+import com.lukaszwodniak.folky.model.DancingTeam
 import com.lukaszwodniak.folky.model.Person
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
@@ -13,4 +14,7 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-interface PeopleRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person>
+interface PeopleRepository : JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
+
+    fun findAllByDancingTeam(dancingTeam: DancingTeam): List<Person>
+}
