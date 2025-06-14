@@ -25,7 +25,8 @@ class AchievementsServiceImpl(
 
     @Transactional
     override fun addAchievement(achievement: Achievement) {
-        val updatedPeople = peopleService.updatedPeople(achievement.distinguishedPeople).toMutableList()
+        val updatedPeople =
+            peopleService.updatedPeople(achievement.distinguishedPeople, achievement.dancingTeam).toMutableList()
 
         achievementsRepository.saveAndFlush(achievement.copy(distinguishedPeople = updatedPeople))
     }
@@ -43,7 +44,8 @@ class AchievementsServiceImpl(
     }
 
     override fun updateAchievement(existingAchievement: Achievement, updateData: Achievement) {
-        val updatedPeople = peopleService.updatedPeople(updateData.distinguishedPeople).toMutableList()
+        val updatedPeople =
+            peopleService.updatedPeople(updateData.distinguishedPeople, updateData.dancingTeam).toMutableList()
 
         val achievementToUpdate = existingAchievement.copy(
             name = updateData.name,
