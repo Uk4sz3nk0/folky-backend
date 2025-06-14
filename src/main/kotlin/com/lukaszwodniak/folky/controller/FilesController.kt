@@ -81,7 +81,6 @@ class FilesController(
     }
 
     companion object {
-        private const val PNG_EXTENSION = ".png"
         private const val JPEG_EXTENSION = ".jpg"
     }
 }

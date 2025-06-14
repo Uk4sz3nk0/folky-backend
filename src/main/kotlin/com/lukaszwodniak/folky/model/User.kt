@@ -1,7 +1,5 @@
 package com.lukaszwodniak.folky.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.lukaszwodniak.folky.enums.UserType
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -41,8 +39,6 @@ data class User(
     var instruments: MutableList<MusicInstrument>,
     @OneToMany(mappedBy = "user")
     val userRoles: List<UserRole>? = emptyList(),
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    val recruitmentRequests: MutableList<RecruitmentRequest>,
     var preferredLanguage: String,
     var wantReceivePushNotifications: Boolean,
     var wantReceiveEmailNotifications: Boolean,

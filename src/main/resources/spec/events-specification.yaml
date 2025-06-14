@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: Events specification
+  description: Events specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/events:
+    get:
+      description: |
+        Endpoint used for getting list of events
+      tags:
+        - "Events"
+      operationId: getEvents
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Ok. Successful response will return paged list of events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedEvents"
+    post:
+      description: |
+        Endpoint used for adding new events
+      tags:
+        - "Events"
+      operationId: addEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/events/{id}:
+    get:
+      description: |
+        Endpoint used for getting specified event
+      tags:
+        - "Events"
+      operationId: getEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: teamId
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+            nullable: true
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and specified event object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+    patch:
+      description: |
+        Endpoint used for updating events
+      tags:
+        - "Events"
+      operationId: updateEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventRequest"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+    delete:
+      description: |
+        Endpoint used for deleting evetns
+      tags:
+        - "Events"
+      operationId: deleteEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/events/{id}/participants:
+    get:
+      description: |
+        Endpoint used for getting event participants
+      tags:
+        - "Events"
+      operationId: getParticipants
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and event participants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "dancing-team-specification.yaml#/components/schemas/DancingTeamListElement"
+  /api/events/{id}/creator:
+    get:
+      description: |
+        Endpoint used for getting event creator
+      tags:
+        - "Events"
+      operationId: getCreator
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and event creator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventCreatorResponse"
+  /api/events/{id}/participants/{participantId}:
+    post:
+      description: |
+        Endpoint used for adding participants for event
+      tags:
+        - "Events"
+      operationId: addParticipant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: participantId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status.
+    delete:
+      description: |
+        Endpoint used for deleting participant from event (or leaving event)
+      tags:
+        - "Events"
+      operationId: deleteParticipant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: participantId
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+components:
+  schemas:
+    PagedEvents:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        addressId:
+          type: integer
+          format: int64
+        ticketPrice:
+          type: number
+        type:
+          type: string
+        poster:
+          type: string
+        isFreeEntry:
+          type: boolean
+          nullable: true
+        isParticipantToo:
+          type: boolean
+          nullable: true
+        connectionTypes:
+          type: array
+          items:
+            type: string
+        creatorId:
+          type: integer
+          format: int64
+    EventRequest:
+      type: object
+      properties:
+        event:
+          $ref: "#/components/schemas/Event"
+        address:
+          $ref: "address-specification.yaml#/components/schemas/Address"
+    EventCreatorResponse:
+      type: object
+      properties:
+        creatorType:
+          type: string
+        object:
+          type: object
+        id:
+          type: integer
+          format: int64

@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: People specification
+  description: People specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/people:
+    get:
+      description: |
+        Endpoint used for getting paged people
+      tags:
+        - "People"
+      operationId: getPeople
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and paged data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedPeople"
+    post:
+      description: |
+        Endpoint used for adding new people
+      tags:
+        - "People"
+      operationId: addPerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/people/{id}:
+    get:
+      description: |
+        Endpoint used for getting specified person
+      tags:
+        - "People"
+      operationId: getPerson
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and personDto object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+    patch:
+      description: |
+        Endpoint used for updating person
+      tags:
+        - "People"
+      operationId: updatePerson
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+    delete:
+      description: |
+        Endpoint used for deleting person by Id
+      tags:
+        - "People"
+      operationId: deletePerson
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+components:
+  schemas:
+    PagedPeople:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Person"
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dancingTeamId:
+          type: integer
+          format: int64
+        positions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonPosition"
+    PersonPosition:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        position:
+          type: string
+        since:
+          type: string
+          format: date
+

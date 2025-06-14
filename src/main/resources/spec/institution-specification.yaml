@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: Institution specification
+  description: Institution specification
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/intitutions:
+    get:
+      description: |
+        Endpoint used for getting list of institutions
+      tags:
+        - "Institutions"
+      operationId: getInstitutions
+      parameters:
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            nullable: true
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and paged elements
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedInstitutions"
+    post:
+      description: |
+        Endpoint used for adding new institutions
+      tags:
+        - "Institutions"
+      operationId: addInstitution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Institution"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/institutions/{id}:
+    get:
+      description: |
+        Endpoint used for getting specified institution
+      tags:
+        - "Institutions"
+      operationId: getInstitution
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return specified institution object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Institution"
+    patch:
+      description: |
+        Endpoint used for updating institution
+      tags:
+        - "Institutions"
+      operationId: updateInstitution
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Institution"
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+    delete:
+      description: |
+        Endpoint used for deleting institutions
+      tags:
+        - "Institutions"
+      operationId: deleteInstitution
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status
+  /api/institutions/{id}/events:
+    get:
+      description: |
+        Endpoint used for getting institution events
+      tags:
+        - "Institutions"
+      operationId: getEvents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+        - name: size
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ok. Successful response will return ok status and institution evetns
+          content:
+            application/json:
+              schema:
+                $ref: "events-specification.yaml#/components/schemas/PagedEvents"
+components:
+  schemas:
+    PagedInstitutions:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Institution"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    Institution:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        establishedYear:
+          type: integer
+        website:
+          type: string
+        logo:
+          type: string
+        addressId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64

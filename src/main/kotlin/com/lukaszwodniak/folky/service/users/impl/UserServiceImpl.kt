@@ -16,8 +16,6 @@ import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.UserRepository
 import com.lukaszwodniak.folky.security.AuthenticatedUserIdProvider
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
-import com.lukaszwodniak.folky.service.files.FilesService
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import com.lukaszwodniak.folky.service.users.UserService
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
@@ -25,7 +23,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
-import kotlin.NoSuchElementException
 
 /**
  * UserServiceImpl
@@ -40,7 +37,6 @@ class UserServiceImpl(
     private val firebaseAuth: FirebaseAuth,
     private val authenticatedUserIdProvider: AuthenticatedUserIdProvider,
     private val dancingTeamService: DancingTeamService,
-    private val filesService: FilesService,
     private val regionRepository: RegionRepository,
 ) : UserService {
 
@@ -76,11 +72,6 @@ class UserServiceImpl(
         return userRepository.findByUid(userId)
     }
 
-    override fun getFirebaseUserFromContext(): UserRecord {
-        val userId = authenticatedUserIdProvider.userId
-        return firebaseAuth.getUser(userId)
-    }
-
     override fun getUserByEmail(email: String): User? =
         userRepository.findByEmail(email).orElseThrow { NoSuchElementException("No such user with email $email") }
 
@@ -111,6 +102,13 @@ class UserServiceImpl(
         }
     }
 
+    override fun isContextAdmin(): Boolean {
+        val contextUser = getUserFromContext()
+        return contextUser?.let { user ->
+            user.userRoles?.map { it.role.name }?.contains(ADMIN_ROLE)
+        } ?: false
+    }
+
     private fun createUserOnFirebase(email: String, password: String): String {
         val userCreateRequest = CreateRequest()
         userCreateRequest.setEmail(email)
@@ -124,7 +122,7 @@ class UserServiceImpl(
             if (exception.message?.contains(DUPLICATE_ACCOUNT_ERROR) == true) {
                 throw EmailInUseException("Account with given email-id already exists")
             }
-            throw exception;
+            throw exception
         }
     }
 
@@ -141,7 +139,6 @@ class UserServiceImpl(
             request.howLongPlayingInstruments ?: 0,
             mutableListOf(),
             emptyList(),
-            mutableListOf(),
             request.preferredLanguage ?: DEFAULT_PREFERRED_LANGUAGE,
             request.wantReceivePushNotifications ?: false,
             request.wantReceiveEmailNotifications ?: false,
@@ -179,5 +176,6 @@ class UserServiceImpl(
         const val DEFAULT_PREFERRED_LANGUAGE: String = "pl_PL"
         const val DANCING_TEAM_USER_FIRST_NAME: String = "DANCING_TEAM_FIRST_NAME"
         const val DANCING_TEAM_USER_LAST_NAME: String = "DANCING_TEAM_LAST_NAME"
+        private const val ADMIN_ROLE: String = "admin"
     }
 }

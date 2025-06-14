@@ -1,7 +1,7 @@
 package com.lukaszwodniak.folky.handler
 
-import com.lukaszwodniak.folky.model.Dance
 import com.lukaszwodniak.folky.rest.specification.models.DanceDto
+import com.lukaszwodniak.folky.rest.specification.models.DanceRequestDto
 
 /**
  * DanceHandler
@@ -12,11 +12,10 @@ import com.lukaszwodniak.folky.rest.specification.models.DanceDto
 
 interface DanceHandler {
 
-    fun handleAddDance(dance: DanceDto): DanceDto
+    fun handleAddDance(danceRequest: DanceRequestDto): DanceDto
     fun handleDeleteDance(id: Long)
-    fun handleGetDanceById(id: Long): DanceDto
+    fun handleGetDanceById(id: Long): DanceRequestDto
     fun handleGetDances(): MutableList<DanceDto>
     fun handleGetDancesByLocale(locale: String): MutableList<DanceDto>
     fun handleGetDancesByName(phrase: String): MutableList<DanceDto>
-    fun handleUpdateDance(dance: DanceDto): DanceDto
 }

@@ -1,21 +1,24 @@
 package com.lukaszwodniak.folky.handler.impl
 
+import com.lukaszwodniak.folky.enums.EventConnectionType
+import com.lukaszwodniak.folky.enums.EventTime
 import com.lukaszwodniak.folky.error.NoSuchDancingTeamException
 import com.lukaszwodniak.folky.handler.DancingTeamHandler
 import com.lukaszwodniak.folky.mapper.DanceMapper
 import com.lukaszwodniak.folky.mapper.DancingTeamMapper
 import com.lukaszwodniak.folky.mapper.FilterMapper
-import com.lukaszwodniak.folky.mapper.UserMapper
+import com.lukaszwodniak.folky.mapper.PeopleMapper
 import com.lukaszwodniak.folky.records.Pagination
 import com.lukaszwodniak.folky.records.SortObject
 import com.lukaszwodniak.folky.repository.DancingTeamRepository
-import com.lukaszwodniak.folky.repository.RegionRepository
 import com.lukaszwodniak.folky.repository.SubscriptionRepository
+import com.lukaszwodniak.folky.rest.people.specification.models.PagedPeopleDto
+import com.lukaszwodniak.folky.rest.people.specification.models.PersonDto
 import com.lukaszwodniak.folky.rest.specification.models.*
 import com.lukaszwodniak.folky.service.dancingTeam.DancingTeamService
+import com.lukaszwodniak.folky.service.events.EventsService
 import com.lukaszwodniak.folky.service.files.FilesService
 import com.lukaszwodniak.folky.service.users.UserService
-import com.lukaszwodniak.folky.utils.FileUtils
 import lombok.RequiredArgsConstructor
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -25,6 +28,7 @@ import java.util.*
 
 /**
  * DancingTeamHandler
+ *
  * Created on: 2024-08-09
  * @author Łukasz Wodniak
  */
@@ -33,11 +37,11 @@ import java.util.*
 @RequiredArgsConstructor
 class DancingTeamHandlerImpl(
     private val dancingTeamService: DancingTeamService,
-    private val regionRepository: RegionRepository,
     private val userService: UserService,
     private val dancingTeamRepository: DancingTeamRepository,
     private val subscriptionRepository: SubscriptionRepository,
-    private val filesService: FilesService
+    private val filesService: FilesService,
+    private val eventsService: EventsService
 ) : DancingTeamHandler {
 
     @Transactional
@@ -71,31 +75,9 @@ class DancingTeamHandlerImpl(
         return dancingTeamDto.isSubscribed(isTeamSubscribed)
     }
 
-    override fun handleGetByRegion(regionId: Long): MutableList<DancingTeamDto> {
-        val region = regionRepository.findById(regionId).orElseThrow()
-        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getByRegion(region))
-    }
-
-    override fun handleGetTeamDances(teamId: Long): MutableList<DanceDto> {
-        return DanceMapper.INSTANCE.map(dancingTeamService.getTeamDances(teamId))
-    }
-
-    override fun handleGetTeamDancers(teamId: Long): MutableList<UserDto> {
-        return UserMapper.INSTANCE.map(dancingTeamService.getTeamDancers(teamId))
-    }
-
-    override fun handleGetTeamMusicians(teamId: Long): MutableList<UserDto> {
-        return UserMapper.INSTANCE.map(dancingTeamService.getTeamMusicians(teamId))
-    }
-
-    override fun handleGetTeams(
-        pagination: Pagination,
-        sortObject: SortObject,
-        searchPhrase: String?
-    ): PageDancingTeamListElementDto {
-        val pageRequest = PageRequest.of(pagination.page, pagination.size, Sort.by(sortObject.direction, sortObject.orderBy))
-        val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase)
-        return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams, filesService)
+    override fun handleGetTeamDances(teamId: Long, page: Int, size: Int): PagedDancesDto {
+        val dances = dancingTeamService.getTeamDances(teamId, PageRequest.of(page, size))
+        return DanceMapper.INSTANCE.mapPagedToDto(dances)
     }
 
     override fun handleGetTeams(
@@ -109,17 +91,6 @@ class DancingTeamHandlerImpl(
         val mappedFilterObject = filterObject?.let { FilterMapper.mapFilterObject(it) }
         val pagedTeams = dancingTeamService.getTeams(pageRequest, searchPhrase, mappedFilterObject)
         return DancingTeamMapper.INSTANCE.mapListElementsToPage(pagedTeams, filesService)
-    }
-
-    override fun handleGetTeamsByName(phrase: String): MutableList<DancingTeamDto> {
-        return DancingTeamMapper.INSTANCE.map(dancingTeamService.getTeamsByName(phrase))
-    }
-
-    override fun handleGetSubscribedTeams(): MutableList<DancingTeamListElementDto> {
-        val user = userService.getUserFromContext()
-        user?.let {
-            return DancingTeamMapper.INSTANCE.mapToListElements(dancingTeamService.getSubscribedTeams(user), filesService)
-        } ?: return mutableListOf()
     }
 
     override fun handleGetSubscribedTeams(id: Long, page: Int, size: Int): PageDancingTeamListElementDto {
@@ -155,5 +126,40 @@ class DancingTeamHandlerImpl(
     override fun handleGetGalleryImages(id: Long): MutableList<String> {
         val dancingTeam = dancingTeamRepository.findById(id).orElseThrow { NoSuchDancingTeamException(id) }
         return filesService.getGalleryUrls(dancingTeam)
+    }
+
+    override fun handleGetEvents(
+        id: Long,
+        connectionTypes: List<String>,
+        page: Int,
+        size: Int,
+        eventTime: List<String>?
+    ): PagedEventsDto {
+        val team = dancingTeamRepository.findById(id).orElseThrow { NoSuchDancingTeamException(id) }
+        val mappedConnectionTypes = connectionTypes.map { EventConnectionType.valueOf(it) }
+        val mappedEventTime = eventTime?.map { EventTime.valueOf(it) } ?: emptyList()
+        val events = eventsService.getTeamEvents(team, page, size, mappedConnectionTypes, mappedEventTime)
+
+        return DancingTeamMapper.INSTANCE.mapToPagedEvents(events)
+    }
+
+    override fun handleGetTeamAchievements(id: Long, page: Int, size: Int): PagedAchievementsDto {
+        val achievements = dancingTeamService.getTeamAchievements(id, PageRequest.of(page, size))
+        return DancingTeamMapper.INSTANCE.mapAchievementsToDto(achievements)
+    }
+
+    override fun handleGetTeamPeople(id: Long, page: Int, size: Int, phrase: String?): PagedPeopleDto {
+        val people = dancingTeamService.getTeamPeople(id, PageRequest.of(page, size), phrase)
+        return PeopleMapper.INSTANCE.mapToPageable(people)
+    }
+
+    override fun handleUpdateTeamDances(id: Long, dances: List<DanceDto>) {
+        val mappedDances = DanceMapper.INSTANCE.mapDancesFromDto(dances)
+        dancingTeamService.updateTeamDances(teamId = id, mappedDances)
+    }
+
+    override fun handleSetTeamPeople(id: Long, people: List<PersonDto>) {
+        val mappedPeople = PeopleMapper.INSTANCE.mapFromDtoList(people)
+        dancingTeamService.setTeamPeople(id, mappedPeople)
     }
 }

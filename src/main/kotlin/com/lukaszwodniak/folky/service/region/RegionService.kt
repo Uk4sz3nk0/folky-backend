@@ -6,7 +6,7 @@ import com.lukaszwodniak.folky.model.Translation
 
 /**
  * RegionService
- * <br><br>
+ *
  * Created on: 2024-09-05
  * @author Łukasz Wodniak
  */

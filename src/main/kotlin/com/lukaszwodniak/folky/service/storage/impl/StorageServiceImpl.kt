@@ -3,7 +3,6 @@ package com.lukaszwodniak.folky.service.storage.impl
 import com.lukaszwodniak.folky.enums.StoredFileType
 import com.lukaszwodniak.folky.service.storage.StorageService
 import lombok.RequiredArgsConstructor
-import lombok.extern.slf4j.Slf4j
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
@@ -33,7 +32,9 @@ class StorageServiceImpl : StorageService {
 
     override fun storeFile(fileType: StoredFileType, teamUUID: UUID, file: MultipartFile) {
         // TODO: Implement handling exceptions
-        val dir = File(STORAGE_DIRECTORY + File.separator + teamUUID.toString() + File.separator + getStorageDirByType(fileType))
+        val dir = File(
+            STORAGE_DIRECTORY + File.separator + teamUUID.toString() + File.separator + getStorageDirByType(fileType)
+        )
         if (!dir.exists()) {
             dir.mkdirs()
         }

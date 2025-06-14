@@ -7,5 +7,4 @@ package com.lukaszwodniak.folky.error.users
  * @author Łukasz Wodniak
  */
 
-class InvalidOldPasswordException(message: String) : RuntimeException(message) {
-}
+class InvalidOldPasswordException(message: String) : RuntimeException(message)

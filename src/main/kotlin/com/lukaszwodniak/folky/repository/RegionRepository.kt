@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 
 /**
  * RegionRepository
+ *
  * Created on: 2024-07-28
  * @author Łukasz Wodniak
  */

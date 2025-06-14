@@ -13,7 +13,10 @@ import jakarta.persistence.*
 data class Dance(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     var locale: String,
-    var name: String
+    var name: String,
+
+    @ManyToMany(mappedBy = "dances")
+    var teams: MutableList<DancingTeam>? = mutableListOf()
 )

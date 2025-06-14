@@ -10,5 +10,7 @@ package com.lukaszwodniak.folky.enums
 
 enum class UserType {
     NORMAL,
-    DANCING_TEAM
+    DANCING_TEAM,
+    INSTITUTION,
+    UNKNOWN
 }

@@ -19,7 +19,7 @@ class UserExceptionsHandler {
 
     @ExceptionHandler(EmailInUseException::class)
     fun handleEmailInUseException(e: EmailInUseException): ResponseEntity<Map<String, Any>> {
-        logger.error("Error reason: ${e.message}")
+        logger.error("Email in use exception: ${e.message}")
         val errorResponse = mapOf(
             "code" to UsersErrorCode.EMAIL_IS_ALREADY_IN_USE.getCode(),
             "message" to (e.message ?: "Email is already in use")
@@ -30,7 +30,7 @@ class UserExceptionsHandler {
 
     @ExceptionHandler(InvalidLoginCredentialsException::class)
     fun handleInvalidLoginCredentialsException(e: InvalidLoginCredentialsException): ResponseEntity<Map<String, Any>> {
-        logger.error("Error reason: ${e.message}")
+        logger.error("Invalid login credentials exception: ${e.message}")
         val errorResponse = mapOf(
             "code" to UsersErrorCode.INVALID_LOGIN_CREDENTIALS.getCode(),
             "message" to (e.message ?: "Invalid login credentials")
@@ -41,7 +41,7 @@ class UserExceptionsHandler {
 
     @ExceptionHandler(InvalidRefreshTokenException::class)
     fun handleInvalidRefreshTokenException(e: InvalidRefreshTokenException): ResponseEntity<Map<String, Any>> {
-        logger.error("Error reason: ${e.message}")
+        logger.error("Invalid refresh token exception: ${e.message}")
         val errorResponse = mapOf(
             "code" to UsersErrorCode.INVALID_REFRESH_TOKEN.getCode(),
             "message" to (e.message ?: "Invalid refresh token")

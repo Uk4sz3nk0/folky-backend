@@ -1,6 +1,5 @@
 package com.lukaszwodniak.folky.model
 
-import com.lukaszwodniak.folky.service.files.impl.FilesServiceImpl
 import jakarta.persistence.*
 import lombok.Getter
 import lombok.Setter
@@ -9,6 +8,7 @@ import java.util.*
 
 /**
  * DancingTeam
+ *
  * Created on: 2024-07-31
  * @author Łukasz Wodniak
  */
@@ -37,7 +37,7 @@ data class DancingTeam(
     var homeNumber: String? = "",
     var flatNumber: Int? = 0,
     var zipCode: String? = null,
-    @ManyToMany
+    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE])
     @JoinTable(
         name = "dancing_team_dances",
         joinColumns = [JoinColumn(name = "team_id")],
@@ -51,17 +51,9 @@ data class DancingTeam(
         inverseJoinColumns = [JoinColumn(name = "dancer_id")]
     )
     var dancers: MutableList<User>? = mutableListOf(),
-//    @ManyToMany
-//    @JoinTable(
-//        joinColumns = [JoinColumn(name = "team_id")],
-//        inverseJoinColumns = [JoinColumn(name = "musician_id")]
-//    )
-//    var musicians: MutableList<User>? = mutableListOf(),
     var logoFilename: String? = null,
     var bannerFilename: String? = null,
     var isRecruitmentOpened: Boolean? = false,
-    @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
-    var recruitments: MutableList<Recruitment>? = mutableListOf(),
     @OneToMany(mappedBy = "dancingTeam")
     val userRoles: List<UserRole>? = emptyList(),
     @ManyToOne
@@ -71,4 +63,15 @@ data class DancingTeam(
     var socialMedia: SocialMedia?,
     val dancersAmount: Int = 0,
     val musiciansAmount: Int = 0,
+    @OneToOne
+    @JoinColumn(name = "contact_id")
+    val contact: Contact? = null,
+    @OneToMany(mappedBy = "dancingTeam", fetch = FetchType.LAZY)
+    val achievements: MutableList<Achievement>? = mutableListOf(),
+    var isVerified: Boolean = false,
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "team_age_category", joinColumns = [JoinColumn(name = "team_id")])
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name")
+    var ageCategories: Set<String> = emptySet()
 )

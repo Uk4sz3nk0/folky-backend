@@ -29,7 +29,7 @@ class UserController(
     private val usersHandler: UsersHandler,
 ) : UserApi {
 
-    override fun addUser(body: UserDto?): ResponseEntity<UserDto> {
+    override fun addUser(user: UserDto?): ResponseEntity<UserDto> {
         TODO("Not yet implemented")
     }
 

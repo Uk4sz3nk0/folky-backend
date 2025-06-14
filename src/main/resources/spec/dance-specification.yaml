@@ -6,39 +6,19 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
-  /dance/add-dance:
-    description: |
-      Endpoint used for adding new dance
-    post:
+  /api/dances:
+    put:
+      description: |
+        Endpoint used for adding new or updating existing dance
       tags:
         - "Dance"
-      operationId: addDance
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Dance"
-      responses:
-        "200":
-          description: Ok. Successful response will return added element and ok status
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Dance"
-  /dance/update-dance:
-    description: |
-      Endpoint used for updating existing dance
-    patch:
-      tags:
-        - "Dance"
-      operationId: updateDance
+      operationId: setDance
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Dance"
+              $ref: "#/components/schemas/DanceRequest"
       responses:
         "200":
           description: Ok. Successful response will return ok status and updated element
@@ -46,31 +26,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Dance"
-  /dance/delete-dance:
-    description: |
-      Endpoint used for deleting dance by id
-    delete:
-      tags:
-        - "Dance"
-      operationId: deleteDance
-      parameters:
-        - name: id
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Ok. Successful response will return ok status
-  /dance/get-dances:
-    description: |
-      Endpoint used for getting list of all dances
     get:
+      description: |
+        Endpoint used for getting list of all dances
       tags:
         - "Dance"
       operationId: getDances
+      parameters:
+        - name: locale
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
+        - name: phrase
+          in: query
+          required: false
+          allowEmptyValue: true
+          schema:
+            type: string
       responses:
         "200":
           description: Ok. Successful response will return ok status and list of dances
@@ -80,7 +54,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Dance"
-  /dance/get-dance-by-id:
+  /api/dances/{id}:
     description: |
       Endpoint for getting dance by id
     get:
@@ -89,7 +63,7 @@ paths:
       operationId: getDanceById
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           allowEmptyValue: false
           schema:
@@ -101,53 +75,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Dance"
-  /dance/get-dances-by-locale:
-    description: |
-      Endpoint used for getting dances by locale
-    get:
+                $ref: "#/components/schemas/DanceRequest"
+    delete:
+      description: |
+        Endpoint used for deleting dance by id
       tags:
         - "Dance"
-      operationId: getDancesByLocale
+      operationId: deleteDance
       parameters:
-        - name: locale
-          in: query
+        - name: id
+          in: path
           required: true
           allowEmptyValue: false
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
-          description: Ok. Successful response will return ok status and list of dances
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Dance"
-  /dance/get-dances-by-name:
-    description: |
-      Endpoint used for getting dances by name which matches with given phrase
-    get:
-      tags:
-        - "Dance"
-      operationId: getDancesByName
-      parameters:
-        - name: phrase
-          in: query
-          required: true
-          allowEmptyValue: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Ok. Successful response will return list of dances
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Dance"
+          description: Ok. Successful response will return ok status
 components:
   schemas:
     Dance:
@@ -159,4 +104,39 @@ components:
         locale:
           type: string
         name:
+          type: string
+    PagedDances:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dance"
+    DanceRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        locale:
+          type: string
+        name:
+          type: string
+        translations:
+          type: array
+          items:
+            $ref: "#/components/schemas/DanceTranslation"
+    DanceTranslation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        locale:
+          type: string
+        value:
           type: string

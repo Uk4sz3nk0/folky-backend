@@ -12,12 +12,16 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class UserData {
     @JsonProperty("id")
     var id: Long? = null
+
     @JsonProperty("firstName")
     var firstName: String? = null
+
     @JsonProperty("lastName")
     var lastName: String? = null
+
     @JsonProperty("wantReceiveEmailNotifications")
     var wantReceiveEmailNotifications: Boolean = false
+
     @JsonProperty("wantReceivePushNotifications")
     var wantReceivePushNotifications: Boolean = false
 }
